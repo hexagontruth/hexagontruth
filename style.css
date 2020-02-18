@@ -1,0 +1,152 @@
+@font-face {
+  font-family: 'icon';
+  src: url('icons.woff2?1') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  font-family: "icon";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+ 
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Font smoothing. That was taken from TWBS */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+ 
+.icon-discord:before { content: '\e800'; } /* '' */
+.icon-facebook:before { content: '\e801'; } /* '' */
+.icon-github:before { content: '\e802'; } /* '' */
+.icon-hexagon:before { content: '\e803'; } /* '' */
+.icon-hexnet:before { content: '\e804'; } /* '' */
+.icon-hexular:before { content: '\e805'; } /* '' */
+.icon-minhalma:before { content: '\e806'; } /* '' */
+.icon-reddit:before { content: '\e807'; } /* '' */
+.icon-tshirt:before { content: '\e808'; } /* '' */
+.icon-tumblr:before { content: '\e809'; } /* '' */
+.icon-twitter:before { content: '\e80a'; } /* '' */
+.icon-youtube:before { content: '\e80b'; } /* '' */
+
+* {
+  box-sizing: border-box;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  position: relative;
+  font-family: 'DejaVu Sans Mono', 'Lucida Console', 'Lucida Sans Typewriter', Monaco, 'Noto Mono', monospace;
+  font-size: 20px;
+  background: #fffcfa;
+  color: #333;
+}
+
+body {
+  position: relative;
+  background: #fff;
+  color: #333;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: all 250ms;
+}
+
+a:hover {
+  color: #fb3;
+}
+
+body.home {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.box {
+  max-width: 36rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.logo {
+  width: 10rem;
+  height: auto;
+}
+
+p, ul, ol {
+  line-height: 1.5rem;
+  margin: 2rem 0;
+  text-align: justify;
+}
+
+ul.links {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-wrap: wrap;
+  width: 100%;
+  margin: 0;
+}
+
+ul.links li {
+  font-size: 1.5rem;
+  padding: 0 0.25rem;
+  margin: 0.5rem auto;
+  text-align: center;
+  width: 2rem;
+}
+
+@media screen and (max-width: 500px) {
+  html { font-size: 4vw; }
+}
+
+@media screen and (max-width: 250px) {
+  html { font-size: 10px; }
+}
