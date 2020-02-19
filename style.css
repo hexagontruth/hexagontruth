@@ -10,48 +10,36 @@
   font-style: normal;
   font-weight: normal;
   speak: none;
- 
   display: inline-block;
   text-decoration: inherit;
   width: 1em;
   margin-right: .2em;
   text-align: center;
-  /* opacity: .8; */
- 
-  /* For safety - reset parent styles, that can break glyph codes*/
   font-variant: normal;
   text-transform: none;
- 
-  /* fix buttons height, for twitter bootstrap */
   line-height: 1em;
- 
-  /* Animation center compensation - margins should be symmetric */
-  /* remove if not needed */
   margin-left: .2em;
- 
-  /* you can be more comfortable with increased icons size */
-  /* font-size: 120%; */
- 
-  /* Font smoothing. That was taken from TWBS */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
- 
-  /* Uncomment for 3D effect */
-  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
 }
- 
-.icon-discord:before { content: '\e800'; } /* '' */
-.icon-facebook:before { content: '\e801'; } /* '' */
-.icon-github:before { content: '\e802'; } /* '' */
-.icon-hexagon:before { content: '\e803'; } /* '' */
-.icon-hexnet:before { content: '\e804'; } /* '' */
-.icon-hexular:before { content: '\e805'; } /* '' */
-.icon-minhalma:before { content: '\e806'; } /* '' */
-.icon-reddit:before { content: '\e807'; } /* '' */
-.icon-tshirt:before { content: '\e808'; } /* '' */
-.icon-tumblr:before { content: '\e809'; } /* '' */
-.icon-twitter:before { content: '\e80a'; } /* '' */
-.icon-youtube:before { content: '\e80b'; } /* '' */
+
+/* Made with Fontello: http://fontello.com/ */
+.icon-discord:before { content: '\e800'; }
+.icon-facebook:before { content: '\e801'; }
+.icon-github:before { content: '\e802'; }
+.icon-hexagon:before { content: '\e803'; }
+.icon-hexnet:before { content: '\e804'; }
+.icon-hexular:before { content: '\e805'; }
+.icon-instagram:before { content: '\e806'; }
+.icon-menu-left:before { content: '\e807'; }
+.icon-menu-right:before { content: '\e808'; }
+.icon-minhalma:before { content: '\e809'; }
+.icon-reddit:before { content: '\e80a'; }
+.icon-thingiverse:before { content: '\e80b'; }
+.icon-tshirt:before { content: '\e80c'; }
+.icon-tumblr:before { content: '\e80d'; }
+.icon-twitter:before { content: '\e80e'; }
+.icon-youtube:before { content: '\e80f'; }
 
 * {
   box-sizing: border-box;
@@ -96,15 +84,20 @@ body.home {
   justify-content: center;
 }
 
+.container {
+  width: 100%;
+  max-width: 42rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
 
 .box {
-  max-width: 36rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   margin: auto auto;
-  padding: 2rem;
 }
 
 h1 {
@@ -131,8 +124,6 @@ ul.links {
   flex-direction: row;
   justify-content: center;
   align-items: stretch;
-  flex-wrap: wrap;
-  width: 100%;
   margin: 0;
 }
 
@@ -149,9 +140,18 @@ ul.links li a:hover::before {
 }
 
 footer {
-  font-size: 0.67rem;
   margin-top: auto;
+  font-size: 0.67rem;
 }
+
+footer ul.links {
+  justify-content: space-between;
+}
+
+footer ul.links li {
+  margin: 1rem 0;
+}
+
 
 @media screen and (max-width: 500px) {
   html { font-size: 4vw; }
