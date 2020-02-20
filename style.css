@@ -5,7 +5,7 @@
   font-style: normal;
 }
 
-[class^="icon-"]:before, [class*=" icon-"]:before {
+[class^="icon-"]::before, [class*=" icon-"]::before {
   font-family: "icon";
   font-style: normal;
   font-weight: normal;
@@ -24,28 +24,31 @@
 }
 
 /* Made with Fontello: http://fontello.com/ */
-.icon-discord:before { content: '\e800'; }
-.icon-facebook:before { content: '\e801'; }
-.icon-github:before { content: '\e802'; }
-.icon-hexagon:before { content: '\e803'; }
-.icon-hexnet:before { content: '\e804'; }
-.icon-hexular:before { content: '\e805'; }
-.icon-instagram:before { content: '\e806'; }
-.icon-menu-left:before { content: '\e807'; }
-.icon-menu-right:before { content: '\e808'; }
-.icon-minhalma:before { content: '\e809'; }
-.icon-reddit:before { content: '\e80a'; }
-.icon-thingiverse:before { content: '\e80b'; }
-.icon-tshirt:before { content: '\e80c'; }
-.icon-tumblr:before { content: '\e80d'; }
-.icon-twitter:before { content: '\e80e'; }
-.icon-youtube:before { content: '\e80f'; }
+.icon-discord::before { content: '\e800'; }
+.icon-email::before { content: '\e801'; }
+.icon-github::before { content: '\e802'; }
+.icon-hexagon::before { content: '\e803'; }
+.icon-hexnet::before { content: '\e804'; }
+.icon-mail-hex::before { content: '\e805'; }
+.icon-hexular::before { content: '\e806'; }
+.icon-menu-left::before { content: '\e807'; }
+.icon-menu-right::before { content: '\e808'; }
+.icon-tumblr::before { content: '\e809'; }
+.icon-minhalma::before { content: '\e80a'; }
+.icon-instagram::before { content: '\e80b'; }
+.icon-facebook::before { content: '\e80c'; }
+.icon-reddit::before { content: '\e80d'; }
+.icon-youtube::before { content: '\e80e'; }
+.icon-tshirt::before { content: '\e80f'; }
+.icon-thingiverse::before { content: '\e810'; }
+.icon-twitter::before { content: '\e811'; }
 
 * {
   box-sizing: border-box;
   border: 0;
   padding: 0;
   margin: 0;
+  transition: all 250ms;
 }
 
 html, body {
@@ -139,16 +142,30 @@ ul.links li a:hover::before {
   transform: scale(1.2);
 }
 
+header {
+  width: 100%;
+  margin-bottom: auto;
+  padding: 0 1rem;
+}
+
 footer {
   margin-top: auto;
 }
 
+header ul.links {
+  justify-content: flex-end;
+}
+
 footer ul.links {
   justify-content: space-between;
+}
+
+.bar ul.links {
+
   font-size: 1em;
 }
 
-footer ul.links li {
+.bar ul.links li {
   margin: 1rem 0;
 }
 
