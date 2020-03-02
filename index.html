@@ -18,6 +18,7 @@ This software is provided as is, without warranty of any kind, express or implie
   <title>Hexagon.life</title>
 </head>
 <body class="home">
+  <div class="alert"><div class="mono"></div></div>
   <header>
     <button></button>
     <button></button>
@@ -91,11 +92,12 @@ This software is provided as is, without warranty of any kind, express or implie
     (() => {
       document.body.style.opacity = 0;
       let loaded = false;
-      let scrollBlocks;
-      let buttons;
+      let scrollBlocks, buttons, alert, alertText;
       function setLoad() {
         if (loaded) return;
         loaded = true;
+        alert = document.querySelector('.alert');
+        alertText = alert.querySelector('div');
         buttons = document.querySelectorAll('header button');
         buttons.forEach((button, idx) => {
           button.addEventListener('click', () => {
@@ -105,8 +107,26 @@ This software is provided as is, without warranty of any kind, express or implie
         });
         scrollBlocks = Array.from(document.querySelectorAll('article'));
         scroll();
+        document.querySelector('.alert div').addEventListener('click', () => closeAlert());
+        let [base, query] = window.location.href.split('?');
+        let argPairs = (query || '').split('&').map((e) => e.split('='));
+        if (argPairs.find((e) => e[0] == 'contact')) {
+          showAlert('Thank u for ur submission');
+        }
         document.body.style.transition = 'opacity 1000ms';
         document.body.style.opacity = 1;
+      }
+      function showAlert(msg) {
+        alertText.innerHTML = msg;
+        alert.classList.add('active');
+        setTimeout(closeAlert, 4000);
+      }
+      function closeAlert() {
+        let active = alert.classList.contains('active');
+        if (active) {
+          alert.classList.remove('active');
+          setTimeout(() => alertText.innerHTML = '', 500);
+        }
       }
       function scroll() {
         if (!scrollBlocks) return;

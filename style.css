@@ -104,6 +104,36 @@ a:hover, button:hover {
   color: #fb3;
 }
 
+.alert {
+  z-index: 100;
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 333ms;
+}
+
+.alert.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.alert div {
+  background: #abd037;
+  color: #fff;
+  font-weight: bold;
+  text-align: center;
+  line-height: 2;
+  border-radius: 4rem;
+  padding: 0 2rem;
+  cursor: pointer;
+}
+
 .container {
   width: 100%;
   max-width: 48rem;
