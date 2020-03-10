@@ -35,25 +35,28 @@
 }
 
 /* Made with Fontello: http://fontello.com/ */
-.icon-discord:before { content: '\e800'; }
-.icon-facebook:before { content: '\e801'; }
-.icon-email:before { content: '\e802'; }
-.icon-hexagon:before { content: '\e803'; }
-.icon-hexnet:before { content: '\e804'; }
-.icon-instagram:before { content: '\e805'; }
-.icon-mail-hex:before { content: '\e806'; }
-.icon-menu-right:before { content: '\e807'; }
-.icon-tshirt:before { content: '\e808'; }
-.icon-twitter:before { content: '\e809'; }
-.icon-youtube:before { content: '\e80a'; }
-.icon-minhalma:before { content: '\e80b'; }
-.icon-menu-left:before { content: '\e80c'; }
-.icon-thingiverse:before { content: '\e80d'; }
-.icon-patreon:before { content: '\e80e'; }
-.icon-reddit:before { content: '\e80f'; }
-.icon-hexular:before { content: '\e810'; }
-.icon-github:before { content: '\e811'; }
-.icon-tumblr:before { content: '\e812'; }
+.icon-discord::before { content: '\e800'; }
+.icon-email::before { content: '\e801'; }
+.icon-facebook::before { content: '\e802'; }
+.icon-github::before { content: '\e803'; }
+.icon-hexagon::before { content: '\e804'; }
+.icon-hexnet::before { content: '\e805'; }
+.icon-hexular::before { content: '\e806'; }
+.icon-instagram::before { content: '\e807'; }
+.icon-linkedin::before { content: '\e808'; }
+.icon-mail-hex::before { content: '\e809'; }
+.icon-menu-left::before { content: '\e80a'; }
+.icon-menu-right::before { content: '\e80b'; }
+.icon-minhalma::before { content: '\e80c'; }
+.icon-patreon::before { content: '\e80d'; }
+.icon-podcast::before { content: '\e80e'; }
+.icon-reddit::before { content: '\e80f'; }
+.icon-thingiverse::before { content: '\e810'; }
+.icon-tshirt::before { content: '\e811'; }
+.icon-tumblr::before { content: '\e812'; }
+.icon-twitch::before { content: '\e813'; }
+.icon-twitter::before { content: '\e814'; }
+.icon-youtube::before { content: '\e815'; }
 
 * {
   box-sizing: border-box;
@@ -323,12 +326,23 @@ header button:hover {
 
 ul.links.smaller {
   width: 100%;
+  flex-wrap: wrap;
   justify-content: space-between;
   font-size: 1em;
+  margin: 0.5rem 0;
 }
 
 ul.links.smaller li {
-  margin: 1rem 0;
+  margin: 0.5rem 0;
+}
+
+li.divider {
+  width: 100%;
+  flex: 0 0 100%;
+}
+
+.lt-720 {
+  display: none;
 }
 
 @media screen and (max-height: 720px) {
@@ -337,11 +351,23 @@ ul.links.smaller li {
 
 @media screen and (max-width: 640px) {
   html { font-size: 3.125vw; }
+  .lt-720 {
+    display: block;
+  }
 }
 
 @media screen and (max-height: 720px) and (max-width: 500px) {
   html { font-size: (2.777vh + 3.125vw) / 2; }
   html { font-size: min(2.777vh, 3.125vw); }
+}
+
+@media screen and (max-width: 360px) {
+  ul.links.smaller {
+    justify-content: center;
+  }
+  ul.links.smaller li {
+    flex: 1 1 2rem;
+  }
 }
 
 @media screen and (max-width: 250px) {
