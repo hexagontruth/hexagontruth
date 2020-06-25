@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <!--
-Hexagon.life
+Hexagon.link
 
 Copyright (c) 2020, Graham Steele
 
 Permission is hereby granted to use, copy, modify, and distribute this software for HEXAGONAL AWARENESS purposes, provided that this notice appears in all copies.
-
-This software is provided as is, without warranty of any kind, express or implied.
 -->
 <html lang="en">
 <head>
   <link rel="stylesheet" href="style.css"/>
   <link rel="icon" href="hexstar.png"/>
-  <link rel="canonical" href="https://hexagon.life/"/>
+  <link rel="canonical" href="https://hexagon.link/"/>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1,minimum-scale=1"/>
-  <title>Hexagon.life</title>
+  <title>Hexagon.link</title>
+  <meta name="description" content="The hexagonal consciousness movement is dedicated to raising awareness of the illustrious HEXAGON, nature's perfect shape."/>
   <meta name="twitter:card" content="summary"/>
   <meta name="twitter:site" content="@hexagonalnews"/>
-  <meta name="twitter:title" content="Hexagon.life"/>
-  <meta name="twitter:description" content="The hexagonal consciousness movement is dedicated to raising awareness of nature's perfect shape, the illustrious HEXAGON."/>
-  <meta name="twitter:image" content="https://hexagon.life/hexstar-card.png"/>
+  <meta name="twitter:title" content="Hexagonlink"/>
+  <meta name="twitter:description" content="The hexagonal consciousness movement is dedicated to raising awareness of the illustrious HEXAGON, nature's perfect shape."/>
+  <meta name="twitter:image" content="https://hexagon.link/hexstar-card.png"/>
   <meta name="twitter:image:alt" content="Hexagon of life"/>
 </head>
 <body class="home">
@@ -100,7 +99,9 @@ This software is provided as is, without warranty of any kind, express or implie
     (() => {
       document.body.style.opacity = 0;
       let loaded = false;
-      let scrollBlocks, buttons, alert, alertText;
+      let scrollBlocks, cur, buttons, alert, alertText;
+      let eq = (y) => Math.abs(window.scrollY - y) < 0.5; // thanks webkit
+      let clamp = (x, a, b) => Math.max(a, Math.min(b, x));
       function setLoad() {
         if (loaded) return;
         loaded = true;
@@ -111,6 +112,7 @@ This software is provided as is, without warranty of any kind, express or implie
           button.addEventListener('click', () => {
             if (!scrollBlocks) return;
             window.scrollTo(0, scrollBlocks[idx].offsetTop);
+            cur = idx;
           });
         });
         scrollBlocks = Array.from(document.querySelectorAll('article'));
@@ -139,24 +141,24 @@ This software is provided as is, without warranty of any kind, express or implie
       function scroll() {
         if (!scrollBlocks) return;
         buttons.forEach((e) => e.classList.remove('active'));
-        let idx = scrollBlocks.findIndex((e) => e.offsetTop == window.scrollY);
-        if (idx != -1)
-          buttons[idx].classList.add('active');
+        cur = scrollBlocks.findIndex((e) => eq(e.offsetTop));
+        if (cur != -1)
+          buttons[cur].classList.add('active');
       }
       setTimeout(setLoad, 1000);
       window.addEventListener('load', setLoad);
       window.addEventListener('wheel', (ev) => {
         if (!scrollBlocks) return;
-        let scrollPoints = scrollBlocks.map((e) => e.offsetTop);
+        let pts = scrollBlocks.map((e) => e.offsetTop);
         let newY = window.scrollY;
+        let nextPoint;
         if (ev.deltaY > 0) {
-          nextPoint = scrollPoints.find((e) => e > newY);
+          nextPoint = pts.find((e) => !eq(e, pts[cur]) && e > newY);
         }
         else {
-          nextPoint = scrollPoints.filter((e) => e < newY).slice(-1)[0];
+          nextPoint = pts.slice().reverse().find((e) => !eq(e, pts[cur]) && e < newY);
         }
-        if (nextPoint != null)
-          window.scrollTo(0, nextPoint);
+        nextPoint != null && window.scrollTo(0, nextPoint);
         ev.preventDefault();
       }, {passive: false});
       window.addEventListener('scroll', scroll);
