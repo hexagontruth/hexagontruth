@@ -18,19 +18,17 @@
 
   let eq = (y) => Math.abs(window.scrollY - y) < 5; // thanks webkit
 
-  document.body.insertAdjacentHTML('afterend', `
+  document.body.lastChild.insertAdjacentHTML('afterend', `
     <footer class="footer">
-      <section class="flex small">
+      <section class="flex larger">
         <ul class="links">
           <li><a title="Hexagonal News on Twitter" class="icon-twitter" href="https://twitter.com/hexagonalnews"></a></li>
           <li><a title="Hexagonal Awareness on YouTube" class="icon-youtube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"></a></li>
           <li><a title="Hexagonal Awareness on Facebook" class="icon-facebook" href="https://facebook.com/hexagonalawareness"></a></li>
           <li><a title="Hexagon Truth on Instagram" class="icon-instagram" href="https://www.instagram.com/hexagontruth/"></a></li>
-          <li><a title="Hexagonal Awareness on LinkedIn" class="icon-linkedin" href="https://www.linkedin.com/company/hexnet"></a></li>
-          <li><a title="Global Hexagonal Awareness Project on Tumblr" class="icon-tumblr" href="https://hexagonalawarenessproject.tumblr.com/"></a></li>
-          <li><a title="Hexagon Truth on Twitch" class="icon-twitch" href="https://www.twitch.tv/hexagontruth"></a></li>
           <li><a title="Hexagons on Discord" class="icon-discord" href="https://discordapp.com/invite/t6hrz7S"></a></li>
           <li><a title="Hexagons subreddit" class="icon-reddit" href="https://reddit.com/r/hexagons"></a></li>
+          <li><a title="Hexagon Truth on Twitch" class="icon-twitch" href="https://www.twitch.tv/hexagontruth"></a></li>
           <li><a title="Hexagonal merch" class="icon-tshirt" href="https://www.redbubble.com/people/hexagrahamaton/shop"></a></li>
         </ul>
       </section>
@@ -61,6 +59,8 @@
     if (args.includes('contact')) {
       showAlert('Thank u for ur submission');
     }
+
+    Video.create(document.querySelector('.parallax *'));
 
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;
@@ -175,3 +175,50 @@
   });
 
 })();
+
+class Video {
+  static create(el) {
+    Video.instance && Video.instance.delete();
+    Video.instance = el && new Video(el);
+  }
+
+  constructor(el) {
+    this.el = el;
+    let slug = el.getAttribute('data-slug');
+    this.sizes = el.getAttribute('data-sizes').split(',').map((e) => parseInt(e));
+    this.breakpoints = el.getAttribute('data-breakpoints').split(',').map((e) => parseInt(e));
+    this.filenames = this.sizes.map((e) => slug.replace('%', e));
+    this.selected = Infinity;
+    window.addEventListener('resize', (ev) => this.onResize(ev));
+    window.addEventListener('scroll', (ev) => this.onScroll(ev));
+    this.onResize();
+    this.onScroll();
+  }
+
+  selectSource() {
+    // This was simpler than expected lol
+    this.selected = Math.min(this.selected, this.breakpoints.findIndex((e) => e < this.maxDim));
+    this.el.src = this.filenames[this.selected];
+  }
+
+  onScroll(ev) {
+    let p = document.documentElement.scrollHeight / window.innerHeight;
+    this.parallax = p / 4;
+    this.scrollPos = window.scrollY / this.scrollRange;
+    this.el.style.top = `${(-this.parallaxRange * this.scrollPos).toFixed(2)}px`;
+  }
+
+  onResize() {
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    this.scrollRange = document.documentElement.scrollHeight - height;
+    this.scrollFactor = document.documentElement.scrollHeight / height;
+    this.parallaxFactor = 1 + (this.scrollFactor - 1) / 6;
+    this.parallaxRange = (this.parallaxFactor - 1) * height;
+    this.w = width;
+    this.h = height * this.parallaxFactor;
+    this.el.style.height = `${this.h}px`;
+    this.maxDim = Math.max(this.w, this.h);
+    this.selectSource();
+  }
+}
