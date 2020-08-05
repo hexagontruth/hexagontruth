@@ -35,6 +35,15 @@
     </footer>
   `);
 
+  // GA stuff
+  let asyncScript = document.createElement('script');
+  asyncScript.src = 'https://www.googletagmanager.com/gtag/js?id=UA-38703351-3';
+  document.body.appendChild(asyncScript);
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'UA-38703351-3');
+
   function onLoad() {
     if (loaded) return;
     loaded = true;
@@ -189,10 +198,18 @@ class Video {
     this.breakpoints = el.getAttribute('data-breakpoints').split(',').map((e) => parseInt(e));
     this.filenames = this.sizes.map((e) => slug.replace('%', e));
     this.selected = Infinity;
+    this.q = {};
     window.addEventListener('resize', (ev) => this.onResize(ev));
     window.addEventListener('scroll', (ev) => this.onScroll(ev));
     this.onResize();
     this.onScroll();
+  }
+
+  queueEventHandler(eventName, fn) {
+    if (this.q[eventName]) {
+      clearTimeout(this.q[eventName]);
+    }
+    this.q[eventName] = setTimeout(fn, 100);
   }
 
   selectSource() {
@@ -202,10 +219,8 @@ class Video {
   }
 
   onScroll(ev) {
-    let p = document.documentElement.scrollHeight / window.innerHeight;
-    this.parallax = p / 4;
     this.scrollPos = window.scrollY / this.scrollRange;
-    this.el.style.top = `${(-this.parallaxRange * this.scrollPos).toFixed(2)}px`;
+    this.el.style.transform = `translateY(${(-this.parallaxRange * this.scrollPos).toFixed(2)}px)`;
   }
 
   onResize() {
