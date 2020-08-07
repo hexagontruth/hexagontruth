@@ -22,14 +22,14 @@
     <footer class="footer">
       <section class="flex larger">
         <ul class="links">
-          <li><a title="Hexagonal News on Twitter" class="icon-twitter" href="https://twitter.com/hexagonalnews"></a></li>
-          <li><a title="Hexagonal Awareness on YouTube" class="icon-youtube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"></a></li>
-          <li><a title="Hexagonal Awareness on Facebook" class="icon-facebook" href="https://facebook.com/hexagonalawareness"></a></li>
-          <li><a title="Hexagon Truth on Instagram" class="icon-instagram" href="https://www.instagram.com/hexagontruth/"></a></li>
-          <li><a title="Hexagons on Discord" class="icon-discord" href="https://discordapp.com/invite/t6hrz7S"></a></li>
-          <li><a title="Hexagons subreddit" class="icon-reddit" href="https://reddit.com/r/hexagons"></a></li>
-          <li><a title="Hexagon Truth on Twitch" class="icon-twitch" href="https://www.twitch.tv/hexagontruth"></a></li>
-          <li><a title="Hexagonal merch" class="icon-tshirt" href="https://www.redbubble.com/people/hexagrahamaton/shop"></a></li>
+          <li><a title="Twitter" class="icon-twitter" href="https://twitter.com/hexagonalnews"></a></li>
+          <li><a title="YouTube" class="icon-youtube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"></a></li>
+          <li><a title="Facebook" class="icon-facebook" href="https://facebook.com/hexagonalawareness"></a></li>
+          <li><a title="Instagram" class="icon-instagram" href="https://www.instagram.com/hexagontruth/"></a></li>
+          <li><a title="Discord" class="icon-discord" href="https://discordapp.com/invite/t6hrz7S"></a></li>
+          <li><a title="Reddit" class="icon-reddit" href="https://reddit.com/r/hexagons"></a></li>
+          <li><a title="Patreon" class="icon-patreon" href="https://www.patreon.com/m/hexagontruth"></a></li>
+          <li><a title="Merch" class="icon-tshirt" href="https://www.redbubble.com/people/hexagrahamaton/shop"></a></li>
         </ul>
       </section>
     </footer>
