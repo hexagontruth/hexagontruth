@@ -3,7 +3,8 @@ Hexagon.link
 A static site by Graham
 
 - Canonical URL: https://hexagon.link/
-- Secondary URLs: https://hexagon.life/, https://hexagons.info/
+- Secondary URL: https://hexagon.life/
+- Contact: hexagongraham@gmail.com
 
 ## Introduction
 
