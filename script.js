@@ -6,6 +6,8 @@
   const REDIRECTS = {
     discord: 'https://discord.gg/t6hrz7S',
     youtube: 'https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g',
+    sr: 'https://superrare.co/hexagontruth',
+    cryptoart: 'https://superrare.co/hexagontruth',
   };
   let [base, query] = window.location.href.split('?');
   let argPairs = (query || '').split('&').map((e) => e.split('='));
