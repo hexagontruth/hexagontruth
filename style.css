@@ -7,7 +7,7 @@
 
 @font-face {
   font-family: 'icon';
-  src: url('vendor/icons.woff2?v=20200731') format('woff2');
+  src: url('vendor/icons.woff2?v=20200902') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
@@ -35,31 +35,34 @@
 }
 
 /* Made with Fontello: http://fontello.com/ */
-.icon-discord:before { content: '\e800'; }
-.icon-email:before { content: '\e801'; }
-.icon-facebook:before { content: '\e802'; }
-.icon-github:before { content: '\e803'; }
-.icon-hexagon:before { content: '\e804'; }
-.icon-hexnet:before { content: '\e805'; }
-.icon-hexstar:before { content: '\e806'; }
-.icon-hexular:before { content: '\e807'; }
-.icon-instagram:before { content: '\e808'; }
-.icon-linkedin:before { content: '\e809'; }
-.icon-mail-hex:before { content: '\e80a'; }
-.icon-menu-left:before { content: '\e80b'; }
-.icon-menu-right:before { content: '\e80c'; }
-.icon-minhalma:before { content: '\e80d'; }
-.icon-patreon:before { content: '\e80e'; }
-.icon-podcast:before { content: '\e80f'; }
-.icon-reddit:before { content: '\e810'; }
-.icon-sr:before { content: '\e811'; }
-.icon-thingiverse:before { content: '\e812'; }
-.icon-tshirt:before { content: '\e813'; }
-.icon-tumblr:before { content: '\e814'; }
-.icon-twitch:before { content: '\e815'; }
-.icon-twitter:before { content: '\e816'; }
-.icon-vimeo:before { content: '\e817'; }
-.icon-youtube:before { content: '\e818'; }
+.icon-bandcamp:before { content: '\e800'; }
+.icon-discord:before { content: '\e801'; }
+.icon-email:before { content: '\e802'; }
+.icon-ethereum:before { content: '\e803'; }
+.icon-facebook:before { content: '\e804'; }
+.icon-github:before { content: '\e805'; }
+.icon-hexagon:before { content: '\e806'; }
+.icon-hexnet:before { content: '\e807'; }
+.icon-hexstar:before { content: '\e808'; }
+.icon-hexular:before { content: '\e809'; }
+.icon-instagram:before { content: '\e80a'; }
+.icon-linkedin:before { content: '\e80b'; }
+.icon-mail-hex:before { content: '\e80c'; }
+.icon-menu-left:before { content: '\e80d'; }
+.icon-menu-right:before { content: '\e80e'; }
+.icon-minhalma:before { content: '\e80f'; }
+.icon-patreon:before { content: '\e810'; }
+.icon-podcast:before { content: '\e811'; }
+.icon-reddit:before { content: '\e812'; }
+.icon-soundcloud:before { content: '\e813'; }
+.icon-sr:before { content: '\e814'; }
+.icon-thingiverse:before { content: '\e815'; }
+.icon-tshirt:before { content: '\e816'; }
+.icon-tumblr:before { content: '\e817'; }
+.icon-twitch:before { content: '\e818'; }
+.icon-twitter:before { content: '\e819'; }
+.icon-vimeo:before { content: '\e81a'; }
+.icon-youtube:before { content: '\e81b'; }
 
 * {
   box-sizing: border-box;
