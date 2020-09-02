@@ -215,9 +215,10 @@ class Video {
   }
 
   selectSource() {
-    // This was simpler than expected lol
+    let last = this.selected;
     this.selected = Math.min(this.selected, this.breakpoints.findIndex((e) => e < this.maxDim));
-    this.el.src = this.filenames[this.selected];
+    if (last != this.selected)
+      this.el.src = this.filenames[this.selected];
   }
 
   onScroll(ev) {
