@@ -7,7 +7,7 @@
 
 @font-face {
   font-family: 'icon';
-  src: url('vendor/icons.woff2?v=20200902') format('woff2');
+  src: url('vendor/icons.woff2?v=20200920') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
@@ -51,18 +51,19 @@
 .icon-menu-left:before { content: '\e80d'; }
 .icon-menu-right:before { content: '\e80e'; }
 .icon-minhalma:before { content: '\e80f'; }
-.icon-patreon:before { content: '\e810'; }
-.icon-podcast:before { content: '\e811'; }
-.icon-reddit:before { content: '\e812'; }
-.icon-soundcloud:before { content: '\e813'; }
-.icon-sr:before { content: '\e814'; }
-.icon-thingiverse:before { content: '\e815'; }
-.icon-tshirt:before { content: '\e816'; }
-.icon-tumblr:before { content: '\e817'; }
-.icon-twitch:before { content: '\e818'; }
-.icon-twitter:before { content: '\e819'; }
-.icon-vimeo:before { content: '\e81a'; }
-.icon-youtube:before { content: '\e81b'; }
+.icon-opensea:before { content: '\e810'; }
+.icon-patreon:before { content: '\e811'; }
+.icon-podcast:before { content: '\e812'; }
+.icon-reddit:before { content: '\e813'; }
+.icon-soundcloud:before { content: '\e814'; }
+.icon-sr:before { content: '\e815'; }
+.icon-thingiverse:before { content: '\e816'; }
+.icon-tshirt:before { content: '\e817'; }
+.icon-tumblr:before { content: '\e818'; }
+.icon-twitch:before { content: '\e819'; }
+.icon-twitter:before { content: '\e81a'; }
+.icon-vimeo:before { content: '\e81b'; }
+.icon-youtube:before { content: '\e81c'; }
 
 * {
   box-sizing: border-box;
@@ -400,7 +401,7 @@ ul.links li a:active::before {
   .hide-800 { display: none; }
 }
 
-@media screen and (max-width: 899px) {
+@media screen and (max-width: 839px) {
   .columns { column-count: 2; }
 }
 
@@ -422,8 +423,10 @@ ul.links li a:active::before {
 }
 
 @media screen and (max-width: 359px) {
+  .hide-360 { display: none; }
   html { font-size: 10px; }
-  .columns { column-count: 1; }
+/*  .columns { column-count: 1; }*/
+  .columns i { display: none; }
   .flex-360 {
     display: flex;
     flex-direction: column;
