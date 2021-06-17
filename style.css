@@ -214,6 +214,10 @@ a, a::before {
   transition: all 333ms;
 }
 
+p a {
+  border-bottom:  1px dotted #9f9f9f;
+}
+
 .larger {
   font-size: 1.2em;
 }
@@ -361,9 +365,14 @@ ul.links li {
   font-size: 2rem;
 }
 
-.columns {
+.columns-3 {
   column-count: 3;
   column-gap: 2em;
+}
+
+.columns-2 {
+  column-count:  2;
+  column-gap:  2em;
 }
 
 .nowrap {
@@ -402,7 +411,8 @@ ul.links li a:active::before {
 }
 
 @media screen and (max-width: 839px) {
-  .columns { column-count: 2; }
+  .columns-3 { column-count: 2; }
+  .columns-2 { column-count: 1; }
 }
 
 @media screen and (max-height: 719px) {
