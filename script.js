@@ -24,7 +24,7 @@
     <footer class="footer">
       <section class="flex larger">
         <ul class="links">
-          <li><a title="Twitter" class="icon-twitter" href="https://twitter.com/hexagonalnews"></a></li>
+          <li><a title="Twitter" class="icon-twitter" href="https://twitter.com/hexagontruth"></a></li>
           <li><a title="YouTube" class="icon-youtube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"></a></li>
           <li><a title="Facebook" class="icon-facebook" href="https://facebook.com/hexagonalawareness"></a></li>
           <li><a title="Instagram" class="icon-instagram" href="https://www.instagram.com/hexagontruth/"></a></li>
