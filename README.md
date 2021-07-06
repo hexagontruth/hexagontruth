@@ -3,7 +3,6 @@ Hexagontruth.com
 A static site by Graham
 
 - Canonical URL: https://hexagontruth.com/
-- Secondary URL: https://hexagon.space/
 - Contact: hexagongraham@gmail.com
 
 ## Introduction
