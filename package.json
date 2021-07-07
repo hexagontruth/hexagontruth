@@ -6,6 +6,7 @@
   "author": "graham <graham@hexnet.org>",
   "scripts": {
     "start": "node index.js start",
+    "build": "node index.js build",
     "deploy": "bin/deploy.sh",
     "sass": "bin/sass.sh"
   },
@@ -13,7 +14,9 @@
     "chokidar": "^3.5.2",
     "express": "^4.17.1",
     "glob": "^7.1.7",
+    "handlebars": "^4.7.7",
     "marked": "^2.1.3",
-    "sass": "^1.35.1"
+    "sass": "^1.35.1",
+    "yaml": "^1.10.2"
   }
 }
