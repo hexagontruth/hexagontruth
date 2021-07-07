@@ -180,7 +180,15 @@ p a {
 }
 
 .mono {
-  font-family: 'DejaVu Sans Mono', 'Lucida Console', 'Lucida Sans Typewriter', Monaco, 'Noto Mono', monospace;
+  font-family: roboto-mono, 'DejaVu Sans Mono', 'Lucida Console', 'Lucida Sans Typewriter', Monaco, 'Noto Mono', monospace;
+}
+
+.light {
+  font-weight: 300;
+}
+
+.thin {
+  font-weight: 200;
 }
 
 .alert {
@@ -256,6 +264,12 @@ h1 {
   margin: 0;
   padding: 0;
   font-size: inherit;
+  font-weight: 200;
+  font-size: 2rem;
+  font-family: roboto-mono;
+  b {
+    font-weight: 400;
+  }
 }
 
 img.logo {

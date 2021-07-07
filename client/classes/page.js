@@ -10,6 +10,8 @@ class Page {
   constructor() {
     this.body = document.body;
     this.loaded = false;
+    this.scrollTabs = [];
+    this.scrollMap = {};
 
     this.$ = (n) => document.querySelectorAll(n);
     this.$$ = (n) => document.querySelector(n);
@@ -43,6 +45,14 @@ class Page {
     });
   }
 
+  setAnchor() {
+    let [base, fragment] = window.location.href.split('#');
+    let idx = this.scrollMap[fragment];
+    if (fragment && idx) {
+      window.scrollTo(0, this.scrollBlocks[idx].offsetTop);
+    }
+  }
+
   eq(y) {
     return Math.abs(window.scrollY - y) < 5; 
   }
@@ -58,9 +68,12 @@ class Page {
     this.scrollBlocks = Array.from(this.$('.scroll-block'));
     if (!this.hasScroll)
       return;
-    this.scrollTabs = [];
     this.scrollTabGroup = this.createElement('scroll-tabs', 'nav', this.header);
     for (let i = 0; i < this.scrollBlocks.length; i++) {
+      let id = this.scrollBlocks[i].id;
+      if (id) {
+        this.scrollMap[id] = i;
+      }
       let tab = this.createElement('scroll-tab', 'button', this.scrollTabGroup);
       this.scrollTabs.push(tab);
       tab.addEventListener('click', () => {
@@ -128,6 +141,8 @@ class Page {
     this.alertText.addEventListener('click', () => this.closeAlert());
 
     this.setScrollBlocks();
+
+    this.setAnchor();
 
     this.onResize();
     this.onScroll();
