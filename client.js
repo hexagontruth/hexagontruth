@@ -6,12 +6,16 @@ const PAGE_REDIRECTS = {
   cv: 'https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U',
 };
 
+const PROD_HOST = 'hexagontruth.com';
+
 class Page {
   constructor() {
     this.body = document.body;
     this.loaded = false;
     this.scrollTabs = [];
     this.scrollMap = {};
+
+    this.prod = window.location.host == PROD_HOST;
 
     this.$ = (n) => document.querySelectorAll(n);
     this.$$ = (n) => document.querySelector(n);
@@ -35,7 +39,7 @@ class Page {
     let argPairs = (query || '').split('&').map((e) => e.split('='));
     this.args = {};
     for (let [k, v] of argPairs) {
-      this.args[k] = v;
+      this.args[k] = k;
     }
 
     Object.entries(PAGE_REDIRECTS).forEach(([k, v]) => {
@@ -147,14 +151,21 @@ class Page {
     this.onResize();
     this.onScroll();
 
+    this.prod && this.onProd();
+  }
+
+  onProd() {
     // GA stuff
     this.gaScript = document.createElement('script');
-    this.gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=UA-38703351-3';
     this.body.appendChild(this.gaScript);
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-38703351-3');
+    this.gaScript.onload = () => {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MC0FHVSG9W');
+      this.gtag = gtag;
+    };
+    this.gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-MC0FHVSG9W';
   }
 
 
