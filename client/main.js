@@ -1,1 +1,0 @@
-let page = new Page();

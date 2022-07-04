@@ -1,0 +1,172 @@
+* {
+  box-sizing: border-box;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+*:focus {
+  outline: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  scroll-snap-type: mandatory;
+  scroll-snap-points-y: repeat(calc(var(--vh, 1vh) * 100));
+  scroll-snap-type: y mandatory;
+}
+
+html {
+  position: relative;
+  font-family: 'Montserrat', 'Helvetica Neue', 'Helvetica', Arial, 'FreeSans', 'DejaVu Sans', sans-serif;
+  font-size: $rem;
+  scroll-behavior: smooth;
+}
+
+body {
+  position: relative;
+  background: $page-bg;
+  color: $page-fg;
+  // overflow: hidden;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+#header, #footer {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#main {
+  width: 100%;
+  height: 100%;
+}
+
+#content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .panel-wrapper {
+    width: 100%;
+    max-width: 620px;
+    aspect-ratio: 1.15;
+    margin: 0 auto;
+    background: $panel-bg;
+    color: $panel-fg;
+    clip-path: polygon(100% 50%, 75% 100%, 25% 100%, 0% 50%, 25% 0%, 75% 0%);
+    opacity: 0;
+    height: 0;
+    .active {
+      opacity: 1;
+      height: auto;
+    }
+  }
+}
+
+#background {
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+
+@media (hover: hover) {
+  /* sweet merciful crap I hate CSS */
+  a:hover, button:hover {
+    color: #fb3;
+  }
+
+  header button:hover {
+    background-color: #fb3;
+  }
+
+  ul.links li a:hover::before {
+    transform: scale(1.2);
+  }
+}
+@media screen and (min-width: 2000px) {
+  html {
+    font-size: 1vw;
+  }
+}
+@media screen and (max-width: 799px) {
+  .hide-800 {
+    display: none;
+  }
+}
+@media screen and (max-width: 839px) {
+  .columns-3 {
+    column-count: 2;
+  }
+
+  .columns-2 {
+    column-count: 1;
+  }
+}
+@media screen and (max-height: 719px) {
+  html {
+    font-size: 2.777vh;
+  }
+}
+@media screen and (max-width: 719px) {
+  html {
+    font-size: 2.777vw;
+  }
+}
+@media screen and (max-height: 359px) {
+  html {
+    font-size: 10px;
+  }
+}
+@media screen and (max-width: 359px) {
+  .hide-360 {
+    display: none;
+  }
+
+  html {
+    font-size: 10px;
+  }
+
+  /*  .columns { column-count: 1; }*/
+  .columns i {
+    display: none;
+  }
+
+  .flex-360 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    margin: auto auto;
+  }
+
+  .footer ul.links {
+    justify-content: center;
+  }
+
+  .footer ul.links li {
+    flex: 1 1 2em;
+  }
+}
+@media screen and (max-width: 249px) {
+  html {
+    font-size: 10px;
+  }
+}

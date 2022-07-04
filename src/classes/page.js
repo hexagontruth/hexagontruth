@@ -1,3 +1,5 @@
+import Video from './video.js';
+
 const PAGE_REDIRECTS = {
   cryptovoxels: 'https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U',
   discord: 'https://discord.gg/t6hrz7S',
@@ -13,7 +15,7 @@ const PAGE_REDIRECTS = {
 
 const PROD_HOST = 'hexagontruth.com';
 
-class Page {
+export default class Page {
   constructor() {
     this.body = document.body;
     this.loaded = false;
