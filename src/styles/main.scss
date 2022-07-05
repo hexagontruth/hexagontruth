@@ -19,7 +19,7 @@ html, body {
 
 html {
   position: relative;
-  font-family: 'Montserrat', 'Helvetica Neue', 'Helvetica', Arial, 'FreeSans', 'DejaVu Sans', sans-serif;
+  font-family: $sans;
   font-size: $rem;
   scroll-behavior: smooth;
 }
@@ -28,64 +28,99 @@ body {
   position: relative;
   background: $page-bg;
   color: $page-fg;
-  // overflow: hidden;
+  scroll-snap-type: mandatory;
+  scroll-snap-points-y: repeat(calc(var(--vh, 1vh) * 100));
+  scroll-snap-type: y mandatory;
 }
 
 #app {
-  width: 100%;
-  height: 100%;
+  min-height: 100%;
 }
 
 #header, #footer {
   position: fixed;
-  z-index: 100;
   left: 0;
   right: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  height: 1rem;
+  @include flex;
+  z-index: 200;
+  &#header {
+    top: 0;
+  }
+
+  &#footer {
+    bottom: 0;
+  }
 }
 
 #main {
-  width: 100%;
-  height: 100%;
+  // @include full;
+  min-height: 100%
 }
 
 #content {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  .panel-wrapper {
+  @include flex;
+  z-index: 100;
+  .frame-wrapper {
+    scroll-snap-stop: always;
+    scroll-snap-align: start;
     width: 100%;
-    max-width: 620px;
-    aspect-ratio: 1.15;
+    height: 100vh;
+    // max-width: 30rem;
+    // aspect-ratio: 1.15;
+    @include flex;
     margin: 0 auto;
-    background: $panel-bg;
-    color: $panel-fg;
-    clip-path: polygon(100% 50%, 75% 100%, 25% 100%, 0% 50%, 25% 0%, 75% 0%);
-    opacity: 0;
-    height: 0;
-    .active {
+    // opacity: 0;
+    // height: 0;
+    .frame-outer {
+      max-width: 30rem;
+      aspect-ratio: 1.15;
+      background: $panel-bg;
+      color: $panel-fg;
+      clip-path: polygon(100% 50%, 75% 100%, 25% 100%, 0% 50%, 25% 0%, 75% 0%);
+      .frame-inner {
+        width: 50%;
+        margin: 0 auto;
+        p {
+
+        }
+      }
+    }
+    &.active {
       opacity: 1;
-      height: auto;
     }
   }
 }
 
-#background {
-  display: block;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
+.program-wrapper {
+  @include fixed;
+  canvas {
+    @include full;
+    z-index: 50;
+  }
 }
 
+@keyframes blinking {
+  0% { opacity: 1 }
+  40% { opacity: 1 }
+  50% { opacity: 0 }
+  90% { opacity: 0 }
+  100% { opacity: 1 }
+}
+
+.blinking {
+  animation-name: blinking;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+.sans {
+  font-family: $sans;
+}
+
+.mono {
+  font-family: $mono;
+}
 
 @media (hover: hover) {
   /* sweet merciful crap I hate CSS */

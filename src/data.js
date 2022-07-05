@@ -1,5 +1,5 @@
 export default {
-  panels: [
+  frames: [
     {
       name: 'intro',
       content: [

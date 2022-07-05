@@ -1,16 +1,14 @@
 <script>
 export default {
   props: {
-    title: { type: String },
-    page: { type: String },
   },
-  data: () => ({
-  }),
+  data() {
+    return {};
+  },
 };
 </script>
 
 <template>
-  <div class="page-widget-wrapper" :id="'page-' + page">
-
+  <div class="page-widget-wrapper">
   </div>
 </template>
