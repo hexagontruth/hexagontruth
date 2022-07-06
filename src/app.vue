@@ -13,6 +13,10 @@ export default {
     window.addEventListener('wheel', (ev) => this.handleWheel(ev), { passive: false });
   },
 
+  mounted() {
+    this.handleScroll();
+  },
+
   data() {
     return {
       frames: Data.frames
@@ -24,6 +28,7 @@ export default {
       let cur = this.$refs.frames.map((e) => e.$el).findIndex((e) => this.eq(e.offsetTop));
       if (cur != -1) {
         this.setSnap(cur);
+        this.$refs.title.animate();
       }
       
     },
@@ -67,8 +72,8 @@ export default {
 
 <template>
   <header id="header">
-    <page-widget/>
-    <title-widget/>
+    <title-widget ref="title"/>
+    <page-widget :data="frames"/>
   </header>
   <main id="main">
     <program name="background"></program>

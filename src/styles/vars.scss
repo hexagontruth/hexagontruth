@@ -31,3 +31,9 @@ $mono: 'roboto-mono', monospace;
   width: 100%;
   height: 100%;
 }
+
+@mixin animate($name, $time, $repeat) {
+  animation-name: $name;
+  animation-duration: $time;
+  animation-iteration-count: $repeat;
+}

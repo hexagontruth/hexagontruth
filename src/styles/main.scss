@@ -39,13 +39,12 @@ body {
 
 #header, #footer {
   position: fixed;
+  @include flex;
   left: 0;
   right: 0;
-  height: 1rem;
-  @include flex;
   z-index: 200;
   &#header {
-    top: 0;
+    top: 0px;
   }
 
   &#footer {
@@ -88,6 +87,33 @@ body {
     }
     &.active {
       opacity: 1;
+    }
+  }
+}
+
+.title-wrapper {
+  position: relative;
+  text-align: center;
+  h1 {
+    font-family: $mono;
+    text-transform: uppercase;
+    font-weight: 300;
+    font-size: min(5vw, 2rem);
+    letter-spacing: 0.5em;
+    margin-right: -0.5em;
+    line-height: 1.5;
+    overflow: hidden;
+    white-space: nowrap;
+    .hidden {
+      color: transparent;
+    }
+    &::after {
+      position: absolute;
+      right: -1.5em;
+      @include animate(blinking, 1s, infinite);
+
+      margin-left: -1em;
+      content: '_';
     }
   }
 }
