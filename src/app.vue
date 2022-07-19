@@ -1,12 +1,13 @@
 <script>
 import Data from './data.js';
+import FooterIcon from './components/footer-icon.vue';
 import Frame from './components/frame.vue';
 import PageButton from './components/page-button.vue';
 import Program from './components/program.vue';
 import TitleWidget from './components/title-widget.vue';
 
 export default {
-  components: { Data, Frame, PageButton, Program, TitleWidget },
+  components: { Data, FooterIcon, Frame, PageButton, Program, TitleWidget },
 
   created() {
     window.addEventListener('scroll', (ev) => this.handleScroll(ev));
@@ -21,12 +22,13 @@ export default {
     return {
       snap: this.getSnap(),
       scrolling: null,
-      frameData: Data.frames,
+      frameData: Object.entries(Data.frames).map(([k, v]) => Object.assign({name: k}, v)),
     };
   },
 
   methods: {
     handleScroll(ev) {
+      if (!this.$refs.frames) return;
       let cur = this.$refs.frames.map((e) => e.$el).findIndex((e) => this.eq(e.offsetTop));
       if (cur != -1) {
         this.setSnap(cur);
@@ -37,6 +39,7 @@ export default {
     },
 
     handleWheel(ev) {
+      if (!this.$refs.frames) return;
       let pts = this.$refs.frames.map((e) => e.$el.offsetTop);
       let newY = window.scrollY;
       let nextPoint;
@@ -82,16 +85,30 @@ export default {
 <template>
   <header id="header">
     <title-widget :snap="snap" :scrolling="scrolling"/>
-    <div class="page-buttons-wrapper">
-      <page-button v-for="(frame, idx) in frameData" ref="pageButtons" :snap="snap" :idx="idx"/>
+    <div class="wrapper">
+      <div class="page-buttons-wrapper">
+        <page-button v-for="(frame, idx) in frameData" ref="pageButtons" :snap="snap" :idx="idx"/>
+      </div>
     </div>
   </header>
   <main id="main">
     <program name="background"></program>
-    <div id="content" class="content-wrapper">
-      <frame v-for="(frame, idx) in frameData" ref="frames" :data="frame" :idx="idx" :class="{ 'active': idx == 0 }"></frame>
+    <div class="wrapper">
+      <div id="content" class="content-wrapper">
+        <frame v-for="(frame, idx) in frameData" ref="frames" :data="frame" :idx="idx" :class="{ 'active': idx == 0 }"></frame>
+      </div>
     </div>
   </main>
   <footer id="footer">
+    <div class="wrapper">
+      <ul class="footer-icons-wrapper">
+        <footer-icon name="Twitter"/>
+        <footer-icon name="Instagram"/>
+        <footer-icon name="YouTube"/>
+        <footer-icon name="Discord"/>
+        <footer-icon name="SuperRare"/>
+        <footer-icon name="OpenSea"/>
+      </ul>
+    </div>
   </footer>
 </template>

@@ -3,6 +3,7 @@
   border: 0;
   padding: 0;
   margin: 0;
+  list-style-type: none;
 }
 
 *:focus {
@@ -31,6 +32,20 @@ body {
   scroll-snap-type: mandatory;
   scroll-snap-points-y: repeat(calc(var(--vh, 1vh) * 100));
   scroll-snap-type: y mandatory;
+}
+
+a {
+  color: inherit;
+  transition: color 500ms;
+  &:hover, &:active {
+    color: $page-fg;
+  }
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
 }
 
 #app {
@@ -200,6 +215,12 @@ body {
       background: $page-fg;
     }
   }
+}
+
+.footer-icons-wrapper {
+  width: 100%;
+  line-height: 2;
+  @include flex(row, space-evenly);
 }
 
 .program-wrapper {
