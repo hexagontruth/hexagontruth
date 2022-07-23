@@ -93,6 +93,7 @@ export default {
   </header>
   <main id="main">
     <program name="background"></program>
+    <program name="panel"></program>
     <div class="wrapper">
       <div id="content" class="content-wrapper">
         <frame v-for="(frame, idx) in frameData" ref="frames" :data="frame" :idx="idx" :class="{ 'active': idx == 0 }"></frame>

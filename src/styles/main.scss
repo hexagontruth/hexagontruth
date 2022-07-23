@@ -227,7 +227,7 @@ a {
   @include fixed;
   canvas {
     @include full;
-    z-index: 50;
+    z-index: 5000;
   }
 }
 

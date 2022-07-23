@@ -1,3 +1,5 @@
+import HexagonError from './hexagon-error.js';
+
 export default class Program {
   constructor(gl, vertText, fragText) {
     this.gl = gl;
@@ -7,8 +9,8 @@ export default class Program {
     gl.shaderSource(this.fragShader, fragText);
     gl.compileShader(this.vertShader);
     gl.compileShader(this.fragShader);
-    gl.getShaderParameter(this.vertShader, gl.COMPILE_STATUS) || error(gl.getShaderInfoLog(this.vertShader));
-    gl.getShaderParameter(this.fragShader, gl.COMPILE_STATUS) || error(gl.getShaderInfoLog(this.fragShader));
+    gl.getShaderParameter(this.vertShader, gl.COMPILE_STATUS) || this.error(gl.getShaderInfoLog(this.vertShader));
+    gl.getShaderParameter(this.fragShader, gl.COMPILE_STATUS) || this.error(gl.getShaderInfoLog(this.fragShader));
     this.program = gl.createProgram();
     gl.attachShader(this.program, this.vertShader);
     gl.attachShader(this.program, this.fragShader);
@@ -107,6 +109,6 @@ export default class Program {
 
   error(msg) {
     window.shaderText = this.fragText;
-    throw new LenticularError(msg);
+    throw new HexagonError(msg);
   }
 }

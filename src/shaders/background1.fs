@@ -20,5 +20,9 @@ void main() {
   c = mix(c, texture(inputTexture, uv).rgb, 0.75);
   c = xsum(c, unit.xxx * step(0.5, amax(hex)));
   c = 1. - c;
+
+  c = vec3(0) + sr2/2.;
+  c.b = gl_FragCoord.x / size.x;
+
   fragColor = vec4(c, 1);
 }

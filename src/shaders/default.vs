@@ -3,7 +3,7 @@
 precision mediump float;
 #endif
 
-in vec2 position;
+in vec2 vertexPosition;
 void main() {
-  gl_Position = vec4(position.xy, 0, 1);
+  gl_Position = vec4(vertexPosition.xy, 0, 1);
 }
