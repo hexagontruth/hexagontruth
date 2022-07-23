@@ -10,6 +10,18 @@ export default {
       links: ['Twitter', 'Instagram', 'Facebook', 'YouTube'],
     }
   },
+  programs: {
+    background: {
+      shaders: [
+        'background1',
+      ],
+    },
+    panel: {
+      shaders: [
+        'panel1',
+      ],
+    },
+  },
   links: {
     Twitter: {
       username: '@hexagontruth',

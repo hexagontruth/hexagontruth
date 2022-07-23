@@ -37,9 +37,13 @@ module.exports = {
         type: 'asset/resource',
       },
       {
-        test: /\.(woff2?)$/,
+        test: /\.woff2?$/,
         type: 'asset/resource',
       },
+      {
+        test: /\.(fs|vs)$/,
+        loader: 'webgl-loader',
+      }
     ],
   },
   plugins: [

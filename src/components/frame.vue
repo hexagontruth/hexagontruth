@@ -7,6 +7,7 @@ export default {
     idx: { type: Number },
     key: { type: String },
   },
+  
   data() {
     return {};
   },
