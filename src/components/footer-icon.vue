@@ -1,8 +1,11 @@
 <script>
 import Data from '../data.js';
 import Frame from './frame.vue';
+import Icon from './icon.vue';
 
 export default {
+  components: { Icon },
+
   props: {
     name: { type: String },
   },
@@ -18,7 +21,7 @@ export default {
 <template>
   <li class="footer-icon">
     <a :href="url" :title="name" target="_blank">
-      <i :class="`icon-${icon}`"></i>
+      <icon :name="name"/>
     </a>
   </li>
 </template>

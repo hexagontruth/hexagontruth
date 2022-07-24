@@ -33,5 +33,7 @@ export default {
 </script>
 
 <template>
-  <div class="page-button" @click="handleClick"></div>
+  <div class="page-button" @click="handleClick">
+    <div class="page-button-inner"></div>
+  </div>
 </template>

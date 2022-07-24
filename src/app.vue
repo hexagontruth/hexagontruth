@@ -109,6 +109,7 @@ export default {
         <footer-icon name="Discord"/>
         <footer-icon name="SuperRare"/>
         <footer-icon name="OpenSea"/>
+        <footer-icon name="Voxels"/>
       </ul>
     </div>
   </footer>

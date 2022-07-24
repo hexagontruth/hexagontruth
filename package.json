@@ -8,7 +8,8 @@
     "test": "echo \"lol\" && exit 1",
     "build": "webpack --mode production",
     "start": "webpack serve --mode development",
-    "watch": "webpack --watch --mode development"
+    "watch": "webpack --watch --mode development",
+    "clean": "bin/clean.sh"
   },
   "dependencies": {
     "css-loader": "^6.7.1",
@@ -16,6 +17,7 @@
     "sass": "^1.53.0",
     "sass-loader": "^13.0.2",
     "style-loader": "^3.3.1",
+    "svg-inline-loader": "^0.8.2",
     "vue": "^3.2.37",
     "vue-loader": "^17.0.0",
     "webgl-loader": "^0.1.1",

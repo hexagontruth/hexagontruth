@@ -8,6 +8,9 @@ uniform float sr2;
 uniform float sr3;
 uniform vec3 unit;
 uniform vec2 size;
+uniform vec2 cover;
+uniform vec2 contain;
+uniform float edgeStep;
 uniform float counter;
 uniform float time;
 uniform float clock;
@@ -233,8 +236,8 @@ float qwp(float n, float q, float w) {
   return qw(abs(fract(n + 0.5) - 0.5), q, w);
 }
 
-float smoothsym(float s, float q, float n) {
-  return smoothstep(s - q/2., s + q/2., n);
+float edge(float s, float n) {
+  return smoothstep(s - edgeStep/2., s + edgeStep/2., n);
 }
 
 float slength(vec2 u, vec2 v, vec2 p) {

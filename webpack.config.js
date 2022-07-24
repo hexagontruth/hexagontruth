@@ -33,7 +33,7 @@ module.exports = {
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.(png|svg|jpg|jpeg|gif)$/,
+        test: /\.(png|jpg|jpeg|gif)$/,
         type: 'asset/resource',
       },
       {
@@ -43,7 +43,11 @@ module.exports = {
       {
         test: /\.(fs|vs)$/,
         loader: 'webgl-loader',
-      }
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-inline-loader',
+      },
     ],
   },
   plugins: [

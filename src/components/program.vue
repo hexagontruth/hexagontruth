@@ -16,8 +16,9 @@ const UNIFORMS = {
   sr3: 3 ** 0.5,
   unit: [1, 0, -1],
   size: [0, 0],
-  cover: 0,
-  contain: 0,
+  cover: [0, 0],
+  contain: [0, 0],
+  edgeStep: 0,
   time: 0,
   clock: Date.now(),
   counter: 0,
@@ -83,7 +84,6 @@ export default {
 
       for (let shaderProgram of this.shaderPrograms) {
         let vertPositionAttribute = gl.getAttribLocation(shaderProgram.program, 'vertexPosition');
-        console.log('wedge', shaderProgram.program, vertPositionAttribute);
         gl.enableVertexAttribArray(vertPositionAttribute);
         gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
         gl.vertexAttribPointer(vertPositionAttribute, 3, gl.FLOAT, false, 0, 0);
@@ -107,7 +107,7 @@ export default {
         if (programCount > 1 && i == 0) {
           uniforms.inputTexture = shaderPrograms[programCount - 2].textures[last];
         }
-        window.test = uniforms;
+
         shaderProgram.setUniforms(uniforms);
         let framebuffer = i < programCount - 1 ? shaderPrograms[i].framebuffers[cur] : null;
         gl.useProgram(shaderProgram.program);
@@ -148,13 +148,16 @@ export default {
 
       this.uniforms.size = [w, h];
       if (w > h) {
-        this.uniforms.contain = h;
-        this.uniforms.cover = w;
+        this.uniforms.contain = [w / h, 1];
+        this.uniforms.cover = [1, h / w];
       }
       else {
-        this.uniforms.contain = w;
-        this.uniforms.cover = h;
+        this.uniforms.contain = [1, h / w];
+        this.uniforms.cover = [w / h, 1];
       }
+      // Smoothstep pixel size Relative to contain
+      this.uniforms.edgeStep = 2 / Math.min(w, h);
+
       this.shaderPrograms?.forEach((e) => e.handleResize(w, h));
       this.gl.viewport(0, 0, w, h);
     },

@@ -22,7 +22,8 @@ void main() {
   c = 1. - c;
 
   c = vec3(0) + sr2/2.;
-  c.b = gl_FragCoord.x / size.x;
+  // c.b = gl_FragCoord.x / size.x;
+  c = unit.yyy;
 
   fragColor = vec4(c, 1);
 }
