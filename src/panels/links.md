@@ -1,2 +1,0 @@
-- Curd
-- Wedge

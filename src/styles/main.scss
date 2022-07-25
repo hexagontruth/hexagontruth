@@ -76,6 +76,7 @@ a {
 
 #content {
   @include flex;
+  position: relative;
   z-index: 100;
   .frame-wrapper {
     scroll-snap-stop: always;
@@ -89,13 +90,13 @@ a {
     // opacity: 0;
     // height: 0;
     .frame-outer {
+      @include flex;
       max-width: 30rem;
-      aspect-ratio: 1.15;
-      background: $panel-bg;
-      background: #ffffff44;
+      // aspect-ratio: 1.15;
+      // background: $panel-bg;
       color: $panel-fg;
       fill: $panel-fg;
-      clip-path: polygon(100% 50%, 75% 100%, 25% 100%, 0% 50%, 25% 0%, 75% 0%);
+      // clip-path: polygon(100% 50%, 75% 100%, 25% 100%, 0% 50%, 25% 0%, 75% 0%);
       .frame-inner {
         width: 50%;
         margin: 0 auto;
