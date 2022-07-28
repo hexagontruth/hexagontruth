@@ -1,6 +1,5 @@
 <script>
 import Data from '../data.js';
-import Frame from './frame.vue';
 import Icon from './icon.vue';
 
 export default {

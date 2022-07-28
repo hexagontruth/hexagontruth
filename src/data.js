@@ -1,18 +1,37 @@
+
+const PANELS = {};
+function importAll(ctx) {
+  ctx.keys().forEach((key) => {
+    let name = key.match(/^.*?([\w-]+)\.html$/)?.[1];
+    let str = ctx(key);
+    PANELS[name] = str;
+  });
+}
+
+importAll(require.context('./panels/', false, /\.html/));
+
+console.log('wedge', PANELS);
 export default {
   frames: {
     intro: {
       content: [
-        'Hexagon Truth is an interdisciplinary digital art project produced in partnership with the Global Hexagonal Awareness Project.'
+        PANELS.intro,
       ],
     },
     links: {
       title: 'Links',
-      links: ['Twitter', 'Instagram', 'Facebook', 'YouTube'],
+      content: [
+        PANELS.links
+      ],
     }
   },
   programs: {
     background: {
+      uniforms: {
+        gridSize: 30,
+      },
       shaders: [
+        [ 'background-ca', { dim: [64, 64] }],
         'background1',
       ],
     },

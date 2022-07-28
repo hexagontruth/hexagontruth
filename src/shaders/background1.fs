@@ -25,5 +25,9 @@ void main() {
   // c.b = gl_FragCoord.x / size.x;
   c = unit.yyy;
 
+  c = texture(inputTexture, uv).rgb;
+
+  c.r += qw(uv.y - time, 1./60., 1./60.);
+
   fragColor = vec4(c, 1);
 }

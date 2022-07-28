@@ -2,13 +2,6 @@
 import Data from '../data.js';
 import ShaderProgram from '../classes/shader-program.js';
 
-// TODO: Something better than this
-const SHADERS = {
-  vs: require('../shaders/default.vs'),
-  background1: require('../shaders/background1.fs'),
-  panel1: require('../shaders/panel1.fs'),
-};
-
 const UNIFORMS = {
   pi: Math.PI,
   tau: Math.PI * 2,
@@ -31,7 +24,6 @@ export default {
   },
   data() {
     return {
-      program: Data.programs[this.name],
       playing: true,
       counter: 0,
       interval: 30,
@@ -41,8 +33,10 @@ export default {
   },
 
   created() {
-    this.shaderText = this.program.shaders.map((e) => SHADERS[e]);
-    this.programCount = this.shaderText.length;
+    window.test = this;
+    this.program = Data.programs[this.name];
+    this.fragDefs = this.program.shaders.slice();
+    this.programCount = this.fragDefs.length;
     this.uniforms = Object.assign({}, UNIFORMS, this.program.uniforms || {});
   },
 
@@ -50,8 +44,8 @@ export default {
     this.canvas = this.$refs.canvas;
     let gl = this.gl = this.$refs.canvas.getContext('webgl2');
 
-    this.shaderPrograms = this.shaderText.map((fragText) => {
-      let shaderProgram = new ShaderProgram(gl, SHADERS.vs, fragText);
+    this.shaderPrograms = this.fragDefs.map((fragDef) => {
+      let shaderProgram = new ShaderProgram(gl, fragDef);
       return shaderProgram;
     });
 
@@ -95,7 +89,7 @@ export default {
       let cur = this.counter % 2;
       let last = (cur + 1) % 2;
 
-      uniforms.counter = ++this.counter;
+      uniforms.counter = this.counter++;
       uniforms.time = (uniforms.counter % uniforms.duration) / uniforms.duration;
       uniforms.clock = Date.now();
 

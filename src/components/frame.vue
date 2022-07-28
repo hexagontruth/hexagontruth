@@ -1,13 +1,15 @@
 <script>
 import Data from '../data.js';
+import FooterIcon from './footer-icon.vue';
 
 export default {
+  components: { FooterIcon },
   props: {
     data: { type: Object },
     idx: { type: Number },
     key: { type: String },
   },
-  
+
   data() {
     return {};
   },
@@ -18,14 +20,8 @@ export default {
   <section class="frame-wrapper" :id="`panel-${data.name}`">
     <div class="frame-outer">
       <div class="frame-inner">
-        <p v-for="text in data.content">
-          {{text}}
-        </p>
-        <ul class="frame-links" v-if="data.links">
-          <li v-for="link in data.links" :link="link">
-            {{link}}
-          </li>
-        </ul>
+        <section v-for="text in data.content" v-html="text">
+        </section>
       </div>
     </div>
   </section>

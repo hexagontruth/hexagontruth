@@ -13,8 +13,8 @@ void main() {
   vec3 hex = cart2hex(cv);
   b = 1. - edge(0.75, amax(hex));
   c += b;
-  a = b;
+  a = b * 0.25;
   // c *= col_w * 0.5;
   // c.rg = uv;
-  fragColor = vec4(c, a);
+  fragColor = vec4(c * uv.y, b * 0.1);
 }

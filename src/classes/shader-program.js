@@ -1,12 +1,21 @@
 import HexagonError from './hexagon-error.js';
 
+// TODO: Something better than this
+const SHADERS = {
+  vs: require('../shaders/default.vs'),
+  background1: require('../shaders/background1.fs'),
+  'background-ca': require('../shaders/background-ca.fs'),
+  panel1: require('../shaders/panel1.fs'),
+};
+
 export default class Program {
-  constructor(gl, vertText, fragText) {
+  constructor(gl, fragDef) {
+    this.setShaderDefs(fragDef);
     this.gl = gl;
     this.vertShader = gl.createShader(gl.VERTEX_SHADER);
     this.fragShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(this.vertShader, vertText);
-    gl.shaderSource(this.fragShader, fragText);
+    gl.shaderSource(this.vertShader, this.vertText);
+    gl.shaderSource(this.fragShader, this.fragText);
     gl.compileShader(this.vertShader);
     gl.compileShader(this.fragShader);
     gl.getShaderParameter(this.vertShader, gl.COMPILE_STATUS) || this.error(gl.getShaderInfoLog(this.vertShader));
@@ -29,8 +38,7 @@ export default class Program {
   }
 
   handleResize(w, h) {
-    this.w = w;
-    this.h = h;
+    [this.w, this.h] = [w, h] = this.options?.dim || [w, h];
     let {gl} = this;
     for (let i = 0; i < 2; i++) {
       let [texture, fb] = [this.textures[i], this.framebuffers[i]];
@@ -47,7 +55,25 @@ export default class Program {
     };
   }
 
+  setShaderDefs(fragDef) {
+    this.vertText = SHADERS['vs'];
+    if (Array.isArray(fragDef)) {
+      this.fragText = SHADERS[fragDef[0]];
+      this.options = fragDef[1];
+    }
+    else {
+      this.fragText = SHADERS[fragDef];
+      this.options = {};
+    }
+  }
+
   setUniforms(uniforms) {
+    uniforms = Object.assign({}, uniforms);
+    if (this.options?.dim) {
+      uniforms.contain = [1, 1];
+      uniforms.cover = [1, 1];
+      uniforms.size = this.options.dim.slice();
+    }
     let { gl, program } = this;
     let textureIdx = 0;
     let textureMap = new Map();

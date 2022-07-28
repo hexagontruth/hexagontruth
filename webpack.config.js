@@ -48,6 +48,10 @@ module.exports = {
         test: /\.svg$/,
         loader: 'svg-inline-loader',
       },
+      {
+        test: /\.(txt|html|md)$/,
+        type: 'asset/source',
+      },
     ],
   },
   plugins: [
