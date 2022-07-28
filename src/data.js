@@ -10,10 +10,12 @@ function importAll(ctx) {
 
 importAll(require.context('./panels/', false, /\.html/));
 
-console.log('wedge', PANELS);
 export default {
   frames: {
     intro: {
+      shaders: [
+        'frame-1.fs',
+      ],
       content: [
         PANELS.intro,
       ],

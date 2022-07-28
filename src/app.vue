@@ -9,30 +9,57 @@ import TitleWidget from './components/title-widget.vue';
 export default {
   components: { Data, FooterIcon, Frame, PageButton, Program, TitleWidget },
 
+  data() {
+    return {
+      snap: this.getSnap(),
+      scrolling: null,
+      scrollRatio: 0,
+      lastScroll: 0,
+      curScroll: 0,
+      frameData: Object.entries(Data.frames).map(([k, v]) => Object.assign({name: k}, v)),
+    };
+  },
+
   created() {
-    window.addEventListener('scroll', (ev) => this.handleScroll(ev));
-    window.addEventListener('wheel', (ev) => this.handleWheel(ev), { passive: false });
+    this.onScroll = (ev) => this.handleScroll(ev);
+    this.onWheel = (ev) => this.handleWheel(ev);
+    window.addEventListener('scroll', this.onScroll);
+    window.addEventListener('wheel', this.onWheel, { passive: false });
+  },
+
+  destroyed() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('wheel', this.onWheel);
   },
 
   mounted() {
     this.handleScroll();
   },
 
-  data() {
-    return {
-      snap: this.getSnap(),
-      scrolling: null,
-      frameData: Object.entries(Data.frames).map(([k, v]) => Object.assign({name: k}, v)),
-    };
-  },
-
   methods: {
     handleScroll(ev) {
+      this.lastScroll = this.curScroll;
+      this.curScroll = window.scrollY;
+      let dif = this.curScroll - this.lastScroll;
+      let frames = this.$refs.frames.map((e) => e.$el);
       if (!this.$refs.frames) return;
-      let cur = this.$refs.frames.map((e) => e.$el).findIndex((e) => this.eq(e.offsetTop));
+      let cur =frames.findIndex((e) => this.eq(e.offsetTop));
+      // Set snap if scrolling is done
       if (cur != -1) {
         this.setSnap(cur);
       }
+      // Find fractional position
+      let pts = frames.map((e) => e.offsetTop);
+      let origin = pts[this.snap];
+      let target = dif > 0 ?
+        pts.find((e) => e > pts[this.snap]) :
+        pts.slice().reverse().find((e) => e < pts[this.snap]);
+
+      this.scrollRatio =
+        Math.abs(origin - this.curScroll) /
+        (Math.abs(origin - this.curScroll) + Math.abs(target - this.curScroll)) || 1;
+
+
       if (this.scrolling)
         window.clearTimeout(this.scrolling);
       this.scrolling = setTimeout(() => this.scrolling = null, 250);
@@ -75,8 +102,8 @@ export default {
       window.scrollTo(0, y);
     },
 
-    eq(y) {
-      return Math.abs(window.scrollY - y) < 5; 
+    eq(y, cur=this.curScroll) {
+      return Math.abs(cur - y) < 5; 
     },
   }
 };
