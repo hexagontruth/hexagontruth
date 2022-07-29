@@ -12,57 +12,67 @@ export default {
   data() {
     return {
       snap: this.getSnap(),
-      scrolling: null,
+      lastSnap: 0,
+      nextSnap: 0,
+      scrolling: false,
+      scrollTimer: null,
       scrollRatio: 0,
       lastScroll: 0,
       curScroll: 0,
+      curFrame: null,
       frameData: Object.entries(Data.frames).map(([k, v]) => Object.assign({name: k}, v)),
     };
   },
 
-  created() {
+  mounted() {
     this.onScroll = (ev) => this.handleScroll(ev);
     this.onWheel = (ev) => this.handleWheel(ev);
     window.addEventListener('scroll', this.onScroll);
     window.addEventListener('wheel', this.onWheel, { passive: false });
+    this.handleScroll();
   },
 
-  destroyed() {
+  unmounted() {
     window.removeEventListener('scroll', this.onScroll);
     window.removeEventListener('wheel', this.onWheel);
-  },
-
-  mounted() {
-    this.handleScroll();
   },
 
   methods: {
     handleScroll(ev) {
       this.lastScroll = this.curScroll;
       this.curScroll = window.scrollY;
+      if (!this.$refs.frames) return;
+
       let dif = this.curScroll - this.lastScroll;
       let frames = this.$refs.frames.map((e) => e.$el);
-      if (!this.$refs.frames) return;
-      let cur =frames.findIndex((e) => this.eq(e.offsetTop));
+      let pts = frames.map((e) => e.offsetTop);
+
+      let cur = pts.findIndex((e) => this.eq(e));
       // Set snap if scrolling is done
       if (cur != -1) {
         this.setSnap(cur);
       }
       // Find fractional position
-      let pts = frames.map((e) => e.offsetTop);
-      let origin = pts[this.snap];
-      let target = dif > 0 ?
+      let last = pts[this.snap];
+      let next = dif > 0 ?
         pts.find((e) => e > pts[this.snap]) :
         pts.slice().reverse().find((e) => e < pts[this.snap]);
 
+      this.lastSnap = pts.indexOf(last);
+      this.nextFrame = pts.indexOf(next);
+
       this.scrollRatio =
-        Math.abs(origin - this.curScroll) /
-        (Math.abs(origin - this.curScroll) + Math.abs(target - this.curScroll)) || 1;
+        Math.abs(last - this.curScroll) /
+        (Math.abs(last - this.curScroll) + Math.abs(next - this.curScroll)) || 1;
 
 
       if (this.scrolling)
-        window.clearTimeout(this.scrolling);
-      this.scrolling = setTimeout(() => this.scrolling = null, 250);
+        window.clearTimeout(this.scrollTimer);
+      this.scrolling = true;
+      this.scrollTimer = setTimeout(() => {
+        this.scrolling = false;
+        this.scrollTimer = null;
+      }, 250);
     },
 
     handleWheel(ev) {
@@ -119,8 +129,7 @@ export default {
     </div>
   </header>
   <main id="main">
-    <program name="background"></program>
-    <!-- <program name="panel"></program> -->
+    <program :scrolling="scrolling" :scrollRatio="scrollRatio" :snap="snap" :lastSnap="lastSnap" :nextSnap="nextSnap"></program>
     <div class="wrapper">
       <div id="content" class="content-wrapper">
         <frame v-for="(frame, idx) in frameData" ref="frames" :data="frame" :idx="idx" :class="{ 'active': idx == 0 }"></frame>

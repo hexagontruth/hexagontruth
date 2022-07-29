@@ -2,7 +2,7 @@
 export default {
   props: {
     snap: { type: Number },
-    scrolling: { type: Number },
+    scrolling: { type: Boolean },
   },
 
   created() {

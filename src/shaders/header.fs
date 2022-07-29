@@ -22,6 +22,9 @@ uniform vec2 cursorDownPos;
 uniform vec2 cursorUpPos;
 uniform bool cursorDown;
 uniform float cursorAngle;
+uniform bool scrolling;
+uniform float scrollRatio;
+uniform float snap;
 
 uniform sampler2D inputTexture;
 uniform sampler2D lastTexture;

@@ -1,12 +1,15 @@
 import HexagonError from './hexagon-error.js';
 
-// TODO: Something better than this
-const SHADERS = {
-  vs: require('../shaders/default.vs'),
-  background1: require('../shaders/background1.fs'),
-  'background-ca': require('../shaders/background-ca.fs'),
-  panel1: require('../shaders/panel1.fs'),
-};
+const VS =
+`#version 300 es
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+in vec2 vertexPosition;
+void main() {
+  gl_Position = vec4(vertexPosition.xy, 0, 1);
+}`;
 
 export default class Program {
   constructor(gl, fragDef) {
@@ -56,13 +59,13 @@ export default class Program {
   }
 
   setShaderDefs(fragDef) {
-    this.vertText = SHADERS['vs'];
+    this.vertText = VS;
     if (Array.isArray(fragDef)) {
-      this.fragText = SHADERS[fragDef[0]];
+      this.fragText = fragDef[0];
       this.options = fragDef[1];
     }
     else {
-      this.fragText = SHADERS[fragDef];
+      this.fragText = fragDef;
       this.options = {};
     }
   }

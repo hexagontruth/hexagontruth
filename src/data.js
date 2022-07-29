@@ -1,20 +1,25 @@
 
-const PANELS = {};
-function importAll(ctx) {
+const PANELS = {}, SHADERS = {};;
+
+function importAll(ctx, obj) {
   ctx.keys().forEach((key) => {
-    let name = key.match(/^.*?([\w-]+)\.html$/)?.[1];
+    let name = key.match(/^.*?([\w-]+)\.\w+$/)?.[1];
     let str = ctx(key);
-    PANELS[name] = str;
+    obj[name] = str;
   });
 }
 
-importAll(require.context('./panels/', false, /\.html/));
+importAll(require.context('./panels/', false, /\.html$/), PANELS);
+importAll(require.context('./shaders/', false, /\.(fs|vs)$/), SHADERS);
 
 export default {
+  shaders: SHADERS,
+  panels: PANELS,
   frames: {
     intro: {
       shaders: [
-        'frame-1.fs',
+       [SHADERS['background-ca'], { dim: [64, 64] }],
+        SHADERS['frame-1'],
       ],
       content: [
         PANELS.intro,
@@ -22,26 +27,13 @@ export default {
     },
     links: {
       title: 'Links',
+      shaders: [
+        SHADERS['frame-2'],
+      ],
       content: [
         PANELS.links
       ],
     }
-  },
-  programs: {
-    background: {
-      uniforms: {
-        gridSize: 30,
-      },
-      shaders: [
-        [ 'background-ca', { dim: [64, 64] }],
-        'background1',
-      ],
-    },
-    panel: {
-      shaders: [
-        'panel1',
-      ],
-    },
   },
   links: {
     Twitter: {

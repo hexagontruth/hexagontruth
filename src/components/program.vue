@@ -20,7 +20,11 @@ const UNIFORMS = {
 
 export default {
   props: {
-    name: { type: String },
+    scrolling: { type: Boolean },
+    scrollRatio: { type: Number },
+    snap: { type: Number },
+    lastSnap: { type: Number },
+    nextSnap: { type: Number },
   },
   data() {
     return {
@@ -34,22 +38,21 @@ export default {
 
   created() {
     window.test = this;
-    this.program = Data.programs[this.name];
-    this.fragDefs = this.program.shaders.slice();
-    this.programCount = this.fragDefs.length;
-    this.uniforms = Object.assign({}, UNIFORMS, this.program.uniforms || {});
+    this.uniforms = Object.assign({}, UNIFORMS);
   },
 
   mounted() {
     this.canvas = this.$refs.canvas;
     let gl = this.gl = this.$refs.canvas.getContext('webgl2');
 
-    this.shaderPrograms = this.fragDefs.map((fragDef) => {
-      let shaderProgram = new ShaderProgram(gl, fragDef);
-      return shaderProgram;
+    this.shaderPrograms = Object.entries(Data.frames).map(([_, data]) => {
+      return data.shaders.map((e) => new ShaderProgram(gl, e));
     });
+    this.panelCount = this.shaderPrograms.length;
+    this.blendProgram = new ShaderProgram(gl, Data.shaders.blend);
 
-    this.resizeListener = (ev) => this.handleResize(ev);
+
+    this.onResize = (ev) => this.handleResize(ev);
     window.addEventListener('resize', this.resizeListener);
     this.handleResize();
 
@@ -59,7 +62,8 @@ export default {
   },
 
   unmounted() {
-    window.removeEventListener('resize', this.resizeListener);
+    window.removeEventListener('resize', this.onResize);
+    this.playing = false;
   },
 
   methods: {
@@ -76,22 +80,43 @@ export default {
       gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, vertArray, gl.STATIC_DRAW);
 
-      for (let shaderProgram of this.shaderPrograms) {
-        let vertPositionAttribute = gl.getAttribLocation(shaderProgram.program, 'vertexPosition');
-        gl.enableVertexAttribArray(vertPositionAttribute);
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
-        gl.vertexAttribPointer(vertPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+      for (let programFrame of this.shaderPrograms) {
+        for (let shaderProgram of programFrame) {
+          let vertPositionAttribute = gl.getAttribLocation(shaderProgram.program, 'vertexPosition');
+          gl.enableVertexAttribArray(vertPositionAttribute);
+          gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
+          gl.vertexAttribPointer(vertPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+        }
       }
     },
 
     run() {
-      let { gl, programCount, shaderPrograms, uniforms } = this;
+      if (this.scrolling) {
+        this.runPrograms(this.shaderPrograms[this.snap]);
+
+      }
+      else {
+        this.runPrograms([].concat(
+          this.shaderPrograms[this.lastSnap],
+          [this.blendProgram],
+          this.shaderPrograms[this.nextSnap],
+        ));
+      }
+
+    },
+
+    runPrograms(shaderPrograms, final=true) {
+      // console.log(this.scrolling, shaderPrograms.length);
+      let { gl, panelCount, uniforms } = this;
+      let programCount = shaderPrograms.length;
       let cur = this.counter % 2;
       let last = (cur + 1) % 2;
 
       uniforms.counter = this.counter++;
       uniforms.time = (uniforms.counter % uniforms.duration) / uniforms.duration;
       uniforms.clock = Date.now();
+      uniforms.scrolling = this.scrolling;
+      uniforms.scrollRatio = this.scrollRatio;
 
       for (let i = 0; i < programCount; i++) {
         let li = (i + programCount - 1) % programCount;
@@ -152,7 +177,7 @@ export default {
       // Smoothstep pixel size Relative to contain
       this.uniforms.edgeStep = 2 / Math.min(w, h);
 
-      this.shaderPrograms?.forEach((e) => e.handleResize(w, h));
+      this.shaderPrograms?.forEach((e) => e.forEach((e) => e.handleResize(w, h)));
       this.gl.viewport(0, 0, w, h);
     },
   },
@@ -161,6 +186,6 @@ export default {
 
 <template>
   <div class="program-wrapper">
-    <canvas class="canvas" :id="`canvas-${name}`" ref="canvas"></canvas>
+    <canvas class="canvas" ref="canvas"></canvas>
   </div>
 </template>
