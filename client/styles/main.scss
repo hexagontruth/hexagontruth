@@ -58,7 +58,7 @@ header, footer {
     }
     &.nav-footer {
       height: 2.5rem;
-      background: #555;
+      background: #1f1f1f;
       color: #fff;
       ul.links {
         width: 100%;
@@ -88,7 +88,7 @@ footer {
   height: 1em;
   background: #fff;
   button {
-    background-color: #aaa;
+    background-color: #9f9f9f;
     cursor: pointer;
     margin: 0 0.25em;
     width: 2em;
@@ -146,6 +146,11 @@ section {
   .narrow {
     max-width: 36rem;
   }
+  svg {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+  }
 }
 
 
@@ -169,6 +174,10 @@ a, a::before {
 
 p a {
   border-bottom:  1px dotted #9f9f9f;
+}
+
+sup {
+  vertical-align: top;
 }
 
 .larger {
