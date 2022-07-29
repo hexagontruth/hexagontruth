@@ -31,7 +31,7 @@
 }
 @font-face {
   font-family: "icon";
-  src: url("../vendor/icons.woff2?v=20200920") format("woff2");
+  src: url("../vendor/icons.woff2?v=20210729") format("woff2");
   font-weight: normal;
   font-style: normal;
 }
@@ -58,120 +58,140 @@
 }
 
 /* Made with Fontello: http://fontello.com/ */
-.icon-bandcamp:before {
+.icon-voxels:before {
   content: "";
 }
 
-.icon-discord:before {
+.icon-3-box:before {
   content: "";
 }
 
-.icon-email:before {
+.icon-bandcamp:before {
   content: "";
 }
 
-.icon-ethereum:before {
+.icon-discord:before {
   content: "";
 }
 
-.icon-facebook:before {
+.icon-email:before {
   content: "";
 }
 
-.icon-github:before {
+.icon-ethereum:before {
   content: "";
 }
 
-.icon-hexagon:before {
+.icon-external-link:before {
   content: "";
 }
 
-.icon-hexnet:before {
+.icon-facebook:before {
   content: "";
 }
 
-.icon-hexstar:before {
+.icon-github:before {
   content: "";
 }
 
-.icon-hexular:before {
+.icon-hexagon:before {
   content: "";
 }
 
-.icon-instagram:before {
+.icon-hexnet:before {
   content: "";
 }
 
-.icon-linkedin:before {
+.icon-hexstar:before {
   content: "";
 }
 
-.icon-mail-hex:before {
+.icon-hexular:before {
   content: "";
 }
 
-.icon-menu-left:before {
+.icon-instagram:before {
   content: "";
 }
 
-.icon-menu-right:before {
+.icon-linkedin:before {
   content: "";
 }
 
-.icon-minhalma:before {
+.icon-mail-hex:before {
   content: "";
 }
 
-.icon-opensea:before {
+.icon-menu-left:before {
   content: "";
 }
 
-.icon-patreon:before {
+.icon-menu-right:before {
   content: "";
 }
 
-.icon-podcast:before {
+.icon-minhalma:before {
   content: "";
 }
 
-.icon-reddit:before {
+.icon-opensea:before {
   content: "";
 }
 
-.icon-soundcloud:before {
+.icon-patreon:before {
   content: "";
 }
 
-.icon-sr:before {
+.icon-podcast:before {
   content: "";
 }
 
-.icon-thingiverse:before {
+.icon-rarible:before {
   content: "";
 }
 
-.icon-tshirt:before {
+.icon-reddit:before {
   content: "";
 }
 
-.icon-tumblr:before {
+.icon-soundcloud:before {
   content: "";
 }
 
-.icon-twitch:before {
+.icon-superrare:before {
   content: "";
 }
 
-.icon-twitter:before {
+.icon-thingiverse:before {
   content: "";
 }
 
-.icon-vimeo:before {
+.icon-tshirt:before {
   content: "";
 }
 
-.icon-youtube:before {
+.icon-tumblr:before {
   content: "";
+}
+
+.icon-twitch:before {
+  content: "";
+}
+
+.icon-twitter:before {
+  content: "";
+}
+
+.icon-vimeo:before {
+  content: "";
+}
+
+.icon-voxels-1:before {
+  content: "";
+}
+
+.icon-youtube:before {
+  content: "";
 }
 
 * {
@@ -235,7 +255,7 @@ header nav.nav-header, footer nav.nav-header {
 }
 header nav.nav-footer, footer nav.nav-footer {
   height: 2.5rem;
-  background: #555;
+  background: #1f1f1f;
   color: #fff;
 }
 header nav.nav-footer ul.links, footer nav.nav-footer ul.links {
@@ -261,7 +281,7 @@ footer {
   background: #fff;
 }
 .scroll-tabs button {
-  background-color: #aaa;
+  background-color: #9f9f9f;
   cursor: pointer;
   margin: 0 0.25em;
   width: 2em;
@@ -318,6 +338,11 @@ section {
 section .narrow {
   max-width: 36rem;
 }
+section svg {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
 
 .block {
   position: relative;
@@ -338,6 +363,10 @@ a, a::before {
 
 p a {
   border-bottom: 1px dotted #9f9f9f;
+}
+
+sup {
+  vertical-align: top;
 }
 
 .larger {
