@@ -95,7 +95,7 @@ footer {
     height: 0.125em;
     font-size: 1em;
     border-radius: 1em;
-    transition: background-color 333ms;
+    transition: background-color $t-short;
     &.active {
       background-color: #1f1f1f;
     }
@@ -141,8 +141,8 @@ footer {
 section {
   width: 100%;
   max-width: 48rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
   .narrow {
     max-width: 36rem;
   }
@@ -169,7 +169,7 @@ section {
 a, a::before {
   color: inherit;
   text-decoration: none;
-  transition: all 333ms;
+  transition: all $t-short;
 }
 
 p a {
@@ -211,7 +211,7 @@ sup {
   align-items: center;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 333ms;
+  transition: opacity $t-short;
 }
 
 .alert.active {
@@ -361,7 +361,7 @@ header button:active {
   background-color: #fb3;
 }
 ul.links li a:active::before {
-  transform: scale(1.2);
+  transform: scale(1.5);
 }
 
 @media (hover: hover) {
@@ -373,7 +373,7 @@ ul.links li a:active::before {
     background-color: #fb3;
   }
   ul.links li a:hover::before {
-    transform: scale(1.2);
+    transform: scale(1.5);
   }
 }
 

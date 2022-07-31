@@ -2,6 +2,7 @@ export default class Video {
   static create(el) {
     Video.instance && Video.instance.delete();
     Video.instance = el && new Video(el);
+    return Video.instance;
   }
 
   constructor(el) {

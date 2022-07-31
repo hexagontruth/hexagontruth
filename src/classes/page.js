@@ -18,21 +18,14 @@ const PROD_HOST = 'hexagontruth.com';
 
 export default class Page {
   constructor() {
-    this.body = document.body;
     this.loaded = false;
     this.scrollTabs = [];
     this.scrollMap = {};
 
     this.prod = window.location.host == PROD_HOST;
 
-    this.$ = (n) => document.querySelectorAll(n);
-    this.$$ = (n) => document.querySelector(n);
-
-    this.body.style.opacity = 0;
-
     this.setArgs();
 
-    window.addEventListener('DOMContentLoaded', (ev) => this.onDom(ev));
     window.addEventListener('load', (ev) => this.onLoad(ev));
     window.addEventListener('resize', (ev) => this.onResize(ev));
     window.addEventListener('scroll', (ev) => this.onScroll(ev));
@@ -77,7 +70,7 @@ export default class Page {
   }
 
   setScrollBlocks(scrollBlocks) {
-    this.scrollBlocks = Array.from(this.$('.scroll-block'));
+    this.scrollBlocks = Array.from(document.querySelectorAll('.scroll-block'));
     if (!this.hasScroll)
       return;
     this.scrollTabGroup = this.createElement('scroll-tabs', 'nav', this.header);
@@ -93,20 +86,6 @@ export default class Page {
         window.scrollTo(0, this.scrollBlocks[i].offsetTop);
         this.setSnap(i);
       });
-    }
-  }
-
-  showAlert(msg) {
-    this.alertText.innerHTML = msg;
-    this.alert.classList.add('active');
-    setTimeout(this.closeAlert, 4000);
-  }
-
-  closeAlert() {
-    let active = this.alert.classList.contains('active');
-    if (active) {
-      this.alert.classList.remove('active');
-      setTimeout(() => this.alertText.innerHTML = '', 500);
     }
   }
 
@@ -144,22 +123,23 @@ export default class Page {
     return !!this.scrollBlocks?.length;
   }
 
-  onDom(ev) {
-    this.header = this.$$('header');
-    this.footer = this.$$('footer');
+  onLoad(ev) {
+    if (this.loaded) return;
+    this.loaded = true;
 
-    this.alert = this.createElement('alert');
-    this.alertText = this.createElement('mono', 'div', this.alert);
-    this.alertText.addEventListener('click', () => this.closeAlert());
+    this.body = document.body;
+    this.header = document.querySelector('header');
+    this.footer = document.querySelector('footer');
+    this.prod && this.onProd();
+    this.video = Video.create(document.querySelector('.parallax *'));
 
     this.setScrollBlocks();
-
     this.setAnchor();
-
     this.onResize();
     this.onScroll();
 
-    this.prod && this.onProd();
+    document.body.style.transition = 'opacity 1000ms';
+    document.body.style.opacity = 1;
   }
 
   onProd() {
@@ -174,21 +154,6 @@ export default class Page {
       this.gtag = gtag;
     };
     this.gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-MC0FHVSG9W';
-  }
-
-
-  onLoad(ev) {
-    if (this.loaded) return;
-    this.loaded = true;
-
-    if (this.args.contact) {
-      showAlert('Thank u for ur submission');
-    }
-
-    Video.create(this.$$('.parallax *'));
-
-    document.body.style.transition = 'opacity 1000ms';
-    document.body.style.opacity = 1;
   }
 
   onResize(ev) {
