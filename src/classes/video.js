@@ -1,4 +1,4 @@
-class Video {
+export default class Video {
   static create(el) {
     Video.instance && Video.instance.delete();
     Video.instance = el && new Video(el);

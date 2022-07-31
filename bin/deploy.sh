@@ -10,8 +10,8 @@ dir=$(dirname $0)/..
 cd $dir || exit 1
 echo Working from `pwd`...
 
-# echo '/build' > public/.gitignore
-# echo '!/build' >> public/.gitignore
+echo '/dist' > public/.gitignore
+echo '!/dist' >> public/.gitignore
 
 git add public
 
@@ -25,4 +25,4 @@ git commit --allow-empty -m "$commit" || exit 1
 # fi
 
 git reset HEAD^
-# rm public/.gitignore
+rm public/.gitignore
