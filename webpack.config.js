@@ -45,10 +45,6 @@ module.exports = {
         loader: 'webgl-loader',
       },
       {
-        test: /\.svg$/,
-        loader: 'svg-inline-loader',
-      },
-      {
         test: /\.(txt|html|md)$/,
         type: 'asset/source',
       },
