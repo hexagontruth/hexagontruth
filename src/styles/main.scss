@@ -20,7 +20,7 @@ html, body {
 html {
   position: relative;
   font-family: 'Montserrat', 'Helvetica Neue', 'Helvetica', Arial, 'FreeSans', 'DejaVu Sans', sans-serif;
-  font-size: 20px;
+  font-size: $rem;
   background: #fffcfa;
   color: #1f1f1f;
   scroll-behavior: smooth;
@@ -30,7 +30,36 @@ body {
   position: relative;
   background: #fff;
   color: #1f1f1f;
-  // overflow: hidden;
+}
+
+ul, ol {
+  list-style-type: none;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 40rem;
+}
+
+.pad-h {
+  padding-left: 4rem;
+  padding-right: 4rem;
+}
+.pad-v {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.pad {
+  padding: 1rem 4rem;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin: auto auto;
 }
 
 header, footer {
@@ -49,29 +78,37 @@ header, footer {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    &.nav-menu {
-      background: $nav-bg;
-      font-size: 0.8em;
-    }
-    &.nav-header {
-      height: 1.25rem;
+    &.scroll-tabs {
+      top: 0;
+      font-size: 1rem;
+      height: 1em;
+      background: #fff;
+      button {
+        background-color: #9f9f9f;
+        cursor: pointer;
+        margin: 0 0.25em;
+        width: 2em;
+        height: 0.125em;
+        font-size: 1em;
+        border-radius: 1em;
+        transition: background-color $t-short;
+        &.active {
+          background-color: #1f1f1f;
+        }
+      } 
     }
     &.nav-footer {
-      height: 2.5rem;
+      background: $nav-bg;
+      font-size: 0.75rem;
+      height: 2rem;
       background: #1f1f1f;
       color: #fff;
       ul.links {
         width: 100%;
         flex-wrap: wrap;
         justify-content: space-between;
-
-      }
-
-      ul.links li {
-        margin: 0;
       }
     }
-
   }
 }
 
@@ -82,26 +119,6 @@ header {
 footer {
   bottom: 0;
 }
-
-.scroll-tabs {
-  top: 0em;
-  height: 1em;
-  background: #fff;
-  button {
-    background-color: #9f9f9f;
-    cursor: pointer;
-    margin: 0 0.25em;
-    width: 2em;
-    height: 0.125em;
-    font-size: 1em;
-    border-radius: 1em;
-    transition: background-color $t-short;
-    &.active {
-      background-color: #1f1f1f;
-    }
-  } 
-}
-
 
 .parallax {
   z-index: -1;
@@ -135,45 +152,29 @@ footer {
   justify-content: center;
   width: 100%;
   height: calc(var(--vh, 1vh) * 100);
-  padding: 0.75rem 0 2.5rem 0;
+  padding: 0 0 2rem 0;
 }
-
-section {
-  width: 100%;
-  max-width: 48rem;
-  padding-left: 4rem;
-  padding-right: 4rem;
-  .narrow {
-    max-width: 36rem;
-  }
-  svg {
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-  }
-}
-
-
 
 .block {
   position: relative;
   width: 100%;
-  flex: 1 1 50%;
+  flex: 1 1 content;
   background: #fff;
-}
-
-.block.window {
-  background: transparent;
+  &:first-child {
+    flex: 1 2 100%;
+  }
+  &:last-child {
+    flex: 1 1 content;
+  }
+  &.window {
+    background: transparent;
+  }
 }
 
 a, a::before {
   color: inherit;
   text-decoration: none;
   transition: all $t-short;
-}
-
-p a {
-  border-bottom:  1px dotted #9f9f9f;
 }
 
 sup {
@@ -198,57 +199,6 @@ sup {
 
 .thin {
   font-weight: 200;
-}
-
-.alert {
-  z-index: 100;
-  position: fixed;
-  top: 2rem;
-  left: 2rem;
-  right: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity $t-short;
-}
-
-.alert.active {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.alert div {
-  background: #abd037;
-  color: #fff;
-  font-weight: bold;
-  text-align: center;
-  line-height: 2;
-  border-radius: 4rem;
-  padding: 0 2rem;
-  cursor: pointer;
-}
-
-.pad {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-}
-
-.flex {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  margin: auto auto;
-}
-
-.block:first-child {
-  flex: 1 2 50%;
-}
-
-.block:last-child {
-  flex: 1 1 50%;
 }
 
 .start, .end, .center {
@@ -276,6 +226,8 @@ h1 {
   font-weight: 200;
   font-size: 2rem;
   font-family: roboto-mono;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   b {
     font-weight: 400;
   }
@@ -284,15 +236,20 @@ h1 {
 img.logo {
   display: block;
   margin: auto;
-  width: 10rem;
+  width: 6rem;
 }
 
-p, ul, ol {
-  line-height: 2rem;
-  margin: 1rem 0;
-  padding: 0;
-  hyphens: auto;
-  list-style-type: none;
+section {
+  p, ul, ol {
+    font-size: calc(5rem / 6);
+    line-height: 2rem;
+    margin: 1rem 0;
+    padding: 0;
+    hyphens: auto;
+    a {
+      border-bottom:  1px dotted #9f9f9f;
+    }
+  }
 }
 
 p {
@@ -312,7 +269,6 @@ p .part {
 }
 
 ul.links {
-  list-style: none;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -340,14 +296,9 @@ ul.links li {
   font-size: 2rem;
 }
 
-.columns-3 {
+.columns {
   column-count: 3;
   column-gap: 2em;
-}
-
-.columns-2 {
-  column-count:  2;
-  column-gap:  2em;
 }
 
 .nowrap {
@@ -377,56 +328,11 @@ ul.links li a:active::before {
   }
 }
 
-@media screen and (min-width: 2000px) {
-  html { font-size: 1vw; }
-}
-
-@media screen and (max-width: 799px) {
-  .hide-800 { display: none; }
-}
-
-@media screen and (max-width: 839px) {
-  .columns-3 { column-count: 2; }
-  .columns-2 { column-count: 1; }
-}
-
-@media screen and (max-height: 719px) {
-  html { font-size: 2.777vh; }
-}
-
-@media screen and (max-width: 719px) {
-  html { font-size: 2.777vw; }
-}
-
-// @media screen and (max-height: 719px) and (max-width: 719px) {
-//   html { font-size: (2.777vh + 2.777vw) / 2; }
-//   html { font-size: min(2.777vh, 2.777vw); }
-// }
-
-@media screen and (max-height: 359px) {
-  html { font-size: 10px; }
-}
-
-@media screen and (max-width: 359px) {
-  .hide-360 { display: none; }
-  html { font-size: 10px; }
-/*  .columns { column-count: 1; }*/
-  .columns i { display: none; }
-  .flex-360 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    margin: auto auto;
+@media screen {
+  @media (min-aspect-ratio: 3/4) {
+    html { font-size: calc(24 / 960 * 100vh); }
   }
-  .footer ul.links {
-    justify-content: center;
+  @media (max-aspect-ratio: 3/4) {
+    html { font-size: calc(24 / 720 * 100vw); }
   }
-  .footer ul.links li {
-    flex: 1 1 2em;
-  }
-}
-
-@media screen and (max-width: 249px) {
-  html { font-size: 10px; }
 }
