@@ -19,7 +19,7 @@ html, body {
 
 html {
   position: relative;
-  font-family: 'Montserrat', 'Helvetica Neue', 'Helvetica', Arial, 'FreeSans', 'DejaVu Sans', sans-serif;
+  font-family: $sans;
   font-size: $rem;
   background: #fffcfa;
   color: #1f1f1f;
@@ -88,7 +88,7 @@ header, footer {
         cursor: pointer;
         margin: 0 0.25em;
         width: 2em;
-        height: 0.125em;
+        height: max(0.1em, 2px);
         font-size: 1em;
         border-radius: 1em;
         transition: background-color $t-short;
@@ -99,14 +99,17 @@ header, footer {
     }
     &.nav-footer {
       background: $nav-bg;
-      font-size: 0.75rem;
-      height: 2rem;
+      font-size: max(0.75rem, calc(100vh / 96));
+      height: max(2rem, calc(100vh / 24));
       background: #1f1f1f;
       color: #fff;
       ul.links {
         width: 100%;
         flex-wrap: wrap;
         justify-content: space-between;
+        li {
+          margin: 0;
+        }
       }
     }
   }
@@ -190,7 +193,7 @@ sup {
 }
 
 .mono {
-  font-family: roboto-mono, 'DejaVu Sans Mono', 'Lucida Console', 'Lucida Sans Typewriter', Monaco, 'Noto Mono', monospace;
+  font-family: $mono;
 }
 
 .light {
