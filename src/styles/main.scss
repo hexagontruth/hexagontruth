@@ -21,19 +21,43 @@ html {
   position: relative;
   font-family: $sans;
   font-size: $rem;
-  background: #fffcfa;
-  color: #1f1f1f;
   scroll-behavior: smooth;
 }
 
 body {
   position: relative;
-  background: #fff;
-  color: #1f1f1f;
+  background: $body-bg-light;
+  color: $body-fg-light;
+  @include dark {
+    background: $body-bg-dark;
+    color: $body-fg-dark;
+  }
+}
+
+a, a::before, button {
+  color: inherit;
+  text-decoration: none;
+  transition: all $t-short;
+}
+// Why aren't these working when nested with &: above???
+a:active, a:hover {
+  color: #fb3;
+  @media (hover: hover) {
+    color: #fb3;
+  }
 }
 
 ul, ol {
   list-style-type: none;
+}
+
+.flex-break, ul li.flex-break {
+  flex: 1 0 100%;
+  width: 100%;
+  height: 0 !important;
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .wrapper {
@@ -82,18 +106,21 @@ header, footer {
       top: 0;
       font-size: 1rem;
       height: 1em;
-      background: #fff;
+      background: $body-bg-light;
+      @include dark { background: $body-bg-dark; }
       button {
-        background-color: #9f9f9f;
+        background: $body-mid-light;
+        @include dark { background: $body-mid-dark; }
         cursor: pointer;
         margin: 0 0.25em;
         width: 2em;
         height: max(0.1em, 2px);
         font-size: 1em;
         border-radius: 1em;
-        transition: background-color $t-short;
+        transition: background $t-short;
         &.active {
-          background-color: #1f1f1f;
+          background: $body-fg-light;
+          @include dark { background: $dark-light; /* fuck everything about this */ }
         }
       } 
     }
@@ -101,7 +128,6 @@ header, footer {
       background: $nav-bg;
       font-size: max(0.75rem, calc(100vh / 96));
       height: max(2rem, calc(100vh / 24));
-      background: #1f1f1f;
       color: #fff;
       ul.links {
         width: 100%;
@@ -109,7 +135,11 @@ header, footer {
         justify-content: space-between;
         li {
           margin: 0;
+          a:active::before, {
+            transform: scale(1.5);
+          }
         }
+
       }
     }
   }
@@ -162,7 +192,8 @@ footer {
   position: relative;
   width: 100%;
   flex: 1 1 content;
-  background: #fff;
+  background: $body-bg-light;
+  @include dark { background: $body-bg-dark; }
   &:first-child {
     flex: 1 2 100%;
   }
@@ -171,13 +202,8 @@ footer {
   }
   &.window {
     background: transparent;
+    display: flex;
   }
-}
-
-a, a::before {
-  color: inherit;
-  text-decoration: none;
-  transition: all $t-short;
 }
 
 sup {
@@ -253,8 +279,83 @@ section {
       border-bottom:  1px dotted #9f9f9f;
     }
   }
+  ul.hex.small {
+    margin: auto;
+    @include flex(row);
+    flex-wrap: wrap;
+    li {
+      display: block;
+      margin: calc(-0.7217rem + 0.25rem) 0.25rem; /*6 * 1.15 / 4 / 2*/
+      width: 5rem;
+      @include hex(true);
+      overflow: hidden;
+      backface-visibility: hidden;
+      background: $body-bg-light;
+      @include dark { background: $body-bg-dark; }
+      text-align: center;
+      transition: all $t-short;
+      &:hover {
+        transform: scale(1.167);
+      }
+      a {
+        @include flex;
+        width: 100%;
+        height: 100%;
+        margin: auto;
+        border: none;
+        video {
+          display: block;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+  ul.hex.large {
+    margin: auto;
+    @include flex(row);
+    background: $body-trans-light;
+    @include dark { background: $body-trans-dark; }
+    width: 100%;
+    padding: 1rem;
+    li {
+      display: block;
+      margin: 1rem;
+      width: 6rem;
+      @include hex(true);
+      overflow: hidden;
+      backface-visibility: hidden;
+      background: $body-bg-light;
+      @include dark { background: $body-bg-dark; }
+      text-align: center;
+      transition: all $t-short;
+      &:hover {
+        transform: scale(1.17);
+      }
+      a {
+        @include flex;
+        width: 100%;
+        height: 100%;
+        margin: auto;
+        border: none;
+        i {
+          display: block;
+          font-size: 2rem;
+        }
+        span {
+          display: block;
+          height: 1em;
+          line-height: 1;
+        }
+      }
+    }
+  }
 }
 
+svg {
+  fill: #fff;
+}
 p {
   text-align: justify;
 }
@@ -308,23 +409,15 @@ ul.links li {
   white-space: nowrap;
 }
 
-a:active, button:active {
-  color: #fb3;
-}
 header button:active {
-  background-color: #fb3;
-}
-ul.links li a:active::before {
-  transform: scale(1.5);
+  background: #fb3;
 }
 
 @media (hover: hover) {
   /* sweet merciful crap I hate CSS */
-  a:hover, button:hover {
-    color: #fb3;
-  }
+
   header button:hover {
-    background-color: #fb3;
+    background: #fb3;
   }
   ul.links li a:hover::before {
     transform: scale(1.5);
@@ -334,8 +427,10 @@ ul.links li a:active::before {
 @media screen {
   @media (min-aspect-ratio: 3/4) {
     html { font-size: calc(24 / 960 * 100vh); }
+    .hide-landscape { display: none !important; }
   }
   @media (max-aspect-ratio: 3/4) {
     html { font-size: calc(24 / 720 * 100vw); }
+    .hide-portrait { display: none !important; }
   }
 }

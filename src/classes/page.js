@@ -21,6 +21,7 @@ export default class Page {
     this.loaded = false;
     this.scrollTabs = [];
     this.scrollMap = {};
+    this.thumbsLoaded = false;
 
     this.prod = window.location.host == PROD_HOST;
 
@@ -83,7 +84,8 @@ export default class Page {
       this.scrollTabs.push(tab);
       tab.addEventListener('click', () => {
         if (!this.scrollBlocks) return; // what was this for?
-        window.scrollTo(0, this.scrollBlocks[i].offsetTop);
+        location.hash = this.scrollBlocks[i].id || '';
+        // window.scrollTo(0, this.scrollBlocks[i].offsetTop);
         this.setSnap(i);
       });
     }
@@ -157,21 +159,7 @@ export default class Page {
   }
 
   onResize(ev) {
-    // document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-    // // for fucks sake
-    // let pos = window.scrollY;
-    // autoSnap();
-    // if (timer == null) {
-    //   timer = setInterval(() => {
-    //     let last = pos;
-    //     pos = window.scrollY;
-    //     if (Math.abs(pos - last) < 1) {
-    //       clearInterval(timer);
-    //       timer = null;
-    //       autoSnap();
-    //     }
-    //   }, 20);
-    // }
+
   }
 
   onScroll(ev) {

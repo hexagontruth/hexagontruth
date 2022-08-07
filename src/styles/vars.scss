@@ -1,8 +1,70 @@
 $rem: 24px;
 
-$nav-bg: #555;
+$nav-bg: #1f1f1f;
+$nav-fg: #fff;
+
+$body-bg-light: #fff;
+$body-fg-light: #1f1f1f;
+$body-mid-light: #9f9f9f;
+$body-trans-light: #ffffff7f;
+
+$body-bg-dark: #3f3f3f;
+$body-fg-dark: #fff;
+$body-mid-dark: #5f5f5f;
+$body-trans-dark: #0000007f;
+
+$dark-light: #ccc;
+
+
+$link-fg: #fb3;
+
 
 $t-short: 250ms;
 
 $sans: 'Montserrat', 'Helvetica Neue', 'Helvetica', Arial, 'FreeSans', 'DejaVu Sans', sans-serif;
 $mono: roboto-mono, 'DejaVu Sans Mono', 'Lucida Console', 'Lucida Sans Typewriter', Monaco, 'Noto Mono', monospace;
+
+@mixin hex($pointy: true) {
+  @if ($pointy) {
+    aspect-ratio: 0.866;
+    // clip-path: polygon(0% 75%, 0% 25%, 50% 0%, 100% 25%, 100% 75%, 50% 100%);
+    clip-path: polygon(-50% 50%, 50% 100%, 50% 125%, 50% 100%, 150% 50%, 50% 0%, 50% -25%, 50% 0%);
+  }
+  @else {
+    aspect-ratio: 1.1547;
+    // clip-path: polygon(100% 50%, 75% 100%, 25% 100%, 0% 50%, 25% 0%, 75% 0%);
+    clip-path: polygon(50% 150%, 0% 50%, 50% -50%, 100% 50%)
+  }
+}
+
+@mixin flex($dir: column, $justify: center, $align: center) {
+  display: flex;
+  flex-direction: $dir;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin fixed($top: 0, $right: 0, $bottom: 0, $left: 0) {
+  position: fixed;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
+
+@mixin full {
+  width: 100%;
+  height: 100%;
+}
+
+@mixin animate($name, $time, $repeat) {
+  animation-name: $name;
+  animation-duration: $time;
+  animation-iteration-count: $repeat;
+}
+
+@mixin dark {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}
