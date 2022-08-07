@@ -22,6 +22,15 @@ html {
   font-family: $sans;
   font-size: $rem;
   scroll-behavior: smooth;
+  @media screen {
+    @media (min-aspect-ratio: 3/4) {
+      font-size: calc(24 / 960 * 100vh);
+    }
+    @media (max-aspect-ratio: 3/4) {
+      font-size: calc(24 / 720 * 100vw);
+    }
+  }
+
 }
 
 body {
@@ -52,9 +61,7 @@ ul, ol {
 }
 
 .flex-break, ul li.flex-break {
-  flex: 1 0 100%;
-  width: 100%;
-  height: 0 !important;
+  flex: 1 0 100% !important;
   border: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
@@ -105,7 +112,7 @@ header, footer {
     &.scroll-tabs {
       top: 0;
       font-size: 1rem;
-      height: 1em;
+      height: 1rem;
       background: $body-bg-light;
       @include dark { background: $body-bg-dark; }
       button {
@@ -185,7 +192,7 @@ footer {
   justify-content: center;
   width: 100%;
   height: calc(var(--vh, 1vh) * 100);
-  padding: 0 0 2rem 0;
+  padding: 1rem 0 2rem 0;
 }
 
 .block {
@@ -203,6 +210,7 @@ footer {
   &.window {
     background: transparent;
     display: flex;
+    overflow: hidden;
   }
 }
 
@@ -279,32 +287,78 @@ section {
       border-bottom:  1px dotted #9f9f9f;
     }
   }
+  ul.autohex {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+  // Yes this is a fucking dumpster fire
   ul.hex.small {
-    margin: auto;
+    --baseMargin: 0px;
+    --baseRadius: min(16vw, 15vh);
+    --marginOffset: calc(var(--baseRadius) * -1.1547 / 8);
+    transform: scale(1.5);
+    @media (max-aspect-ratio: 3/4) {
+      --baseRadius: max(16vw, 10vh);
+      --marginOffset: calc(var(--baseRadius) * -1 / 8);
+      flex-direction: column;
+      transform: scale(calc(1.5 * 1.1547));
+    }
+
+
     @include flex(row);
+    align-content: center;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+
     flex-wrap: wrap;
-    li {
+    li:not(.flex-break) {
       display: block;
-      margin: calc(-0.7217rem + 0.25rem) 0.25rem; /*6 * 1.15 / 4 / 2*/
-      width: 5rem;
+      margin: calc(var(--marginOffset) + var(--baseMargin))  var(--baseMargin);
+      width: var(--baseRadius);
       @include hex(true);
+      @media (max-aspect-ratio: 3/4) {
+        @include hex(false);
+        margin: var(--baseMargin) calc(var(--marginOffset) + var(--baseMargin));
+      }
       overflow: hidden;
       backface-visibility: hidden;
-      background: $body-bg-light;
+
       @include dark { background: $body-bg-dark; }
       text-align: center;
-      transition: all $t-short;
-      &:hover {
-        transform: scale(1.167);
+      transition: transform $t-medium $t-delay;
+      @media (hover: hover) {
+        &:hover {
+          transform: scale(1.404);
+          z-index: 100;
+        }
       }
       a {
         @include flex;
         width: 100%;
         height: 100%;
         margin: auto;
+        padding: 0.25rem;
         border: none;
+        background: $body-bg-light;
+        @include dark { background: $body-bg-dark; }
+        filter: grayscale(100%);
+        @media (hover: hover) {
+          &:hover, &:active {
+            background: $link-fg;
+            filter: grayscale(0%);
+            opacity: 1;
+          }
+        }
+        opacity: 0.5;
         video {
           display: block;
+          @include hex(true);
+          @media (max-aspect-ratio: 3/4) {
+            @include hex(false);
+          }
           width: 100%;
           height: 100%;
           object-fit: cover;
@@ -421,16 +475,5 @@ header button:active {
   }
   ul.links li a:hover::before {
     transform: scale(1.5);
-  }
-}
-
-@media screen {
-  @media (min-aspect-ratio: 3/4) {
-    html { font-size: calc(24 / 960 * 100vh); }
-    .hide-landscape { display: none !important; }
-  }
-  @media (max-aspect-ratio: 3/4) {
-    html { font-size: calc(24 / 720 * 100vw); }
-    .hide-portrait { display: none !important; }
   }
 }

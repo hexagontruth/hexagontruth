@@ -140,6 +140,12 @@ export default class Page {
     this.onResize();
     this.onScroll();
 
+    // this.autohex = [];
+
+    // this.autohex = Array.from(document.querySelectorAll('.autohex')).map((el) => {
+    //   return new Autohex(el);
+    // });
+
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;
   }
