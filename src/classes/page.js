@@ -21,7 +21,8 @@ export default class Page {
     this.loaded = false;
     this.scrollTabs = [];
     this.scrollMap = {};
-    this.thumbsLoaded = false;
+    this.letterTimer = null;
+    this.letterInterval = 150;
 
     this.prod = window.location.host == PROD_HOST;
 
@@ -49,6 +50,58 @@ export default class Page {
         window.location.href = v;
       }
     });
+  }
+
+  onLoad(ev) {
+    if (this.loaded) return;
+    this.loaded = true;
+
+    this.body = document.body;
+    this.header = document.querySelector('header');
+    this.footer = document.querySelector('footer');
+    this.prod && this.onProd();
+    this.video = Video.create(document.querySelector('.parallax *'));
+    this.title = document.querySelector('h1');
+    this.letters = document.querySelectorAll('h1 span');
+    this.titleHidden = false;
+
+    this.setScrollBlocks();
+    this.setAnchor();
+    this.onResize();
+    this.onScroll();
+
+    document.body.style.transition = 'opacity 1000ms';
+    document.body.style.opacity = 1;
+  }
+
+  hideTitle() {
+    this.titleHidden = true;
+    this.letterTimer && clearTimeout(this.letterTimer);
+    this.letters.forEach((e) => e.classList.toggle('hidden', true));
+    this.title.className = 't0';
+    this.letterIdx = 0;
+  }
+
+  animateTitle() {
+    this.hideTitle();
+    this.titleHidden = false;
+    this.setTitleTimer();
+  }
+
+  setTitleTimer() {
+    this.letterTimer && clearTimeout(this.letterTimer);
+    this.letterTimer = setTimeout(() => this.animateTitleStep(), this.letterInterval);
+  }
+
+  animateTitleStep() {
+    this.title.className = `t${this.letterIdx + 1}`
+    this.letters[this.letterIdx].classList.toggle('hidden', false);
+    if (++this.letterIdx < this.letters.length) {
+      this.setTitleTimer();
+    }
+    else {
+      this.title.className = '';
+    }
   }
 
   setAnchor() {
@@ -92,6 +145,7 @@ export default class Page {
   }
 
   setSnap(n) {
+    this.snap = n;
     let snap = this.getSnapObject();
     snap[window.location.pathname] = n;
     sessionStorage.setItem('snap', JSON.stringify(snap));
@@ -99,7 +153,8 @@ export default class Page {
 
   getSnap() {
     let snap = this.getSnapObject();
-    return parseInt(snap[window.location.pathname]) || 0;
+    this.snap = parseInt(snap[window.location.pathname]) || 0;
+    return this.snap;
   }
 
   getSnapObject() {
@@ -109,25 +164,6 @@ export default class Page {
 
   get hasScroll() {
     return !!this.scrollBlocks?.length;
-  }
-
-  onLoad(ev) {
-    if (this.loaded) return;
-    this.loaded = true;
-
-    this.body = document.body;
-    this.header = document.querySelector('header');
-    this.footer = document.querySelector('footer');
-    this.prod && this.onProd();
-    this.video = Video.create(document.querySelector('.parallax *'));
-
-    this.setScrollBlocks();
-    this.setAnchor();
-    this.onResize();
-    this.onScroll();
-
-    document.body.style.transition = 'opacity 1000ms';
-    document.body.style.opacity = 1;
   }
 
   onProd() {
@@ -155,6 +191,12 @@ export default class Page {
     if (cur != -1) {
       this.setSnap(cur);
       this.scrollTabs[cur].classList.add('active');
+    }
+    if (Math.ceil(window.scrollY) >= window.innerHeight) {
+      this.titleHidden || this.hideTitle();
+    }
+    else if (window.scrollY == 0) {
+      this.animateTitle();
     }
   }
 

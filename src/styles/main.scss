@@ -9,6 +9,10 @@
   outline: none;
 }
 
+:root {
+  color-scheme: only light;
+}
+
 html, body {
   width: 100%;
   height: 100%;
@@ -109,33 +113,29 @@ header, footer {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    background: $nav-bg;
+    color: $nav-fg;
     &.scroll-tabs {
       top: 0;
       font-size: 1rem;
       height: 1rem;
-      background: $body-bg-light;
-      @include dark { background: $body-bg-dark; }
       button {
-        background: $body-mid-light;
-        @include dark { background: $body-mid-dark; }
+        background: #888;
         cursor: pointer;
-        margin: 0 0.25em;
+        margin: 0 0.5em;
         width: 2em;
-        height: max(0.1em, 2px);
+        height: max(1px, calc(1em / 12));
         font-size: 1em;
         border-radius: 1em;
         transition: background $t-short;
         &.active {
-          background: $body-fg-light;
-          @include dark { background: $dark-light; /* fuck everything about this */ }
+          background: $nav-fg;
         }
       } 
     }
     &.nav-footer {
-      background: $nav-bg;
-      font-size: max(0.75rem, calc(100vh / 96));
-      height: max(2rem, calc(100vh / 24));
-      color: #fff;
+      font-size: 1rem;
+      height: 2rem;
       ul.links {
         width: 100%;
         flex-wrap: wrap;
@@ -207,6 +207,72 @@ footer {
   &:last-child {
     flex: 1 1 content;
   }
+  &.title {
+    background: $nav-bg;
+    color: $nav-fg;
+    @include flex(column);
+    .title-block {
+      flex: 0 2 100%;
+      height: 100%;
+      @include flex(column, align-start);
+    }
+    .title-logo {
+    }
+    .title-text {
+      margin: 2rem 0;
+      @include flex(row);
+      h1 {
+        position: relative;
+        @include flex(row);
+        user-select: none;
+        font-size: inherit;
+        font-weight: 200;
+        font-size: 2rem;
+        font-family: roboto-mono;
+        text-transform: uppercase;
+        letter-spacing: 0;
+        span {
+          width: 1em;
+          transition: all $t-short;
+          &.hidden {
+            transform: rotateY(90deg);
+            opacity: 0;
+          }
+        }
+        &::after {
+          position: absolute;
+          right: -1em;
+          width: 1em;
+          top: 0;
+          content: '_';
+          animation-name: blink;
+          animation-duration: 1s;
+          animation-iteration-count: infinite;
+        }
+        &.t0::after { transform: translateX(-12em); }
+        &.t1::after { transform: translateX(-11em); }
+        &.t2::after { transform: translateX(-10em); }
+        &.t3::after { transform: translateX(-9em); }
+        &.t4::after { transform: translateX(-8em); }
+        &.t5::after { transform: translateX(-7em); }
+        &.t6::after { transform: translateX(-6em); }
+        &.t7::after { transform: translateX(-5em); }
+        &.t8::after { transform: translateX(-4em); }
+        &.t9::after { transform: translateX(-3em); }
+        &.t10::after { transform: translateX(-2em); }
+        &.t11::after { transform: translateX(-1em); }
+      }
+    }
+
+    ul.title-links {
+      li {
+        margin: 0 1em;
+      }
+      a {
+        border: 0;
+      }
+    }
+  }
   &.window {
     background: transparent;
     display: flex;
@@ -255,19 +321,12 @@ sup {
   justify-content: center;
 }
 
-h1 {
-  display: block;
-  margin: 0;
-  padding: 0;
-  font-size: inherit;
-  font-weight: 200;
-  font-size: 2rem;
-  font-family: roboto-mono;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  b {
-    font-weight: 400;
-  }
+@keyframes blink {
+  0% { opacity: 1; }
+  20% { opacity: 1; }
+  25% { opacity: 0; }
+  70% { opacity: 0; }
+  75% { opacity: 1; }
 }
 
 img.logo {
@@ -304,7 +363,6 @@ section {
       flex-direction: column;
       transform: scale(calc(1.5 * 1.1547));
     }
-
 
     @include flex(row);
     align-content: center;
