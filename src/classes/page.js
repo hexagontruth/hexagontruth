@@ -30,7 +30,7 @@ export default class Page {
     window.addEventListener('load', (ev) => this.onLoad(ev));
     window.addEventListener('resize', (ev) => this.onResize(ev));
     window.addEventListener('scroll', (ev) => this.onScroll(ev));
-    window.addEventListener('wheel', (ev) => this.onWheel(ev), {passive: false});
+    // window.addEventListener('wheel', (ev) => this.onWheel(ev), {passive: false});
     window.addEventListener('keydown', (ev) => this.onKeydown(ev));
 
     setTimeout(() => this.onLoad(), 1000);
@@ -91,20 +91,6 @@ export default class Page {
     }
   }
 
-  autoSnap() {
-    if (!this.scrollBlocks?.length) return;
-    let y = window.scrollY;
-    let delta = Infinity, idx = -1;
-    for (let i = 0; i < this.scrollBlocks.length; i++) {
-      let cur = Math.abs(this.scrollBlocks[i].offsetTop - y);
-      if (cur < delta) {
-        delta = cur;
-        idx = i;
-      }
-    }
-    window.scrollTo(0, scrollBlocks[idx].offsetTop);
-  }
-
   setSnap(n) {
     let snap = this.getSnapObject();
     snap[window.location.pathname] = n;
@@ -140,12 +126,6 @@ export default class Page {
     this.onResize();
     this.onScroll();
 
-    // this.autohex = [];
-
-    // this.autohex = Array.from(document.querySelectorAll('.autohex')).map((el) => {
-    //   return new Autohex(el);
-    // });
-
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;
   }
@@ -178,6 +158,7 @@ export default class Page {
     }
   }
 
+  // This is only seemingly helping on desktop Chrome, and possibly only on Linux? Why does Chrome scroll snapping suck so badly?
   onWheel(ev) {
     if (!this.hasScroll) return;
     let pts = this.scrollBlocks.map((e) => e.offsetTop);
