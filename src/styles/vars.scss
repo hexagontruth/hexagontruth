@@ -26,7 +26,7 @@ $t-medium: 500ms;
 $t-long: 1s;
 
 $sans: 'Montserrat', 'Helvetica Neue', 'Helvetica', Arial, 'FreeSans', 'DejaVu Sans', sans-serif;
-$mono: roboto-mono, 'DejaVu Sans Mono', 'Lucida Console', 'Lucida Sans Typewriter', Monaco, 'Noto Mono', monospace;
+$mono: roboto-mono, 'Lucida Console', 'Lucida Sans Typewriter', Monaco, 'Noto Mono', monospace; //'DejaVu Sans Mono', 
 
 @mixin hex($pointy: true) {
   @if ($pointy) {

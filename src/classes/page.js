@@ -31,8 +31,12 @@ export default class Page {
     window.addEventListener('load', (ev) => this.onLoad(ev));
     window.addEventListener('resize', (ev) => this.onResize(ev));
     window.addEventListener('scroll', (ev) => this.onScroll(ev));
-    // window.addEventListener('wheel', (ev) => this.onWheel(ev), {passive: false});
     window.addEventListener('keydown', (ev) => this.onKeydown(ev));
+
+    // This goes against everything I believe in but fuck you Chrome
+    if (window.chrome) {
+      window.addEventListener('wheel', (ev) => this.onWheel(ev), {passive: false});
+    }
 
     setTimeout(() => this.onLoad(), 1000);
   }
@@ -64,6 +68,16 @@ export default class Page {
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
     this.titleHidden = false;
+
+    document.querySelectorAll('.video-thumbs li').forEach((thumb) => {
+      let video = thumb.querySelector('video');
+      let dataSrc = video?.getAttribute('data-src');
+      if (!dataSrc) return;
+      video.src = dataSrc;
+      video.addEventListener('canplay', () => {
+        thumb.style.opacity = 1;
+      });
+    });
 
     this.setScrollBlocks();
     this.setAnchor();

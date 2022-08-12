@@ -90,10 +90,7 @@ ul, ol {
 }
 
 .flex {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  @include flex(column, space-between, center);
   margin: auto auto;
 }
 
@@ -192,7 +189,7 @@ footer {
   justify-content: center;
   width: 100%;
   height: calc(var(--vh, 1vh) * 100);
-  padding: 1rem 0 2rem 0;
+  padding: 0; //1rem 0 2rem 0;
 }
 
 .block {
@@ -203,9 +200,11 @@ footer {
   @include dark { background: $body-bg-dark; }
   &:first-child {
     flex: 1 2 100%;
+    // z-index: 50;
   }
   &:last-child {
     flex: 1 1 content;
+    // z-index: 100;
   }
   &.title {
     background: $nav-bg;
@@ -228,7 +227,7 @@ footer {
         font-size: inherit;
         font-weight: 200;
         font-size: 2rem;
-        font-family: roboto-mono;
+        font-family: $mono;
         text-transform: uppercase;
         letter-spacing: 0;
         span {
@@ -277,6 +276,10 @@ footer {
     background: transparent;
     display: flex;
     overflow: hidden;
+  }
+  &.content {
+    @include flex(column, space-between, center);
+    padding: 1rem 4rem 3rem 4rem;
   }
 }
 
@@ -386,7 +389,7 @@ section {
 
       @include dark { background: $body-bg-dark; }
       text-align: center;
-      transition: transform $t-medium $t-delay;
+      transition: transform $t-medium $t-delay, opacity $t-medium;
       @media (hover: hover) {
         &:hover {
           transform: scale(1.404);
