@@ -3,16 +3,13 @@ Hexagontruth.com
 A static site by Graham
 
 - Canonical URL: https://hexagontruth.com/
-- Contact: hexagongraham@gmail.com
+- Contact: graham@hexagontruth.com
 
 ## Introduction
 
-A Hexagon Truth static site forked from hexagonlink.
-
-It has beocome necessary to separate HT from the GHAP brand. My art is vast and can no longer be contained in the narrow and &mdash; let's be honest &mdash; somewhat affected conceptual vocabulary of GHAP.
+A Hexagon Truth static site forked from [Hexagon.link](https://github.com/hexagontruth/hexagonlink).
 
 ## Quick Start
 
-1. Open the page
-
-That is all.
+1. Serve the `public` directory with the static server of your choice.
+2. Open the page in your browser.
