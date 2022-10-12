@@ -1,4 +1,4 @@
-import Video from './video.js';
+import Player from './player.js';
 
 const PAGE_REDIRECTS = {
   cryptovoxels: 'https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U',
@@ -13,6 +13,21 @@ const PAGE_REDIRECTS = {
   sr: 'https://superrare.co/hexagontruth',
   yt: 'https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g',
 };
+
+const PROGRAM_DEFS = [
+  [
+    'vertex-position',
+    ['frag-1'],
+  ],
+  [
+    'vertex-position',
+    ['frag-2'],
+  ],
+  [
+    'vertex-position',
+    'passthru',
+  ],
+];
 
 const PROD_HOST = 'hexagontruth.com';
 
@@ -64,7 +79,7 @@ export default class Page {
     this.header = document.querySelector('header');
     this.footer = document.querySelector('footer');
     this.prod && this.onProd();
-    this.video = Video.create(document.querySelector('.parallax *'));
+    this.player = new Player(document.querySelector('canvas.player'), PROGRAM_DEFS);
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
     this.titleHidden = false;
@@ -86,6 +101,8 @@ export default class Page {
 
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;
+
+    this.player.start();
   }
 
   hideTitle() {

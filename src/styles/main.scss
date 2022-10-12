@@ -157,7 +157,7 @@ footer {
   bottom: 0;
 }
 
-.parallax {
+.background {
   z-index: -1;
   position: fixed;
   top: 0;
@@ -168,7 +168,7 @@ footer {
   overflow: hidden;
 }
 
-.parallax img, .parallax video, .parallax canvas {
+.background img, .background video, .background canvas {
   position: relative;
   display: block;
   width: 100%;
