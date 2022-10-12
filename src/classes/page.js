@@ -17,11 +17,11 @@ const PAGE_REDIRECTS = {
 const PROGRAM_DEFS = [
   [
     'vertex-position',
-    ['frag-1'],
+    'frag-1',
   ],
   [
     'vertex-position',
-    ['frag-2'],
+    'frag-2',
   ],
   [
     'vertex-position',

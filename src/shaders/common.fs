@@ -8,6 +8,8 @@ uniform float sr2;
 uniform float sr3;
 uniform vec3 unit;
 uniform vec2 size;
+uniform vec2 parallax;
+uniform vec2 dir;
 uniform float counter;
 uniform float time;
 uniform float clock;

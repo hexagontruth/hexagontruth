@@ -10,6 +10,6 @@ void main() {
     a = smoothstep((counter - cursorDownAt)/100., 0., a);
     s.rgb += a;
   }
-  s = mix(s, texture(lastTexture, uv), 0.95);
+  // s = mix(s, texture(lastTexture, uv), 0.95);
   fragColor = vec4(s.rgb, 1);
 }

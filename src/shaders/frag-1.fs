@@ -4,6 +4,9 @@ void main() {
   vec2 uv = gl_FragCoord.xy / size;
   vec2 cv = uv * 2. - 1.;
   cv.y *= size.y / size.x;
+  cv.y += parallax.y * 0.25;
+
+  cv -= dir / 10.;
   vec3 c;
   c = vec3(1, 0, 1);
   c.rg = uv;
