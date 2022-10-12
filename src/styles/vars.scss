@@ -1,6 +1,6 @@
 $rem: 24px;
 
-$nav-bg: #1f1f1f;
+$nav-bg: #000;
 $nav-fg: #fff;
 
 $body-semi-light: #ffffff7f;
@@ -25,17 +25,20 @@ $t-short: 250ms;
 $t-medium: 500ms;
 $t-long: 1s;
 
+$nav-top-height:1rem;
+$nav-bottom-height: 2rem;
+
 $sans: 'Montserrat', 'Helvetica Neue', 'Helvetica', Arial, 'FreeSans', 'DejaVu Sans', sans-serif;
 $mono: roboto-mono, 'Lucida Console', 'Lucida Sans Typewriter', Monaco, 'Noto Mono', monospace; //'DejaVu Sans Mono', 
 
 @mixin hex($pointy: true) {
   @if ($pointy) {
-    aspect-ratio: 0.866;
+    aspect-ratio: 0.866 / 1;
     // clip-path: polygon(0% 75%, 0% 25%, 50% 0%, 100% 25%, 100% 75%, 50% 100%);
     clip-path: polygon(-50% 50%, 50% 100%, 50% 125%, 50% 100%, 150% 50%, 50% 0%, 50% -25%, 50% 0%);
   }
   @else {
-    aspect-ratio: 1.1547;
+    aspect-ratio: 1.1547 / 1;
     // clip-path: polygon(100% 50%, 75% 100%, 25% 100%, 0% 50%, 25% 0%, 75% 0%);
     clip-path: polygon(50% 150%, 0% 50%, 50% -50%, 100% 50%)
   }
