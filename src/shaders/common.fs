@@ -2,12 +2,8 @@
 precision highp float;
 out vec4 fragColor;
 in vec4 vColor;
-uniform float pi;
-uniform float tau;
-uniform float sr2;
-uniform float sr3;
-uniform vec3 unit;
 uniform vec2 size;
+uniform vec2 lastSize;
 uniform vec2 parallax;
 uniform vec2 dir;
 uniform float counter;
@@ -24,6 +20,31 @@ uniform bool cursorDown;
 uniform float cursorAngle;
 uniform sampler2D inputTexture;
 uniform sampler2D lastTexture;
+
+vec3 unit = vec3(1, 0, -1);
+#define pi 3.141592653589793
+#define tau 6.283185307179586
+#define sr2 1.4142135623730951
+#define sr3 1.7320508075688772
+
+mat3x2 hex2cart = mat3x2(
+  vec2(0, 0),
+  vec2(1, 0),
+  vec2(0.5, sr3 / 2.)
+);
+
+mat2x3 cart2hex = mat2x3(
+  vec3(-1, 1, 0),
+  vec3(-1. / sr3, -1. / sr3, 2. / sr3)
+);
+
+mat3 hex2hex = mat3(
+  vec3(0, 0, 0),
+  vec3(-1. / sr3, 2. / sr3, -1. / sr3),
+  vec3(-2. / sr3, 1. / sr3, 1. / sr3)
+);
+
+vec3 htWhite = 1. - vec3(1./36., 1./24., 1./12.);
 
 bool isNan(float n) {
   return !(n <= 0. || 0. <= n);
@@ -328,35 +349,6 @@ vec4 hexbin(vec2 cv, float s) {
   coord = (cv - dv) / res;
   dv *= 3.;
   return vec4(dv, coord);
-}
-
-vec3 cart2hex(vec2 c) {
-  vec3 hex;
-  hex.y = (c.x - c.y * 1. / sr3);
-  hex.z =  c.y * 2. / sr3;
-  hex.x = -hex.z - hex.y;
-  return hex;
-}
-
-vec2 hex2cart(vec3 c) {
-  vec2 cart = vec2(
-    c.y + 0.5 * c.z,
-    sr3 / 2. * c.z
-  );
-  return cart;
-}
-
-vec3 hex2hex(vec3 c) {
-  vec2 v;
-  v = vec2(
-    c.y + 0.5 * c.z,
-    sr3 / 2. * c.z
-  );
-  v = vec2(
-    v.y - v.x * 1. / sr3,
-    v.x * 2. / sr3
-  );
-  return vec3(-v.x - v.y, v.y, v.x);
 }
 
 float quantize(float f, float n, float ep) {

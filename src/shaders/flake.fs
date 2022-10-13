@@ -9,7 +9,7 @@ float idist(float n, float v) {
 }
 
 vec3 angle(vec2 cv, float i, float d) {
-  return cart2hex(cv + rot(unit.xy, i/6. * tau) * d);
+  return cart2hex * (cv + rot(unit.xy, i/6. * tau) * d);
 }
 
 float rad(vec3 hex, float r) {
@@ -40,9 +40,9 @@ void main() {
   cv = ov;
 
   q = 2./size.y * scale * sr3 ;
-  w = 1./360. * scale * sr3;
+  w = 1./720. * scale * sr3;
 
-  hex = cart2hex(cv);
+  hex = cart2hex * cv;
 
   a = 0.;
 
@@ -101,6 +101,8 @@ void main() {
   c = c * d;
 
   c -= y;
+
+  // c = max(c, unit.xxx * 1. / 8.);
 
   fragColor = vec4(c, 1);
 }

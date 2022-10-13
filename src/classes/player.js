@@ -1,3 +1,4 @@
+import Hook from './hook.js';
 import Program from './program.js';
 
 const BASE_UNIFORMS = {
@@ -5,6 +6,7 @@ const BASE_UNIFORMS = {
   counter: 0,
   time: 0,
   size: [0, 0],
+  lastSize: [0, 0],
   parallax: [0, 0],
   dir: [0, 0],
   clock: 0,
@@ -21,16 +23,12 @@ const BASE_UNIFORMS = {
   keyA: false,
   keyS: false,
   keyD: false,
-  pi: Math.PI,
-  tau: Math.PI * 2,
-  sr2: 2 ** 0.5,
-  sr3: 3 ** 0.5,
-  unit: [1, 0, -1],
 };
 
 export default class Player {
-  constructor(canvas, programDefs=PROGRAM_DEFS, uniformOverrides={}) {
+  constructor(canvas, controls, programDefs, uniformOverrides={}) {
     this.canvas = canvas;
+    this.controls = controls;
     this.gl = canvas.getContext('webgl2');
     this.programDefs = Object.assign({}, programDefs);
     this.uniforms = Object.assign({}, BASE_UNIFORMS, uniformOverrides);
@@ -38,6 +36,10 @@ export default class Player {
     this.counter = 0;
     this.size = [0, 0];
     this.interval = 17;
+    this.hooks = {
+      beforeRun: new Hook(),
+      afterRun: new Hook(),
+    };
 
     window.addEventListener('keydown', (ev) => this.handleKey(ev));
     window.addEventListener('keyup', (ev) => this.handleKey(ev));
@@ -82,21 +84,24 @@ export default class Player {
     this.counter = 0;
     this.uniforms.resize = true;
     this.uniforms.dir = [0, 0];
+    this.callHook('afterRun');
   }
 
   run() {
+    this.callHook('beforeRun');
     const {gl, programs, uniforms} = this;
     const cur = this.counter % 2;
     const last = (cur + 1) % 2;
     const programCount = this.programs.length;
 
-    uniforms.counter = this.counter++;
+    uniforms.counter = this.counter;
     uniforms.time = (this.uniforms.counter % this.uniforms.duration) / this.uniforms.duration;
     uniforms.clock = Date.now();
 
     for (let i = 0; i < programCount; i++) {
       const li = (i + programCount - 1) % programCount;
       const program = programs[i];
+      uniforms.lastSize = uniforms.size.slice();
       uniforms.size = program.size || this.size;
 
       const lastTexture = program.textures[last];
@@ -115,7 +120,9 @@ export default class Player {
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
 
+    this.callHook('afterRun');
     uniforms.resize = false;
+    this.counter++;
   }
 
   loop() {
@@ -144,6 +151,22 @@ export default class Player {
     this.playing ? this.stop() : this.start(false);
   }
 
+  toggleControls(state=undefined) {
+    this.controls.classList.toggle('hidden', state);
+  }
+
+  addHook(key, fn) {
+    return this.hooks[key]?.add(fn);
+  }
+
+  removeHook(key) {
+    return this.hooks[key]?.remove(key);
+  }
+
+  callHook(key, ...args) {
+    return this.hooks[key]?.call(...args);
+  }
+
   handleKey(ev) {
     const {uniforms} = this;
     const key = ev.key.toUpperCase();
@@ -168,9 +191,19 @@ export default class Player {
     else if (ev.type == 'keydown') {
       if (key == 'R') {
         this.reset();
+        this.run();
       }
-      else if (key == 'P') {
+      else if (key == 'T') {
         this.toggle();
+      }
+      else if (key == 'C') {
+        this.toggleControls();
+      }
+      else if (key == 'G') {
+        if (this.playing)
+          this.stop();
+        else
+          this.run();
       }
     }
   }
@@ -199,7 +232,7 @@ export default class Player {
   }
 
   handleResize(ev) {
-    const dpr = window.devicePixelRatio;
+    const dpr = Math.max(window.devicePixelRatio, 2);
     const [dw, dh] = [window.innerWidth, window.innerHeight];
     const [w, h] = [dw, dh].map((e) => Math.round(e * dpr));
     this.dw = dw;

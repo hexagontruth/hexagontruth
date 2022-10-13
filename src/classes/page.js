@@ -1,4 +1,5 @@
 import Player from './player.js';
+import programDefs from '../program-defs.js';
 
 const PAGE_REDIRECTS = {
   cryptovoxels: 'https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U',
@@ -13,23 +14,6 @@ const PAGE_REDIRECTS = {
   sr: 'https://superrare.co/hexagontruth',
   yt: 'https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g',
 };
-
-const PROGRAM_DEFS = [
-  // [
-  //   'vertex-position',
-  //   'ca-state',
-  //   {size: [256, 256], uniforms: { gridSize: 10, skip: 10 }},
-  // ],
-  // [
-  //   'vertex-position',
-  //   'ca-display',
-  //   {uniforms: { gridSize: 10, skip: 10 }},
-  // ],
-  [
-    'vertex-position',
-    'flake',
-  ],
-];
 
 const PROD_HOST = 'hexagontruth.com';
 
@@ -81,7 +65,14 @@ export default class Page {
     this.header = document.querySelector('header');
     this.footer = document.querySelector('footer');
     this.prod && this.onProd();
-    this.player = new Player(document.querySelector('canvas.player'), PROGRAM_DEFS);
+
+    this.player = new Player(
+      document.querySelector('canvas.player'),
+      document.querySelector('.controls'),
+      programDefs.background,
+    );
+    this.counter = document.querySelector('.counter');
+    this.player.addHook('afterRun', () => this.updateCounter());
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
     this.titleHidden = false;
@@ -105,6 +96,11 @@ export default class Page {
     document.body.style.opacity = 1;
 
     this.player.start();
+  }
+
+  updateCounter() {
+    const paddedCount = ('00000' + this.player.counter).slice(-6);
+    this.counter.innerHTML = paddedCount;
   }
 
   hideTitle() {
