@@ -15,17 +15,19 @@ const PAGE_REDIRECTS = {
 };
 
 const PROGRAM_DEFS = [
+  // [
+  //   'vertex-position',
+  //   'ca-state',
+  //   {size: [256, 256], uniforms: { gridSize: 10, skip: 10 }},
+  // ],
+  // [
+  //   'vertex-position',
+  //   'ca-display',
+  //   {uniforms: { gridSize: 10, skip: 10 }},
+  // ],
   [
     'vertex-position',
-    'frag-1',
-  ],
-  [
-    'vertex-position',
-    'frag-2',
-  ],
-  [
-    'vertex-position',
-    'passthru',
+    'flake',
   ],
 ];
 

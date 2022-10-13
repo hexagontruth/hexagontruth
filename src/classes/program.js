@@ -56,6 +56,7 @@ export default class Program {
 
   buildConfig(config) {
     this.size = config.size;
+    this.uniforms = config.uniforms || {};
   }
 
   handleResize(ev) {
@@ -80,7 +81,8 @@ export default class Program {
 
   setUniforms(uniforms) {
     const {gl, program} = this;
-    gl.useProgram(this.program);
+    gl.useProgram(program);
+    uniforms = Object.assign({}, uniforms, this.uniforms);
     for (let [key, value] of Object.entries(uniforms)) {
       const idx = gl.getUniformLocation(program, key);
       if (!value.length)

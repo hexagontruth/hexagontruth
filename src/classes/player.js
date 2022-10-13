@@ -1,13 +1,14 @@
 import Program from './program.js';
 
 const BASE_UNIFORMS = {
-  duration: 100,
+  duration: 360,
   counter: 0,
   time: 0,
   size: [0, 0],
   parallax: [0, 0],
   dir: [0, 0],
   clock: 0,
+  resize: false,
   cursorDownAt: 0,
   cursorUpAt: 0,
   cursorPos: [0, 0],
@@ -36,6 +37,7 @@ export default class Player {
     this.programs = [];
     this.counter = 0;
     this.size = [0, 0];
+    this.interval = 17;
 
     window.addEventListener('keydown', (ev) => this.handleKey(ev));
     window.addEventListener('keyup', (ev) => this.handleKey(ev));
@@ -74,9 +76,12 @@ export default class Player {
       gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
       gl.vertexAttribPointer(vertPositionAttribute, 3, gl.FLOAT, false, 0, 0);
     }
+  }
 
-    this.interval = 50;
+  reset() {
     this.counter = 0;
+    this.uniforms.resize = true;
+    this.uniforms.dir = [0, 0];
   }
 
   run() {
@@ -109,6 +114,8 @@ export default class Player {
       gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
+
+    uniforms.resize = false;
   }
 
   loop() {
@@ -121,15 +128,20 @@ export default class Player {
     requestAnimationFrame(() => this.loop());
   }
 
-  start(program) {
+  start(reset=true) {
     this.playing = true;
     this.last = Date.now();
     this.setup();
-    this.loop(program);
+    reset && this.reset();
+    this.loop();
   }
 
   stop() {
     this.playing = false;
+  }
+
+  toggle() {
+    this.playing ? this.stop() : this.start(false);
   }
 
   handleKey(ev) {
@@ -153,13 +165,21 @@ export default class Player {
         uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
       }
     }
+    else if (ev.type == 'keydown') {
+      if (key == 'R') {
+        this.reset();
+      }
+      else if (key == 'P') {
+        this.toggle();
+      }
+    }
   }
 
   handlePointer(ev) {
     const {uniforms} = this;
     const pos = [
-      ev.offsetX / this.dw * 2 - 1,
-      ev.offsetY / this.dh * -2 + 1,
+      ev.clientX / this.dw * 2 - 1,
+      ev.clientY / this.dh * -2 + 1,
     ];
     uniforms.cursorLast = uniforms.cursorPos;
     uniforms.cursorPos = pos;
@@ -175,7 +195,7 @@ export default class Player {
       uniforms.cursorUpPos = pos.slice();
     }
 
-    uniforms.cursorAngle = Math.atan2(ev.offsetY, ev.offsetX);
+    uniforms.cursorAngle = Math.atan2(pos[1], pos[0]);
   }
 
   handleResize(ev) {
@@ -191,6 +211,7 @@ export default class Player {
     this.size = [w, h];
     this.scrollRange = document.documentElement.scrollHeight - dw;
 
+    this.uniforms.resize = true;
     this.gl.viewport(0, 0, w, h);
     this.programs.forEach((e) => e.handleResize(ev));
   }
