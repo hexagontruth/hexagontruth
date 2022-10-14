@@ -22,10 +22,11 @@ export default {
       ],
   },
   logo: {
+    minPixelRatio: 2,
+    stopAt: 60,
     uniforms: {
       duration: 60,
     },
-    stopAt: 60,
     shaders: [
       [
         'vertex-position',

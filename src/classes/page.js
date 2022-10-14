@@ -30,13 +30,6 @@ export default class Page {
     this.setArgs();
 
     window.addEventListener('load', (ev) => this.onLoad(ev));
-    window.addEventListener('keydown', (ev) => this.handleKey(ev));
-    window.addEventListener('keyup', (ev) => this.handleKey(ev));
-    window.addEventListener('pointercancel', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerdown', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointermove', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerout', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerup', (ev) => this.handlePointer(ev));
     window.addEventListener('resize', (ev) => this.onResize(ev));
     window.addEventListener('scroll', (ev) => this.onScroll(ev));
 
@@ -75,13 +68,14 @@ export default class Page {
     this.players = {};
     document.querySelectorAll('.player').forEach((el) => {
       const name = el.getAttribute('data-program');
-      const controls = el.getAttribute('data-control');
+      const controlsSelector = el.getAttribute('data-controls');
+      const controls = document.querySelector(controlsSelector);
       const player = new Player(name, el, controls);
       this.players[name] = player;
     });
 
-    this.counter = document.querySelector('.counter');
     this.players.background.addHook('afterRun', () => this.updateCounter());
+    this.counter = document.querySelector('.counter');
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
 
@@ -94,6 +88,14 @@ export default class Page {
         thumb.style.opacity = 1;
       });
     });
+
+    window.addEventListener('keydown', (ev) => this.handleKey(ev));
+    window.addEventListener('keyup', (ev) => this.handleKey(ev));
+    window.addEventListener('pointercancel', (ev) => this.handlePointer(ev));
+    window.addEventListener('pointerdown', (ev) => this.handlePointer(ev));
+    window.addEventListener('pointermove', (ev) => this.handlePointer(ev));
+    window.addEventListener('pointerout', (ev) => this.handlePointer(ev));
+    window.addEventListener('pointerup', (ev) => this.handlePointer(ev));
 
     this.setScrollBlocks();
     this.setAnchor();
@@ -112,9 +114,8 @@ export default class Page {
   }
 
   hideTitle() {
-    this.players.logo.stop();
-    this.players.logo.clear();
     this.titleHidden = true;
+    this.players.logo.hide();
     this.letterTimer && clearTimeout(this.letterTimer);
     this.letters.forEach((e) => e.classList.toggle('hidden', true));
     this.title.className = 't0';
@@ -267,7 +268,6 @@ export default class Page {
   }
 
   handlePointer(ev) {
-    if (!this.players.background) return;
     const {uniforms} = this.players.background;
     const pos = [
       ev.clientX / this.dw * 2 - 1,
@@ -318,7 +318,7 @@ export default class Page {
     else {
       nextPoint = pts.slice().reverse().find((e) => !this.eq(e, pts[this.getSnap()]) && e < newY);
     }
-    nextPoint != null && window.scrollTo(0, nextPoint);
+    nextPoint != null && window.scrollTo(0, nextPoint, {behavior: 'smooth'});
     ev.preventDefault();
   }
 }

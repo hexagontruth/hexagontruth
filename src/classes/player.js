@@ -2,7 +2,7 @@ import Hook from './hook.js';
 import Program from './program.js';
 import playerDefs from '../player-defs.js';
 
-const DEFAULT_INTERVAL = 17;
+const DEFAULT_INTERVAL = 33;
 
 const BASE_UNIFORMS = {
   duration: 360,
@@ -41,6 +41,8 @@ export default class Player {
     this.programs = [];
     this.counter = 0;
     this.interval = this.config.interval || DEFAULT_INTERVAL;
+    this.minPixelRatio = this.config.minPixelRatio || 1;
+    this.hidden = false;
 
     this.hooks = {
       beforeRun: new Hook(),
@@ -92,6 +94,16 @@ export default class Player {
     this.size = this.config.size?.slice() || [this.w, this.h];
   }
 
+  setHidden(val) {
+    this.hidden = val;
+    this.canvas.classList.toggle('hidden', val);
+  }
+
+  hide() {
+    this.setHidden(true);
+    this.stop();
+  }
+
   reset() {
     this.counter = 0;
     this.uniforms.resize = true;
@@ -131,6 +143,8 @@ export default class Player {
       gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
+
+    this.hidden && this.setHidden(false);
 
     this.callHook('afterRun');
     uniforms.resize = false;
@@ -181,7 +195,7 @@ export default class Player {
   }
 
   handleResize(ev) {
-    const dpr = Math.max(window.devicePixelRatio, 2);
+    const dpr = Math.max(window.devicePixelRatio, this.minPixelRatio);
     const [dw, dh] = [this.canvas.offsetWidth, this.canvas.offsetHeight];
     const [w, h] = [dw, dh].map((e) => Math.round(e * dpr));
     this.dw = dw;
