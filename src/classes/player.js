@@ -1,5 +1,8 @@
 import Hook from './hook.js';
 import Program from './program.js';
+import playerDefs from '../player-defs.js';
+
+const DEFAULT_INTERVAL = 17;
 
 const BASE_UNIFORMS = {
   duration: 360,
@@ -26,37 +29,42 @@ const BASE_UNIFORMS = {
 };
 
 export default class Player {
-  constructor(canvas, controls, programDefs, uniformOverrides={}) {
+  constructor(name, canvas, controls) {
+    this.name = name;
+    this.config = playerDefs[name];
+    this.shaderDefs = this.config.shaders;
     this.canvas = canvas;
     this.controls = controls;
     this.gl = canvas.getContext('webgl2');
-    this.programDefs = Object.assign({}, programDefs);
-    this.uniforms = Object.assign({}, BASE_UNIFORMS, uniformOverrides);
+
+    this.uniforms = Object.assign({}, BASE_UNIFORMS, this.config.uniforms);
     this.programs = [];
     this.counter = 0;
-    this.size = [0, 0];
-    this.interval = 17;
+    this.interval = this.config.interval || DEFAULT_INTERVAL;
+
     this.hooks = {
       beforeRun: new Hook(),
       afterRun: new Hook(),
     };
 
-    window.addEventListener('keydown', (ev) => this.handleKey(ev));
-    window.addEventListener('keyup', (ev) => this.handleKey(ev));
-    window.addEventListener('pointercancel', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerdown', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointermove', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerout', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerup', (ev) => this.handlePointer(ev));
+    if (this.config.size && !isNaN(this.config.size)) {
+      console.log(this.name);
+      this.config.size = [this.config.size, this.config.size];
+    }
+    this.setSize();
+
     window.addEventListener('resize', (ev) => this.handleResize(ev));
     window.addEventListener('scroll', (ev) => this.handleScroll(ev));
 
     this.handleResize();
     this.handleScroll();
+    this.clear();
+    this.programs = Program.build(this, this.shaderDefs);
+  }
 
-    this.gl.clearColor(1, 0, 0, 1);
+  clear() {
+    this.gl.clearColor(0, 0, 0, 1);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-    this.programs = Program.build(this, programDefs);
   }
 
   setup() {
@@ -78,6 +86,10 @@ export default class Player {
       gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
       gl.vertexAttribPointer(vertPositionAttribute, 3, gl.FLOAT, false, 0, 0);
     }
+  }
+
+  setSize() {
+    this.size = this.config.size?.slice() || [this.w, this.h];
   }
 
   reset() {
@@ -127,6 +139,7 @@ export default class Player {
 
   loop() {
     if (!this.playing) return;
+    if (this.config.stopAt && this.config.stopAt <= this.counter) return;
     const now = Date.now();
     if (now >= this.last + this.interval) {
       this.last = now;
@@ -152,7 +165,7 @@ export default class Player {
   }
 
   toggleControls(state=undefined) {
-    this.controls.classList.toggle('hidden', state);
+    this.controls?.classList.toggle('hidden', state);
   }
 
   addHook(key, fn) {
@@ -167,73 +180,9 @@ export default class Player {
     return this.hooks[key]?.call(...args);
   }
 
-  handleKey(ev) {
-    const {uniforms} = this;
-    const key = ev.key.toUpperCase();
-    const uniformKey = `key${key}`;
-    if ('WASD'.includes(key)) {
-      const wasdMap = {
-        W: [0, 1],
-        A: [-1, 0],
-        S: [0, -1],
-        D: [1, 0],
-      };
-      const dirDelta = wasdMap[key];
-      if (ev.type == 'keydown') {
-        uniforms[uniformKey] = true;
-        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
-      }
-      else if (ev.type == 'keyup') {
-        uniforms[uniformKey] = false;
-        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
-      }
-    }
-    else if (ev.type == 'keydown') {
-      if (key == 'R') {
-        this.reset();
-        this.run();
-      }
-      else if (key == 'T') {
-        this.toggle();
-      }
-      else if (key == 'C') {
-        this.toggleControls();
-      }
-      else if (key == 'G') {
-        if (this.playing)
-          this.stop();
-        else
-          this.run();
-      }
-    }
-  }
-
-  handlePointer(ev) {
-    const {uniforms} = this;
-    const pos = [
-      ev.clientX / this.dw * 2 - 1,
-      ev.clientY / this.dh * -2 + 1,
-    ];
-    uniforms.cursorLast = uniforms.cursorPos;
-    uniforms.cursorPos = pos;
-
-    if (ev.type == 'pointerdown') {
-      uniforms.cursorDown = true;
-      uniforms.cursorDownAt = this.counter;
-      uniforms.cursorDownPos = pos.slice();
-    }
-    else if (ev.type == 'pointerup' || ev.type == 'pointerout' || ev.type == 'pointercancel') {
-      uniforms.cursorDown = false;
-      uniforms.cursorUpAt = this.counter;
-      uniforms.cursorUpPos = pos.slice();
-    }
-
-    uniforms.cursorAngle = Math.atan2(pos[1], pos[0]);
-  }
-
   handleResize(ev) {
     const dpr = Math.max(window.devicePixelRatio, 2);
-    const [dw, dh] = [window.innerWidth, window.innerHeight];
+    const [dw, dh] = [this.canvas.offsetWidth, this.canvas.offsetHeight];
     const [w, h] = [dw, dh].map((e) => Math.round(e * dpr));
     this.dw = dw;
     this.dh = dh;
@@ -241,7 +190,7 @@ export default class Player {
     this.h = h;
     this.canvas.width = w;
     this.canvas.height = h;
-    this.size = [w, h];
+    this.setSize();
     this.scrollRange = document.documentElement.scrollHeight - dw;
 
     this.uniforms.resize = true;

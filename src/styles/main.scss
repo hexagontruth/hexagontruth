@@ -185,7 +185,7 @@ footer {
   overflow: hidden;
 }
 
-.background img, .background video, .background canvas {
+canvas {
   position: relative;
   display: block;
   width: 100%;
@@ -233,6 +233,22 @@ footer {
       @include flex(column, align-start);
     }
     .title-logo {
+      position: relative;
+      width: 6rem;
+      flex: 0 0 6rem;
+      .logo {
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        &.transition {
+          transition: opacity $t-short;
+        }
+        &.hide {
+          opacity: 0;
+        }
+      }
     }
     .title-text {
       margin: 2rem 0;
@@ -347,12 +363,6 @@ sup {
   25% { opacity: 0; }
   70% { opacity: 0; }
   75% { opacity: 1; }
-}
-
-img.logo {
-  display: block;
-  margin: auto;
-  width: 6rem;
 }
 
 section {

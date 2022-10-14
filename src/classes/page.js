@@ -1,5 +1,4 @@
 import Player from './player.js';
-import programDefs from '../program-defs.js';
 
 const PAGE_REDIRECTS = {
   cryptovoxels: 'https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U',
@@ -24,15 +23,22 @@ export default class Page {
     this.scrollMap = {};
     this.letterTimer = null;
     this.letterInterval = 150;
+    this.titleHidden = false;
 
     this.prod = window.location.host == PROD_HOST;
 
     this.setArgs();
 
     window.addEventListener('load', (ev) => this.onLoad(ev));
+    window.addEventListener('keydown', (ev) => this.handleKey(ev));
+    window.addEventListener('keyup', (ev) => this.handleKey(ev));
+    window.addEventListener('pointercancel', (ev) => this.handlePointer(ev));
+    window.addEventListener('pointerdown', (ev) => this.handlePointer(ev));
+    window.addEventListener('pointermove', (ev) => this.handlePointer(ev));
+    window.addEventListener('pointerout', (ev) => this.handlePointer(ev));
+    window.addEventListener('pointerup', (ev) => this.handlePointer(ev));
     window.addEventListener('resize', (ev) => this.onResize(ev));
     window.addEventListener('scroll', (ev) => this.onScroll(ev));
-    window.addEventListener('keydown', (ev) => this.onKeydown(ev));
 
     // This goes against everything I believe in but fuck you Chrome
     if (window.chrome) {
@@ -66,16 +72,18 @@ export default class Page {
     this.footer = document.querySelector('footer');
     this.prod && this.onProd();
 
-    this.player = new Player(
-      document.querySelector('canvas.player'),
-      document.querySelector('.controls'),
-      programDefs.background,
-    );
+    this.players = {};
+    document.querySelectorAll('.player').forEach((el) => {
+      const name = el.getAttribute('data-program');
+      const controls = el.getAttribute('data-control');
+      const player = new Player(name, el, controls);
+      this.players[name] = player;
+    });
+
     this.counter = document.querySelector('.counter');
-    this.player.addHook('afterRun', () => this.updateCounter());
+    this.players.background.addHook('afterRun', () => this.updateCounter());
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
-    this.titleHidden = false;
 
     document.querySelectorAll('.video-thumbs li').forEach((thumb) => {
       let video = thumb.querySelector('video');
@@ -95,15 +103,17 @@ export default class Page {
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;
 
-    this.player.start();
+    this.players.background.start();
   }
 
   updateCounter() {
-    const paddedCount = ('00000' + this.player.counter).slice(-6);
+    const paddedCount = ('00000' + this.players.background.counter).slice(-6);
     this.counter.innerHTML = paddedCount;
   }
 
   hideTitle() {
+    this.players.logo.stop();
+    this.players.logo.clear();
     this.titleHidden = true;
     this.letterTimer && clearTimeout(this.letterTimer);
     this.letters.forEach((e) => e.classList.toggle('hidden', true));
@@ -113,6 +123,7 @@ export default class Page {
 
   animateTitle() {
     this.hideTitle();
+    this.players.logo.start();
     this.titleHidden = false;
     this.setTitleTimer();
   }
@@ -213,6 +224,72 @@ export default class Page {
 
   }
 
+  handleKey(ev) {
+    const {background} = this.players;
+    const {uniforms} = background;
+    const key = ev.key.toUpperCase();
+    const uniformKey = `key${key}`;
+    if ('WASD'.includes(key)) {
+      const wasdMap = {
+        W: [0, 1],
+        A: [-1, 0],
+        S: [0, -1],
+        D: [1, 0],
+      };
+      const dirDelta = wasdMap[key];
+      if (ev.type == 'keydown') {
+        uniforms[uniformKey] = true;
+        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
+      }
+      else if (ev.type == 'keyup') {
+        uniforms[uniformKey] = false;
+        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
+      }
+    }
+    else if (ev.type == 'keydown') {
+      if (key == 'R') {
+        background.reset();
+        background.run();
+      }
+      else if (key == 'T') {
+        background.toggle();
+      }
+      else if (key == 'C') {
+        background.toggleControls();
+      }
+      else if (key == 'G') {
+        if (background.playing)
+          background.stop();
+        else
+          background.run();
+      }
+    }
+  }
+
+  handlePointer(ev) {
+    if (!this.players.background) return;
+    const {uniforms} = this.players.background;
+    const pos = [
+      ev.clientX / this.dw * 2 - 1,
+      ev.clientY / this.dh * -2 + 1,
+    ];
+    uniforms.cursorLast = uniforms.cursorPos;
+    uniforms.cursorPos = pos;
+
+    if (ev.type == 'pointerdown') {
+      uniforms.cursorDown = true;
+      uniforms.cursorDownAt = this.counter;
+      uniforms.cursorDownPos = pos.slice();
+    }
+    else if (ev.type == 'pointerup' || ev.type == 'pointerout' || ev.type == 'pointercancel') {
+      uniforms.cursorDown = false;
+      uniforms.cursorUpAt = this.counter;
+      uniforms.cursorUpPos = pos.slice();
+    }
+
+    uniforms.cursorAngle = Math.atan2(pos[1], pos[0]);
+  }
+
   onScroll(ev) {
     if (!this.hasScroll) return;
     this.scrollTabs.forEach((e) => e.classList.remove('active'));
@@ -243,16 +320,5 @@ export default class Page {
     }
     nextPoint != null && window.scrollTo(0, nextPoint);
     ev.preventDefault();
-  }
-
-  onKeydown(ev) {
-    if (!this.hasScroll) return;
-    if (ev.key == ' ') {
-      let lastPoint = this.scrollBlocks.slice(-1)[0].offsetTop;
-      if (lastPoint == window.scrollY) {
-        window.scrollTo(0, 0);
-        ev.preventDefault();
-      }
-    }
   }
 }

@@ -29,14 +29,14 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
     </div>
   </header>
   <div class="background">
-    <canvas class="player"></canvas>
+    <canvas class="player" data-program="background"></canvas>
     <!-- <video autoplay muted loop style="background-image: url(media/bc-placeholder.jpg);" data-slug="media/bc-%.mp4" data-sizes="2880,2160,1440,1080" data-breakpoints="2400,1440,1080,0"></video> -->
   </div>
   <section class="scroll-block flex">
     <div class="block flex center text-center title">
       <div class="title-block"></div>
-      <div class="title-logo">
-        <img class="logo" src="media/hexstar-mono.png" title="Hexagonal Awareness" alt="Hexagonal Awareness"/>
+      <div class="title-logo" id="logo-container">
+        <canvas class="player" data-program="logo"></canvas>
       </div>
       <div class="title-block">
         <div class="title-text">
@@ -190,6 +190,8 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
        width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
     <polygon points="93.302,75 50,100 6.698,75 6.698,25 50,0 93.302,25 "/>
     </svg>
+    <img class="logo" id="logo-static" title="Hexagonal Awareness" alt="Hexagonal Awareness" src="media/hexstar-mono.png"/>
+    <img class="logo" id="logo-animated" title="Hexagonal Awareness" alt="Hexagonal Awareness" src="media/hexstar-animated.gif"/>
   </div>
 
 
