@@ -7,12 +7,12 @@ export default {
     // [
     //   'vertex-position',
     //   'ca-state',
-    //   {size: 64, uniforms: { gridSize: 30, skip: 10 }},
+    //   {size: 64, uniforms: { gridSize: 15, skip: 30 }},
     // ],
     // [
     //   'vertex-position',
     //   'ca-display',
-    //   {uniforms: { gridSize: 30, skip: 10 }},
+    //   {uniforms: { gridSize: 15, skip: 30 }},
     // ],
     // [
     //   'vertex-position',

@@ -1,46 +1,6 @@
 #include common.fs
 #include ca-utils.fs
 
-vec3 nbrs[7] = vec3[7](
-  vec3(0, 0, 0),
-  vec3(1, 0, -1), //1
-  vec3(0, 1, -1), //2
-  vec3(-1, 1, 0), //3
-  vec3(-1, 0, 1), //4
-  vec3(0, -1, 1), //5
-  vec3(1, -1, 0) //6
-);
-
-vec3 nbrs2[6] = vec3[6](
-  vec3(0, -1, 1), //5
-  vec3(-1, 1, 0), //3
-  vec3(1, 0, -1), //1
-  vec3(0, 1, -1), //2
-  vec3(1, -1, 0), //6
-  vec3(-1, 0, 1) //4
-);
-
-float range = pow(2., 8.);
-
-vec3 unpack(vec4 n) {
-  vec3 s, m;
-  n.w = fract(round(n.w * 64.) / 64.);
-  s.x = mod(floor(n.w * 2.), 2.) * 2. - 1.;
-  s.y = mod(floor(n.w * 4.), 2.) * 2. - 1.;
-  s.z = mod(floor(n.w * 8.), 2.) * 2. - 1.;
-  m = round(n.xyz * range) * s;
-  return m;
-}
-vec4 pack(vec3 n) {
-  float w;
-  vec3 p, s;
-  s = sign(n) * 0.5 + 0.5;
-  s = mix(unit.yyy, s, abs(sign(n)));
-  p = round(clamp(abs(n), 0., range)) / range;
-  w = s.x * 1./2. + s.y * 1./4. + s.z * 1./8.;
-  return vec4(p, w);
-}
-
 vec4 sampNbr(vec3 hex) {
     vec2 uv = cell2uv(hex, lastSize);
     return texture(inputTexture, uv);
@@ -62,20 +22,56 @@ vec4 interpSample(vec3 hex, vec3 pix) {
   return samp;
 }
 
-vec4 cellSample(vec3 hex, vec3 pix) {
-  vec4 psamp;
-  vec4 usamp, samp;
-  vec3 n[3], wts;
+vec3 ic(vec3 p, out vec3 v[3]) {
+  vec3 q, d, r, fl, cl, alt;
+  int i0, i1, i2;
 
-  wts = interpolatedCubic(hex, n);
-  for (int i = 0; i < 3; i++) {
-    psamp = sampNbr(n[i]);
-    usamp = (psamp);// * 4.;
-    // usamp = -1. * usamp;
-    // usamp = usamp/256.;
-    samp += usamp * wts[i];
+  fl = floor(p);
+  cl = ceil(p);
+  r = round(p);
+  d = abs(r - p);
+
+  for (int i = 0; i < 3; i++)
+    alt[i] = r[i] == fl[i] ? cl[i] : fl[i];
+
+  if (d.x > d.y && d.x > d.z)
+    i0 = 0;
+  else if (d.y > d.z)
+    i0 = 1;
+  else
+    i0 = 2;
+  i1 = (i0 + 1) % 3;
+  i2 = (i0 + 2) % 3;
+
+  r[i0] = -r[i1] - r[i2];
+  v[0] = v[1] = v[2] = r;
+  v[1][i1] = alt[i1];
+  v[1][i0] = -v[1][i1] - v[1][i2];
+  v[2][i2] = alt[i2];
+  v[2][i0] = -v[2][i1] - v[2][i2];
+
+  for (int i = 0; i < 3; i++)
+    q[i] = 1. - amax(v[i] - p);
+
+  q = q / sum(q);
+
+  // I don't remember how the rest of this function even works so I'm just adding this here
+  if (q.y < q.z) {
+    q.yz = q.zy;
+    vec3 temp = v[1];
+    v[1] = v[2];
+    v[2] = temp;
   }
-  return samp;
+  return q;
+}
+
+
+vec3 c2h(vec2 c) {
+  vec3 hex;
+  hex.y = (c.x - c.y * 1. / sr3);
+  hex.z =  c.y * 2. / sr3;
+  hex.x = -hex.z - hex.y;
+  return hex;
 }
 
 void main() {
@@ -84,11 +80,13 @@ void main() {
   vec2 uv = gl_FragCoord.xy / size;
   vec2 cv = uv * 2. - 1.;
   cv.y *= size.y / size.x;
-  // cv.y += parallax.y * 0.25;
+  cv.y += parallax.y * 0.25;
 
   cv = cv.yx;
   vec4 bin;
   vec3 hex, pix, cel;
+
+  vec3 dist, p[3];
 
   float t = fract(counter / skip);
 
@@ -97,25 +95,47 @@ void main() {
   cv = bin.yx;
 
   hex = cart2hex * (cv * gridSize);
+  dist = interpolatedCubic(hex, p);
+  pix = p[0];
 
-  pix = roundCubic(hex);
-  cel = hex2hex * (hex - pix);
+  float line;
+  for (int i = 0; i < 3; i++ ) {
+    vec4 s1, s2;
+    vec3 p1, p2;
+    vec2 c1, c2;
+    p1 = p[i];
+    p2 = p[(i + 1) % 3];
+    c1 = hex2cart * p1 / gridSize;
+    c2 = hex2cart * p2 / gridSize;
+    s1 = sampNbr(p1);
+    s2 = sampNbr(p2); 
+    if (s1.x > 0. && s2.x > 0.) {
+      line += smoothstep(0.002, 0.001, slength(c1, c2, cv));
+    }
+  }
+  cel = hex2hex * (hex - pix) * sr3;
+
+
   vec4 s = sampNbr(pix);
 
-  float r = amax(cel) - 0.5;
-
-  r = r + 1. - smoothstep(0., 1., max(t, s.g));
-
-  r = smoothstep(0.01, 0., r);
-
-  c = mix(unit.yyy, hsv2rgb(vec3(s.x/16., 0.75, 5./6.)), step(1., s.x));
+  float r = amax(cel);
+  r = r  + 1./12.- smoothstep(0., 0.5, max(t, s.g));
+  r = smoothstep(1./24., -1./24., r);
   
   c = s.xyz;
-  c = c.rrr * r;
+  c = c.rrb * r;
+
+  c = rgb2hsv(c);
+  c.x = amax(pix) / gridSize + time;
+  c.y = openStep(0., c.y) * 0.75;
+  c.z = min(c.z, 5. / 6.);
+  c = hsv2rgb(c);
+
+  c += line;
+
+
 
   c = clamp(c, 0., 1.) * htWhite;
-
-  c = max(c, vec3(1./8.));
 
   fragColor = vec4(c, 1);
 }

@@ -254,6 +254,10 @@ float qwp(float n, float q, float w) {
   return qw(abs(fract(n + 0.5) - 0.5), q, w);
 }
 
+float openStep(float m, float n) {
+  return 1. - step(m, -n);
+}
+
 float slength(vec2 u, vec2 v, vec2 p) {
   vec2 w, x, z;
   w = u - v;
@@ -318,6 +322,7 @@ vec3 interpolatedCubic(vec3 p, out vec3 v[3]) {
 
   q = q / sum(q);
 
+  // I don't remember how the rest of this function even works so I'm just adding this here
   if (q.y < q.z) {
     q.yz = q.zy;
     vec3 temp = v[1];

@@ -2285,9 +2285,9 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   dependencies:
     minimalistic-assert "^1.0.0"
 
-"webgl-loader@git+ssh://git@gitlab.com/hexagontruth/webgl-loader#d9f1d9bb":
+"webgl-loader@git+ssh://git@gitlab.com/hexagontruth/webgl-loader#a4f477ac":
   version "0.1.1"
-  resolved "git+ssh://git@gitlab.com/hexagontruth/webgl-loader#d9f1d9bbb3d44eb666cea5ef5d97d4bdf6f89884"
+  resolved "git+ssh://git@gitlab.com/hexagontruth/webgl-loader#a4f477ac214c35968392de292fd5b0bd89edda51"
 
 webpack-cli@^4.10.0:
   version "4.10.0"

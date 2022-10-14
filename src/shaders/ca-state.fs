@@ -186,7 +186,7 @@ vec4 rule2(vec3 hex, float p) {
 
 vec4 rule(vec3 hex, float p) {
   vec4 cur, next;
-  float n;
+  float n, map;
 
   cur = getNbr(hex);
   n = cur.x;
@@ -194,10 +194,31 @@ vec4 rule(vec3 hex, float p) {
     vec3 v = nbrs[i + 1];
     vec4 nbr = getNbr(hex + v);
     n += nbr.x;
+    map += step(0.001, nbr.b) * pow(2., float(i));
   }
+
   next = cur;
-  next.y = cur.x;
+  next.yw = cur.xz;
   next.x = n > 1. && n < 3. ? 1. : 0.;
+
+  if (
+    map == 32. + 16. ||
+    map == 16. + 8. ||
+    map == 8. + 4. ||
+    map == 4. + 2. ||
+    map == 2. + 1. ||
+    map == 1. + 32. ||
+
+    map == 32. + 4. ||
+    map == 16. + 2. ||
+    map == 8. + 1.
+  ) {
+    next.b = 1.;
+  }
+  else {
+    next.b = 0.;
+  }
+
   return next;
 }
 
@@ -236,14 +257,13 @@ void main() {
   if (resize) {
     for (int i = 0; i < 10; i++) {
       if (hex == seed[i]) {
-        // c = pack(vec3(60., 0., 0.));
-        c = vec4(1, 0, 0, 1);
+        c.b = 1.;
         break;
       }
     }
-    if (amax(hex) < 10.)
-      c = vec4(1, 0, 0, 1);
-    // c = pack(vec3(60, 0, 0));
+    if (amax(hex) < 8.) {
+      c.rg += 1.;
+    }
   }
   else if (mod(counter, skip) == 0.) {
     c = rule(hex, d);
