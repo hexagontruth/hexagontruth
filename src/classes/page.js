@@ -66,16 +66,16 @@ export default class Page {
     this.prod && this.onProd();
 
     this.players = {};
-    document.querySelectorAll('.player').forEach((el) => {
-      const name = el.getAttribute('data-program');
-      const controlsSelector = el.getAttribute('data-controls');
-      const controls = document.querySelector(controlsSelector);
-      const player = new Player(name, el, controls);
-      this.players[name] = player;
-    });
+    // document.querySelectorAll('.player').forEach((el) => {
+    //   const name = el.getAttribute('data-program');
+    //   const controlsSelector = el.getAttribute('data-controls');
+    //   const controls = document.querySelector(controlsSelector);
+    //   const player = new Player(name, el, controls);
+    //   this.players[name] = player;
+    // });
 
     this.counter = document.querySelector('.counter');
-    this.players.background.addHook('afterRun', () => this.updateCounter());
+    // this.players.background.addHook('afterRun', () => this.updateCounter());
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
 
@@ -105,19 +105,19 @@ export default class Page {
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;
 
-    this.players.background.start();
+    // this.players.background.start();
   }
 
   updateCounter() {
-    const paddedCount = ('00000' + this.players.background.counter).slice(-6);
-    this.counter.innerHTML = paddedCount;
+    // const paddedCount = ('00000' + this.players.background.counter).slice(-6);
+    // this.counter.innerHTML = paddedCount;
   }
 
   hideTitle() {
     this.titleHidden = true;
-    this.players.logo.stop();
-    this.players.logo.clear();
-    this.players.logo.setHidden(true);
+    // this.players.logo.stop();
+    // this.players.logo.clear();
+    // this.players.logo.setHidden(true);
     this.letterTimer && clearTimeout(this.letterTimer);
     this.letters.forEach((e) => e.classList.toggle('hidden', true));
     this.title.className = 't0';
@@ -126,7 +126,7 @@ export default class Page {
 
   animateTitle() {
     this.hideTitle();
-    this.players.logo.start();
+    // this.players.logo.start();
     this.titleHidden = false;
     this.setTitleTimer();
   }
@@ -228,68 +228,70 @@ export default class Page {
   }
 
   handleKey(ev) {
-    const {background} = this.players;
-    const {uniforms} = background;
-    const key = ev.key.toUpperCase();
-    const uniformKey = `key${key}`;
-    if ('WASD'.includes(key)) {
-      const wasdMap = {
-        W: [0, 1],
-        A: [-1, 0],
-        S: [0, -1],
-        D: [1, 0],
-      };
-      const dirDelta = wasdMap[key];
-      if (ev.type == 'keydown') {
-        uniforms[uniformKey] = true;
-        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
-      }
-      else if (ev.type == 'keyup') {
-        uniforms[uniformKey] = false;
-        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
-      }
-    }
-    else if (ev.type == 'keydown') {
-      if (key == 'R') {
-        background.reset();
-        background.run();
-      }
-      else if (key == 'T') {
-        background.toggle();
-      }
-      else if (key == 'C') {
-        background.toggleControls();
-      }
-      else if (key == 'G') {
-        if (background.playing)
-          background.stop();
-        else
-          background.run();
-      }
-    }
+    return;
+    // const {background} = this.players;
+    // const {uniforms} = background;
+    // const key = ev.key.toUpperCase();
+    // const uniformKey = `key${key}`;
+    // if ('WASD'.includes(key)) {
+    //   const wasdMap = {
+    //     W: [0, 1],
+    //     A: [-1, 0],
+    //     S: [0, -1],
+    //     D: [1, 0],
+    //   };
+    //   const dirDelta = wasdMap[key];
+    //   if (ev.type == 'keydown') {
+    //     uniforms[uniformKey] = true;
+    //     uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
+    //   }
+    //   else if (ev.type == 'keyup') {
+    //     uniforms[uniformKey] = false;
+    //     uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
+    //   }
+    // }
+    // else if (ev.type == 'keydown') {
+    //   if (key == 'R') {
+    //     background.reset();
+    //     background.run();
+    //   }
+    //   else if (key == 'T') {
+    //     background.toggle();
+    //   }
+    //   else if (key == 'C') {
+    //     background.toggleControls();
+    //   }
+    //   else if (key == 'G') {
+    //     if (background.playing)
+    //       background.stop();
+    //     else
+    //       background.run();
+    //   }
+    // }
   }
 
   handlePointer(ev) {
-    const {uniforms} = this.players.background;
-    const pos = [
-      ev.clientX / this.dw * 2 - 1,
-      ev.clientY / this.dh * -2 + 1,
-    ];
-    uniforms.cursorLast = uniforms.cursorPos;
-    uniforms.cursorPos = pos;
+    return;
+    // const {uniforms} = this.players.background;
+    // const pos = [
+    //   ev.clientX / this.dw * 2 - 1,
+    //   ev.clientY / this.dh * -2 + 1,
+    // ];
+    // uniforms.cursorLast = uniforms.cursorPos;
+    // uniforms.cursorPos = pos;
 
-    if (ev.type == 'pointerdown') {
-      uniforms.cursorDown = true;
-      uniforms.cursorDownAt = this.counter;
-      uniforms.cursorDownPos = pos.slice();
-    }
-    else if (ev.type == 'pointerup' || ev.type == 'pointerout' || ev.type == 'pointercancel') {
-      uniforms.cursorDown = false;
-      uniforms.cursorUpAt = this.counter;
-      uniforms.cursorUpPos = pos.slice();
-    }
+    // if (ev.type == 'pointerdown') {
+    //   uniforms.cursorDown = true;
+    //   uniforms.cursorDownAt = this.counter;
+    //   uniforms.cursorDownPos = pos.slice();
+    // }
+    // else if (ev.type == 'pointerup' || ev.type == 'pointerout' || ev.type == 'pointercancel') {
+    //   uniforms.cursorDown = false;
+    //   uniforms.cursorUpAt = this.counter;
+    //   uniforms.cursorUpPos = pos.slice();
+    // }
 
-    uniforms.cursorAngle = Math.atan2(pos[1], pos[0]);
+    // uniforms.cursorAngle = Math.atan2(pos[1], pos[0]);
   }
 
   onScroll(ev) {
