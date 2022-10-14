@@ -41,6 +41,7 @@ export default class Player {
     this.programs = [];
     this.counter = 0;
     this.interval = this.config.interval || DEFAULT_INTERVAL;
+    this.hidden = false;
 
     this.hooks = {
       beforeRun: new Hook(),
@@ -92,7 +93,13 @@ export default class Player {
     this.size = this.config.size?.slice() || [this.w, this.h];
   }
 
+  setHidden(val) {
+    this.hidden = val;
+    this.canvas.classList.toggle('hidden', val);
+  }
+
   reset() {
+    this.setHidden(false);
     this.counter = 0;
     this.uniforms.resize = true;
     this.uniforms.dir = [0, 0];
