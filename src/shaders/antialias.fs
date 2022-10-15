@@ -11,10 +11,10 @@ void main() {
   vec4 s, n;
 
   vec2 offsets[4] = vec2[4](
-    vec2(1, 0),
-    vec2(0, 1),
-    vec2(-1, 0),
-    vec2(0, -1)
+    vec2(1, 1),
+    vec2(-1, 1),
+    vec2(-1, -1),
+    vec2(1, -1)
   );
   s = texture(inputTexture, uv);
   for (int i = 0; i < 4; i++) {
