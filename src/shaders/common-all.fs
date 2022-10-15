@@ -23,12 +23,25 @@ bool isNan(float n) {
   return !(n <= 0. || 0. <= n);
 }
 
+float amax(vec4 v) {
+  return max(max(max(v.w, abs(v.x)), abs(v.y)), abs(v.z));
+}
+
 float amax(vec3 v) {
   return max(max(abs(v.x), abs(v.y)), abs(v.z));
 }
 
 float amax(vec2 v) {
   return max(abs(v.x), abs(v.y));
+}
+
+float vmax(vec3 v) {
+  return max(max(v.x, v.y), v.z);
+}
+
+float amin(vec4 v) {
+  v = abs(v);
+  return min(min(min(v.x, v.y), v.z), v.w);
 }
 
 float amin(vec3 v) {
@@ -39,6 +52,10 @@ float amin(vec3 v) {
 float amin(vec2 v) {
   v = abs(v);
   return min(v.x, v.y);
+}
+
+float vmin(vec3 v) {
+  return min(min(v.x, v.y), v.z);
 }
 
 float osc(float n) {
@@ -54,6 +71,10 @@ vec3 osc(vec3 n) {
   n -= 0.25;
   return sin(n * tau) * 0.5 + 0.5;
 }
+vec4 osc(vec4 n) {
+  n -= 0.25;
+  return sin(n * tau) * 0.5 + 0.5;
+}
 
 float tsin(float n) {
   return sin(n * tau);
@@ -61,6 +82,10 @@ float tsin(float n) {
 
 float tcos(float n) {
   return cos(n * tau);
+}
+
+float ttan(float n) {
+  return tan(n * tau);
 }
 
 vec2 tsin(vec2 n) {
@@ -71,12 +96,32 @@ vec2 tcos(vec2 n) {
   return cos(n * tau);
 }
 
+vec2 ttan(vec2 n) {
+  return tan(n * tau);
+}
+
 vec3 tsin(vec3 n) {
   return sin(n * tau);
 }
 
 vec3 tcos(vec3 n) {
   return cos(n * tau);
+}
+
+vec3 ttan(vec3 n) {
+  return tan(n * tau);
+}
+
+vec4 tsin(vec4 n) {
+  return sin(n * tau);
+}
+
+vec4 tcos(vec4 n) {
+  return cos(n * tau);
+}
+
+vec4 ttan(vec4 n) {
+  return tan(n * tau);
 }
 
 float sum(vec2 p) {
@@ -87,12 +132,20 @@ float sum(vec3 p) {
   return p.x + p.y + p.z;
 }
 
+float sum(vec4 p) {
+  return p.x + p.y + p.z + p.w;
+}
+
 float prod(vec2 p) {
   return p.x * p.y;
 }
 
 float prod(vec3 p) {
   return p.x * p.y * p.z;
+}
+
+float prod(vec4 p) {
+  return p.x * p.y * p.z * p.w;
 }
 
 float xsum(float s, float q) {
@@ -104,6 +157,10 @@ vec2 xsum(vec2 s, vec2 q) {
 }
 
 vec3 xsum(vec3 s, vec3 q) {
+  return s + q - 2. * s * q;
+}
+
+vec4 xsum(vec4 s, vec4 q) {
   return s + q - 2. * s * q;
 }
 
@@ -181,6 +238,16 @@ float slength(vec2 u, vec2 v, vec2 p) {
   z = project(x, w);
   z = clamp(z, min(w, unit.yy), max(w, unit.yy));
   return length(z - x);
+}
+
+float rhex(vec3 hex, float r) {
+  r = length(hex * sr2/2.) * r;
+  return r + length(max(abs(hex) - r, 0.));
+}
+
+float rtri(vec3 hex, float r) {
+  r = length(hex * sr2/2./sr3) * r;
+  return r + length(max(hex - r, 0.));
 }
 
 vec3 roundCubic(vec3 p) {
@@ -274,6 +341,10 @@ vec3 quantize(vec3 f, float n, float ep) {
   return floor(clamp(f * n, 0., n - ep)) / n;
 }
 
+vec4 quantize(vec4 f, float n, float ep) {
+  return floor(clamp(f * n, 0., n - ep)) / n;
+}
+
 float quantize(float f, float n) {
   return quantize(f, n, 1./16384.);
 }
@@ -283,6 +354,10 @@ vec2 quantize(vec2 f, float n) {
 }
 
 vec3 quantize(vec3 f, float n) {
+  return quantize(f, n, 1./16384.);
+}
+
+vec4 quantize(vec4 f, float n) {
   return quantize(f, n, 1./16384.);
 }
 
@@ -312,4 +387,32 @@ vec3 rgb2hsv(vec3 c) {
 
 vec3 hsv2rgb(vec3 c) {
   return hsv2rgb(vec4(c, 1)).xyz;
+}
+
+vec3 hsvShift(vec3 c, vec3 shift) {
+  c = rgb2hsv(c);
+  c += shift;
+  c = hsv2rgb(c);
+  return c;
+}
+
+vec4 hsvShift(vec4 c, vec3 shift) {
+  c = rgb2hsv(c);
+  c.rgb += shift;
+  c = hsv2rgb(c);
+  return c;
+}
+
+vec3 hsvScale(vec3 c, vec3 scale) {
+  c = rgb2hsv(c);
+  c *= scale;
+  c = hsv2rgb(c);
+  return c;
+}
+
+vec4 hsvScale(vec4 c, vec3 scale) {
+  c = rgb2hsv(c);
+  c.rgb += scale;
+  c = hsv2rgb(c);
+  return c;
 }

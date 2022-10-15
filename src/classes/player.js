@@ -9,9 +9,12 @@ const BASE_UNIFORMS = {
   counter: 0,
   time: 0,
   size: [0, 0],
+  cover: [1, 1],
+  contain: [1, 1],
   lastSize: [0, 0],
   parallax: [0, 0],
   dir: [0, 0],
+  aspect: 1,
   clock: 0,
   resize: false,
   cursorDownAt: 0,
@@ -127,7 +130,10 @@ export default class Player {
       const program = programs[i];
       uniforms.lastSize = uniforms.size.slice();
       uniforms.size = program.size || this.size;
-
+      uniforms.cover = program.cover;
+      uniforms.contain = program.contain;
+      uniforms.aspect = program.aspect;
+      
       const lastTexture = program.textures[last];
       let inputTexture = programs[li].textures[cur];
       if (programCount > 1 && i == 0) {

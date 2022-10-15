@@ -25,8 +25,8 @@ void main() {
   vec3 hex, gex, sex, pix, cel, samp, p[3], dist;
   float a, b, b1, e, r, n, x, x1, x2, y, z, q, s, w, t, t1, scale;
 
-  ov.x *= size.x / size.y;
-  ov.y += parallax.y * 0.25;
+  ov *= cover;
+  ov.y += parallax.y * 0.5;
   ov += dir/10.;
 
   // if (cursorDown) {
@@ -39,8 +39,8 @@ void main() {
   ov *= scale;
   cv = ov;
 
-  q = 2./size.y * scale * sr3 ;
-  w = 1./720. * scale * sr3;
+  q = 2./amax(size) * scale * sr3 ;
+  w = 1./960. * scale * sr3;
 
   hex = cart2hex * cv;
 

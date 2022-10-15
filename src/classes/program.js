@@ -51,6 +51,7 @@ export default class Program {
       this.framebuffers.push(fb);
     };
 
+    this.cover = this.contain = this.aspect = null;
     this.handleResize();
   }
 
@@ -66,6 +67,10 @@ export default class Program {
   handleResize(ev) {
     const {gl} = this;
     const [w, h] = this.size || this.player.size;
+    this.contain = w > h ? [w / h, 1] : [1, h / w];
+    this.cover = w > h ? [1, h / w] : [w / h, 1];
+    this.aspect = Math.max(...this.contain);
+
     for (let i = 0; i < 2; i++) {
       const [texture, fb] = [this.textures[i], this.framebuffers[i]];
 
@@ -88,6 +93,8 @@ export default class Program {
     gl.useProgram(program);
     uniforms = Object.assign({}, uniforms, this.uniforms);  
     for (let [key, value] of Object.entries(uniforms)) {
+      if (value == null)
+        continue;
       const idx = gl.getUniformLocation(program, key);
       if (!value.length)
         value = [value];

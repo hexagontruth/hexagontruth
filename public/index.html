@@ -23,7 +23,7 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
   <meta name="twitter:image:alt" content="Hexstar"/>
 </head>
 <body class="home" style="opacity: 0;">
-  <header>
+  <header class="header">
     <div class="controls hidden" id="controls">
       <div class="counter"></div>
     </div>
@@ -32,6 +32,7 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
     <canvas class="player" data-program="background" data-controls="#controls"></canvas>
     <!-- <video autoplay muted loop style="background-image: url(media/bc-placeholder.jpg);" data-slug="media/bc-%.mp4" data-sizes="2880,2160,1440,1080" data-breakpoints="2400,1440,1080,0"></video> -->
   </div>
+  <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
   <section class="scroll-block flex">
     <div class="block flex center text-center title">
       <div class="title-block end">
@@ -73,7 +74,7 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
           Hexagon Truth is an interdisciplinary digital art project produced in partnership with the Global Hexagonal Awareness Project.
         </p>
         <p>
-          He presently lives in St Petersburg, Florida with his two Christmas cacti.
+          He presently lives in St Petersburg, Florida with his two Christmas cacti. He doesn't usually talk about himself in the third person.
         </p>
       </div>
     </div>
@@ -171,7 +172,8 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
       </p>
     </div>
   </section>
-  <footer>
+  <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
+  <footer class="footer">
     <nav class="nav-menu nav-footer">
       <div class="wrapper pad-h">
         <ul class="links">

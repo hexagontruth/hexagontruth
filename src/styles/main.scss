@@ -35,6 +35,9 @@ html {
   scroll-snap-type: y mandatory;
   overscroll-behavior: none;
   scroll-behavior: smooth; // This doesn't seem to do a goddamn thing in any browser?
+  scroll-margin: 0;
+  scroll-padding: 0;
+  scroll-padding-block: 0;
 }
 
 body {
@@ -94,7 +97,7 @@ ul, ol {
   margin: auto auto;
 }
 
-header, footer {
+.header, .footer {
   position: fixed;
   z-index: 100;
   left: 0;
@@ -116,19 +119,30 @@ header, footer {
       top: 0;
       font-size: 1rem;
       height: 1rem;
-      button {
-        background: #888;
+      .scroll-tab {
+        @include flex;
+        width: 3em;
+        height: 100%;
+        background: transparent;
         cursor: pointer;
-        margin: 0 0.5em;
-        width: 2em;
-        height: max(1px, calc(1em / 12));
-        font-size: 1em;
-        border-radius: 1em;
-        transition: background $t-short;
-        &.active {
-          background: $nav-fg;
+        .scroll-tab-inner {
+          background: #888;
+          margin: 0 0.5em;
+          width: 2em;
+          height: max(1px, calc(1em / 12));
+          font-size: 1em;
+          border-radius: 1em;
+          transition: background $t-short;
         }
-      } 
+        &.active .scroll-tab-inner {
+          background: $nav-fg !important;
+        }
+        @media (hover: hover) {
+          &:hover .scroll-tab-inner {
+            background: $link-fg;
+          }
+        }
+      }
     }
     &.nav-footer {
       font-size: 1rem;
@@ -149,7 +163,7 @@ header, footer {
   }
 }
 
-header {
+.header {
   top: 0;
   .controls {
     @include flex(column);
@@ -170,7 +184,7 @@ header {
   }
 }
 
-footer {
+.footer {
   bottom: 0;
 }
 
@@ -233,7 +247,13 @@ canvas {
     .title-block {
       flex: 0 2 100%;
       height: 100%;
-      @include flex(column, align-start);
+      @include flex(column);
+      &.start {
+        justify-content: flex-start;
+      }
+      &.end {
+        justify-content: flex-end;
+      }
     }
     .title-logo {
       position: relative;
@@ -527,13 +547,15 @@ ul.links {
   margin: 0;
   padding: 0;
   line-height: 1;
-}
-
-ul.links li {
-  flex: 0 1 auto;
-  margin: 1em;
-  padding: 0;
-  text-align: center;
+  li {
+    flex: 0 1 auto;
+    margin: 1em;
+    padding: 0;
+    text-align: center;
+    a:hover::before {
+      transform: scale(1.5);
+    }
+  }
 }
 
 .lowercase {
@@ -554,19 +576,4 @@ ul.links li {
 
 .nowrap {
   white-space: nowrap;
-}
-
-header button:active {
-  background: #fb3;
-}
-
-@media (hover: hover) {
-  /* sweet merciful crap I hate CSS */
-
-  header button:hover {
-    background: #fb3;
-  }
-  ul.links li a:hover::before {
-    transform: scale(1.5);
-  }
 }

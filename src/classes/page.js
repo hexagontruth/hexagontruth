@@ -30,13 +30,6 @@ export default class Page {
     this.setArgs();
 
     window.addEventListener('load', (ev) => this.onLoad(ev));
-    window.addEventListener('resize', (ev) => this.onResize(ev));
-    window.addEventListener('scroll', (ev) => this.onScroll(ev));
-
-    // This goes against everything I believe in but fuck you Chrome
-    if (window.chrome && !navigator.maxTouchPoints) {
-      window.addEventListener('wheel', (ev) => this.onWheel(ev), {passive: false});
-    }
 
     setTimeout(() => this.onLoad(), 1000);
   }
@@ -61,8 +54,8 @@ export default class Page {
     this.loaded = true;
 
     this.body = document.body;
-    this.header = document.querySelector('header');
-    this.footer = document.querySelector('footer');
+    this.header = document.querySelector('.header');
+    this.footer = document.querySelector('.footer');
     this.prod && this.onProd();
 
     this.players = {};
@@ -96,11 +89,16 @@ export default class Page {
     window.addEventListener('pointermove', (ev) => this.handlePointer(ev));
     window.addEventListener('pointerout', (ev) => this.handlePointer(ev));
     window.addEventListener('pointerup', (ev) => this.handlePointer(ev));
+    window.addEventListener('scroll', (ev) => this.handleScroll(ev));
+
+    // This goes against everything I believe in but fuck you Chrome
+    if (window.chrome && !navigator.maxTouchPoints) {
+      window.addEventListener('wheel', (ev) => this.onWheel(ev), {passive: false});
+    }
 
     this.setScrollBlocks();
     this.setAnchor();
-    this.onResize();
-    this.onScroll();
+    this.handleScroll();
 
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;
@@ -165,22 +163,25 @@ export default class Page {
   }
 
   setScrollBlocks(scrollBlocks) {
-    this.scrollBlocks = Array.from(document.querySelectorAll('.scroll-block'));
-    if (!this.hasScroll)
-      return;
+    const tabTemplate = this.createElement('scroll-tab', 'div');
+    this.createElement('scroll-tab-inner', 'div', tabTemplate);
+
     this.scrollTabGroup = this.createElement('scroll-tabs', 'nav', this.header);
+    this.scrollBlocks = Array.from(document.querySelectorAll('.scroll-block'));
+
+    if (!this.hasScroll) return;
+    
     for (let i = 0; i < this.scrollBlocks.length; i++) {
-      let id = this.scrollBlocks[i].id;
-      if (id) {
-        this.scrollMap[id] = i;
-      }
-      let tab = this.createElement('scroll-tab', 'button', this.scrollTabGroup);
+      const id = this.scrollBlocks[i].id;
+      // if (!id) continue;
+
+      const tab = tabTemplate.cloneNode(true);
+      this.scrollTabGroup.appendChild(tab);
       this.scrollTabs.push(tab);
+      this.scrollMap[id] = i;
+
       tab.addEventListener('click', () => {
-        if (!this.scrollBlocks) return; // what was this for?
-        location.hash = this.scrollBlocks[i].id || '';
-        // window.scrollTo(0, this.scrollBlocks[i].offsetTop);
-        this.setSnap(i);
+        location.hash = this.scrollBlocks?.[i].id || '';
       });
     }
   }
@@ -219,10 +220,6 @@ export default class Page {
       this.gtag = gtag;
     };
     this.gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-MC0FHVSG9W';
-  }
-
-  onResize(ev) {
-
   }
 
   handleKey(ev) {
@@ -264,6 +261,9 @@ export default class Page {
         else
           background.run();
       }
+      else if (ev.key == 'Escape') {
+        window.scrollTo(0, 0);
+      }
     }
   }
 
@@ -290,7 +290,7 @@ export default class Page {
     uniforms.cursorAngle = Math.atan2(pos[1], pos[0]);
   }
 
-  onScroll(ev) {
+  handleScroll(ev) {
     if (!this.hasScroll) return;
     this.scrollTabs.forEach((e) => e.classList.remove('active'));
     let cur = this.scrollBlocks.findIndex((e) => this.eq(e.offsetTop));

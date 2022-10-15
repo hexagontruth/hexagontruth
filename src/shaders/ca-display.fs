@@ -79,7 +79,7 @@ void main() {
   fragColor = unit.yyyx;
   vec2 uv = gl_FragCoord.xy / size;
   vec2 cv = uv * 2. - 1.;
-  cv.y *= size.y / size.x;
+  cv *= cover;
   cv.y += parallax.y * 0.25;
 
   cv = cv.yx;
