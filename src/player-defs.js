@@ -17,7 +17,7 @@ export default {
       // ],
       // [
       //   'vertex-position',
-      //   'passthru',
+      //   'test',
       // ],
       ],
   },
