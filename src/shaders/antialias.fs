@@ -10,18 +10,17 @@ void main() {
   vec4 s, n;
 
   vec2 offsets[4];
-  offsets[0] = vec2(1, 0);
-  offsets[1] = vec2(0, 1);
-  offsets[2] = vec2(-1, 0);
-  offsets[3] = vec2(0, -1);
+  offsets[0] = vec2(1, 1);
+  offsets[1] = vec2(-1, 1);
+  offsets[2] = vec2(-1, -1);
+  offsets[3] = vec2(1, -1);
 
-  s = texture2D(inputTexture, uv);
   for (int i = 0; i < 4; i++) {
     vec2 v;
     v = offsets[i];
-    v = v / size;
+    v = v / size / 2.;
     n += texture2D(inputTexture, uv + v);
   }
-  s = mix(s, n / 4., 0.5);
+  s = n / 4.;
   gl_FragColor = s;
 }

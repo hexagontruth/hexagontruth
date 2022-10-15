@@ -35,7 +35,7 @@ export default {
       ],
       [
         'vertex-position',
-        'passthru',
+        'antialias',
       ]
     ]
   },

@@ -35,7 +35,7 @@ export default class Player {
     this.shaderDefs = this.config.shaders;
     this.canvas = canvas;
     this.controls = controls;
-    this.gl = canvas.getContext('webgl');
+    this.gl = canvas.getContext('webgl', {antialias: false});
 
     this.uniforms = Object.assign({}, BASE_UNIFORMS, this.config.uniforms);
     this.programs = [];
