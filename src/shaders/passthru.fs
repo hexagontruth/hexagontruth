@@ -1,11 +1,10 @@
-#version 300 es
+#version 100
 
 precision highp float;
-out vec4 fragColor;
 uniform vec2 size;
 uniform sampler2D inputTexture;
 
 void main() {
   vec2 uv = gl_FragCoord.xy / size;
-  fragColor = texture(inputTexture, uv);
+  gl_FragColor = texture2D(inputTexture, uv);
 }

@@ -1,7 +1,6 @@
-#version 300 es
+#version 100
+
 precision highp float;
-out vec4 fragColor;
-in vec4 vColor;
 uniform vec2 size;
 uniform vec2 lastSize;
 uniform vec2 parallax;
@@ -27,27 +26,48 @@ vec3 unit = vec3(1, 0, -1);
 #define sr2 1.4142135623730951
 #define sr3 1.7320508075688772
 
-mat3x2 hex2cart = mat3x2(
-  vec2(0, 0),
-  vec2(1, 0),
-  vec2(0.5, sr3 / 2.)
+mat3 hex2cart = mat3(
+  0, 0, 0,
+  1, 0, 0,
+  0.5, sr3 / 2., 0
 );
 
-mat2x3 cart2hex = mat2x3(
-  vec3(-1, 1, 0),
-  vec3(-1. / sr3, -1. / sr3, 2. / sr3)
+mat3 cart2hex = mat3(
+  -1, 1, 0,
+  -1. / sr3, -1. / sr3, 2. / sr3,
+  0, 0, 0
 );
 
 mat3 hex2hex = mat3(
-  vec3(0, 0, 0),
-  vec3(-1. / sr3, 2. / sr3, -1. / sr3),
-  vec3(-2. / sr3, 1. / sr3, 1. / sr3)
+  0, 0, 0,
+  -1. / sr3, 2. / sr3, -1. / sr3,
+  -2. / sr3, 1. / sr3, 1. / sr3
 );
 
 vec3 htWhite = 1. - vec3(1./36., 1./24., 1./12.);
 
 bool isNan(float n) {
   return !(n <= 0. || 0. <= n);
+}
+
+int mod(int n, int m) {
+  return n - (m * n / m);
+}
+
+float round(float n) {
+  return floor(n + 0.5);
+}
+
+vec2 round(vec2 n) {
+  return floor(n + 0.5);
+}
+
+vec3 round(vec3 n) {
+  return floor(n + 0.5);
+}
+
+vec4 round(vec4 n) {
+  return floor(n + 0.5);
 }
 
 float amax(vec4 v) {
@@ -298,8 +318,9 @@ vec3 interpolatedCubic(vec3 p, out vec3 v[3]) {
   r = round(p);
   d = abs(r - p);
 
-  for (int i = 0; i < 3; i++)
+  for (int i = 0; i < 3; i++) {
     alt[i] = r[i] == fl[i] ? cl[i] : fl[i];
+  }
 
   if (d.x > d.y && d.x > d.z)
     i0 = 0;
@@ -307,18 +328,33 @@ vec3 interpolatedCubic(vec3 p, out vec3 v[3]) {
     i0 = 1;
   else
     i0 = 2;
-  i1 = (i0 + 1) % 3;
-  i2 = (i0 + 2) % 3;
+  i1 = mod(i0 + 1, 3);
+  i2 = mod(i0 + 2, 3);
 
-  r[i0] = -r[i1] - r[i2];
-  v[0] = v[1] = v[2] = r;
-  v[1][i1] = alt[i1];
-  v[1][i0] = -v[1][i1] - v[1][i2];
-  v[2][i2] = alt[i2];
-  v[2][i0] = -v[2][i1] - v[2][i2];
+  // Wtf WebGL 1
+  for (int i = 0; i < 3; i++) {
+    if (i == i0) {
+      for (int j = 0; j < 3; j++) {
+        if (j == i1) {
+          for (int k = 0; k < 3; k++) {
+            if (k == i2) {
+              r[i] = -r[j] - r[k];
+              v[0] = v[1] = v[2] = r;
+              v[1][j] = alt[j];
+              v[1][i] = -v[1][j] - v[1][k];
+              v[2][k] = alt[k];
+              v[2][i] = -v[2][j] - v[2][k];
+            }
+          }
+        }
+      }
+    }
+  }
 
-  for (int i = 0; i < 3; i++)
+
+  for (int i = 0; i < 3; i++) {
     q[i] = 1. - amax(v[i] - p);
+  }
 
   q = q / sum(q);
 

@@ -35,7 +35,7 @@ export default class Player {
     this.shaderDefs = this.config.shaders;
     this.canvas = canvas;
     this.controls = controls;
-    this.gl = canvas.getContext('webgl2');
+    this.gl = canvas.getContext('webgl');
 
     this.uniforms = Object.assign({}, BASE_UNIFORMS, this.config.uniforms);
     this.programs = [];
@@ -50,7 +50,6 @@ export default class Player {
     };
 
     if (this.config.size && !isNaN(this.config.size)) {
-      console.log(this.name);
       this.config.size = [this.config.size, this.config.size];
     }
     this.setSize();
@@ -84,9 +83,9 @@ export default class Player {
 
     for (const program of this.programs) {
       const vertPositionAttribute = gl.getAttribLocation(program.program, 'vertexPosition');
-      gl.enableVertexAttribArray(vertPositionAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
       gl.vertexAttribPointer(vertPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(vertPositionAttribute);
     }
   }
 

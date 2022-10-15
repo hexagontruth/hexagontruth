@@ -5,7 +5,7 @@ float istep(float n, float v) {
 }
 
 vec3 angle(vec2 cv, float i, float d) {
-  return cart2hex * (cv + rot(unit.xy, i/6. * tau) * d);
+  return cart2hex * vec3(cv + rot(unit.xy, i/6. * tau) * d, 0);
 }
 
 float rad(vec3 hex, float r) {
@@ -31,7 +31,7 @@ void main() {
   ts = clamp(t * 2., 0., 1.);
   te = clamp(t * 2., 1., 2.) - 1.;
 
-  hex = cart2hex * cv;;
+  hex = cart2hex * vec3(cv, 0);
 
   e = rad(hex, t * 2.);
   a = istep(0., e);
@@ -85,5 +85,5 @@ void main() {
   // c.z = b * 5./6.;
   // c = hsv2rgb(c);
 
-  fragColor = vec4(c, 1);
+  gl_FragColor = vec4(c, 1);
 }

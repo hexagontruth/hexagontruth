@@ -32,10 +32,10 @@ export default {
         'vertex-position',
         'logo',
         {size: 512},
-        ],
+      ],
       [
         'vertex-position',
-        'antialias',
+        'passthru',
       ]
     ]
   },
