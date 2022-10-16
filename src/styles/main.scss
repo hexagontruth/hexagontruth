@@ -483,6 +483,41 @@ section {
   margin: auto;
 }
 
+.control-block {
+  @include flex(row);
+  background: $nav-bg;
+  color: $nav-fg;
+  line-height: 3rem;
+  gap: 1rem;
+  * {
+    
+  }
+  a {
+    text-align: center;
+    flex: 1 0 50%;
+  }
+  button {
+    flex: 0 1 25%;
+    transform: rotate(90deg);
+    &:hover {
+      color: $link-fg
+    }
+  }
+}
+
+button.button-touch {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 25%;
+  &.touch-left {
+    left: 0;
+  }
+  &.touch-right {
+    right: 0;
+  }
+}
+
 .video-outer {
   margin: auto;
   padding: 3rem;

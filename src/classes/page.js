@@ -71,10 +71,10 @@ export default class Page {
 
     this.videoDefs = videoDefs.slice();
     this.videoLink = document.querySelector('#video-link');
-    this.videoPrev = document.querySelector('#video-prev');
-    this.videoNext = document.querySelector('#video-next');
-    this.videoPrev.addEventListener('click', () => this.rotateVideo(-1));
-    this.videoNext.addEventListener('click', () => this.rotateVideo(1));
+    this.videoPrev = Array.from(document.querySelectorAll('.video-prev'));
+    this.videoNext = Array.from(document.querySelectorAll('.video-next'));
+    this.videoPrev.forEach((e) => e.addEventListener('click', () => this.rotateVideo(-1)));
+    this.videoNext.forEach((e) => e.addEventListener('click', () => this.rotateVideo(1)));
     this.videoInitialized = false;
     this.videoIdx = 0;
 
