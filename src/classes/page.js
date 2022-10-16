@@ -1,18 +1,7 @@
+import HookSet from './hook-set.js';
 import Player from './player.js';
-
-const PAGE_REDIRECTS = {
-  cryptovoxels: 'https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U',
-  discord: 'https://discord.gg/t6hrz7S',
-  opensea: 'https://opensea.io/hexagontruth',
-  rarible: 'https://rarible.com/hexagontruth',
-  showtime: 'https://tryshowtime.com/hexagontruth',
-  superrare: 'https://superrare.co/hexagontruth',
-  youtube: 'https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g',
-  cv: 'https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U',
-  voxels: 'https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U',
-  sr: 'https://superrare.co/hexagontruth',
-  yt: 'https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g',
-};
+import redirectDefs from '../redirect-defs.js';
+import videoDefs from '../video-defs.js';
 
 const PROD_HOST = 'hexagontruth.com';
 
@@ -42,7 +31,7 @@ export default class Page {
       this.args[k] = k;
     }
 
-    Object.entries(PAGE_REDIRECTS).forEach(([k, v]) => {
+    Object.entries(redirectDefs).forEach(([k, v]) => {
       if (this.args[k]) {
         window.location.href = v;
       }
@@ -63,14 +52,26 @@ export default class Page {
       const name = el.getAttribute('data-program');
       const controlsSelector = el.getAttribute('data-controls');
       const controls = document.querySelector(controlsSelector);
-      const player = new Player(name, el, controls);
+      const player = new Player(this, name, el, controls);
       this.players[name] = player;
     });
+    this.players.main.hooks.add('afterRun', () => this.updateCounter());
 
-    this.players.background.addHook('afterRun', () => this.updateCounter());
+    this.hooks = new HookSet(['afterSnap']);
+    this.hooks.add('afterSnap', () => {
+      if (this.scrollId == 'art') {
+        this.players.video.start(false);
+      }
+      else if (this.players.video.playing) {
+        this.players.video.stop();
+      }
+    });
+
     this.counter = document.querySelector('.counter');
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
+
+    this.initializeVideo();
 
     document.querySelectorAll('.video-thumbs li').forEach((thumb) => {
       let video = thumb.querySelector('video');
@@ -103,11 +104,54 @@ export default class Page {
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;
 
-    this.players.background.start();
+    this.players.main.start();
+  }
+
+  initializeVideo() {
+    this.videoDefs = videoDefs.slice();
+    this.videoContainer = document.querySelector('#video-container');
+    this.videoLink = this.createElement(null, 'a', this.videoContainer);
+    this.videoLink.target = "_blank";
+    this.videoPlayers = Array(2).fill(null).map(() => {
+      const video = this.createElement(null, 'video', this.videoLink);
+      video.muted = true;
+      video.loop = true;
+      return video;
+    });
+    this.videoIdx = 0;
+    this.videoPlayerIdx = 0;
+
+    this.buttonPrev = document.querySelector('#button-prev');
+    this.buttonNext = document.querySelector('#button-next');
+    this.buttonPrev.addEventListener('click', () => this.rotateVideo(-1));
+    this.buttonNext.addEventListener('click', () => this.rotateVideo(1));
+
+    this.loadVideo(this.videoIdx);
+  }
+
+  rotateVideo(offset) {
+    this.videoIdx = (this.videoIdx + offset + this.videoDefs.length) % this.videoDefs.length;
+    this.loadVideo(this.videoIdx);
+  }
+
+  loadVideo(idx) {
+    const videoDef = this.videoDefs[idx];
+    const lastPlayer = this.videoPlayers[this.videoPlayerIdx % 2];
+    const nextPlayer = this.videoPlayers[++this.videoPlayerIdx % 2];
+
+    lastPlayer.classList.remove('active');
+    lastPlayer.pause();
+
+    nextPlayer.src = videoDef.src;
+    nextPlayer.classList.add('active');
+    nextPlayer.play();
+
+    this.videoLink.href = videoDef.link;
+    this.videoLink.title = videoDef.name;
   }
 
   updateCounter() {
-    const paddedCount = ('00000' + this.players.background.counter).slice(-6);
+    const paddedCount = ('00000' + this.players.main.counter).slice(-6);
     this.counter.innerHTML = paddedCount;
   }
 
@@ -151,13 +195,9 @@ export default class Page {
     }
   }
 
-  eq(y) {
-    return Math.abs(window.scrollY - y) < 5; 
-  }
-
   createElement(className, tag='div', parent=document.body) {
     let element = document.createElement(tag);
-    element.className = className;
+    element.className = className || '';
     parent && parent.appendChild(element);
     return element;
   }
@@ -186,11 +226,18 @@ export default class Page {
     }
   }
 
+  getScrollId() {
+    const entry = Object.entries(this.scrollMap).find(([k, v]) => v == this.snap);
+    return entry?.[0] || null;
+  }
+
   setSnap(n) {
     this.snap = n;
+    this.scrollId = this.getScrollId();
     let snap = this.getSnapObject();
     snap[window.location.pathname] = n;
     sessionStorage.setItem('snap', JSON.stringify(snap));
+    this.hooks.call('afterSnap');
   }
 
   getSnap() {
@@ -222,9 +269,13 @@ export default class Page {
     this.gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-MC0FHVSG9W';
   }
 
+  eq(y, ep=5) {
+    return Math.abs(window.scrollY - y) < ep; 
+  }
+
   handleKey(ev) {
-    const {background} = this.players;
-    const {uniforms} = background;
+    const {main} = this.players;
+    const {uniforms} = main;
     const key = ev.key.toUpperCase();
     const uniformKey = `key${key}`;
     if ('WASD'.includes(key)) {
@@ -246,29 +297,35 @@ export default class Page {
     }
     else if (ev.type == 'keydown') {
       if (key == 'R') {
-        background.reset();
-        background.run();
+        main.reset();
+        main.run();
       }
       else if (key == 'T') {
-        background.toggle();
+        main.toggle();
       }
       else if (key == 'C') {
-        background.toggleControls();
+        main.toggleControls();
       }
       else if (key == 'G') {
-        if (background.playing)
-          background.stop();
+        if (main.playing)
+          main.stop();
         else
-          background.run();
+          main.run();
       }
       else if (ev.key == 'Escape') {
         window.scrollTo(0, 0);
+      }
+      else if (ev.key == 'ArrowLeft' || ev.key == 'ArrowRight') {
+        if (this.scrollId == 'art') {
+          const offset = ev.key == 'ArrowLeft' ? -1 : 1;
+          this.rotateVideo(offset);
+        }
       }
     }
   }
 
   handlePointer(ev) {
-    const {uniforms} = this.players.background;
+    const {uniforms} = this.players.main;
     const pos = [
       ev.clientX / this.dw * 2 - 1,
       ev.clientY / this.dh * -2 + 1,
@@ -293,7 +350,7 @@ export default class Page {
   handleScroll(ev) {
     if (!this.hasScroll) return;
     this.scrollTabs.forEach((e) => e.classList.remove('active'));
-    let cur = this.scrollBlocks.findIndex((e) => this.eq(e.offsetTop));
+    let cur = this.scrollBlocks.findIndex((e) => this.eq(e.offsetTop, 1));
     if (cur != -1) {
       this.setSnap(cur);
       this.scrollTabs[cur].classList.add('active');
@@ -313,10 +370,10 @@ export default class Page {
     let newY = window.scrollY;
     let nextPoint;
     if (ev.deltaY > 0) {
-      nextPoint = pts.find((e) => !this.eq(e, pts[this.getSnap()]) && e > newY);
+      nextPoint = pts.find((e) => e != pts[this.snap] && e > newY);
     }
     else {
-      nextPoint = pts.slice().reverse().find((e) => !this.eq(e, pts[this.getSnap()]) && e < newY);
+      nextPoint = pts.slice().reverse().find((e) => e != pts[this.snap] && e < newY);
     }
     if (nextPoint != null) {
       window.scrollTo(0, nextPoint, {behavior: 'smooth'});

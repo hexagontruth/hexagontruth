@@ -1,0 +1,65 @@
+.video-outer {
+  @include flex;
+  // width: 100%;
+  height: 100%;
+  margin: auto;
+  flex: 0 0 100%;
+  padding: 2rem calc(2rem * 1.1547);
+  min-width: 0;
+  .video-middle {
+    position: relative;
+    margin: 0;
+    padding: 3rem calc(3rem * 1.1547);
+    min-width: 0;
+    width: 100%;
+    @include hex(false);
+    button {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      font-size: 2rem;
+      background-color: $body-fg-dark;
+      &:hover {
+        background-color: $link-fg;
+      }
+      &.button-left {
+        left: 0;
+        clip-path: polygon(50% 150%, 0% 50%, 50% -50%, 100% 50%);
+      }
+      &.button-right {
+        right: 0;
+        clip-path: polygon(25% 75%, 75% 50%, 25% 25%, 0% 25%, 50% 50%, 0% 75%);
+      }
+    }
+    .video-inner {
+      position: relative;
+      background: #000;
+      width: 100%;
+      height: 100%;
+      @include hex(false);
+      a {
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        video {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          display: block;
+          object-fit: cover;
+          cursor: pointer;
+          opacity: 0;
+          transition: opacity $t-short;
+          @include hex(false);
+          &.active {
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+}

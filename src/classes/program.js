@@ -60,7 +60,6 @@ export default class Program {
       const size = Array.isArray(config.size) ? config.size : [config.size, config.size];
       this.size = size;
     }
-
     this.uniforms = config.uniforms || {};
   }
 

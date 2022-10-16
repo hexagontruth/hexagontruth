@@ -29,7 +29,7 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
     </div>
   </header>
   <div class="background">
-    <canvas class="player" data-program="background" data-controls="#controls"></canvas>
+    <canvas class="player" data-program="main" data-controls="#controls"></canvas>
     <!-- <video autoplay muted loop style="background-image: url(media/bc-placeholder.jpg);" data-slug="media/bc-%.mp4" data-sizes="2880,2160,1440,1080" data-breakpoints="2400,1440,1080,0"></video> -->
   </div>
   <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
@@ -67,61 +67,48 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
     </div>
   </section>
   <section class="scroll-block flex" id="about">
-    <div class="block window"></div>
-    <div class="block content">
-      <div class="wrapper">
-        <p>
-          Hexagon Truth is an interdisciplinary digital art project produced in partnership with the Global Hexagonal Awareness Project.
-        </p>
-        <p>
-          He presently lives in St Petersburg, Florida with his two Christmas cacti. He doesn't usually talk about himself in the third person.
-        </p>
+    <div class="block window pad-4">
+      <div class="opaque-box pad">
+        <div class="wrapper">
+          <p>
+            Hexagon Truth is an interdisciplinary digital art project produced in partnership with the Global Hexagonal Awareness Project.
+          </p>
+          <p>
+            He presently lives in St Petersburg, Florida with his two Christmas cacti, and spends his free time writing about himself in the third person.
+          </p>
+        </div>
       </div>
     </div>
   </section>
   <section class="scroll-block flex" id="art">
     <div class="block window">
-<!--       <ul class="hex small video-thumbs">
-        <li style="opacity: 0;"><a title="Emptiness" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/26077"><video autoplay loop muted data-src="thumbs/thumb-emptiness.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Vacuum Decay" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/21970"><video autoplay loop muted data-src="thumbs/thumb-vacuum-decay.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Plerome" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/16516"><video autoplay loop muted data-src="thumbs/thumb-plerome.mp4" poster=""></video></a></li>
-        <li class="flex-break"></li>
-        <li style="opacity: 0;"><a title="Descent of Form" target="_blank" href="https://opensea.io/assets/ethereum/0x3b3ee1931dc30c1957379fac9aba94d1c48a5405/95416"><video autoplay loop muted data-src="thumbs/thumb-descent-of-form.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Diurn" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/16357"><video autoplay loop muted data-src="thumbs/thumb-diurn.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Taiji" target="_blank" href="https://opensea.io/assets/ethereum/0xd07dc4262bcdbf85190c01c996b4c06a461d2430/30908"><video autoplay loop muted data-src="thumbs/thumb-taiji.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="World Cube" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/23390"><video autoplay loop muted data-src="thumbs/thumb-world-cube.mp4" poster=""></video></a></li>
-        <li class="flex-break"></li>
-        <li style="opacity: 0;"><a title="Gyroid Cycle" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/18123"><video autoplay loop muted data-src="thumbs/thumb-gyroid-cycle.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Sun Flake" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/32486"><video autoplay loop muted data-src="thumbs/thumb-sun-flake.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Space Egg" target="_blank" href="https://opensea.io/assets/ethereum/0xd07dc4262bcdbf85190c01c996b4c06a461d2430/47523"><video autoplay loop muted data-src="thumbs/thumb-space-egg.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Triangle Study 1" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/32288"><video autoplay loop muted data-src="thumbs/thumb-triangle-study-1.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Return of the Monad" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/12665"><video autoplay loop muted data-src="thumbs/thumb-return-monad.mp4" poster=""></video></a></li>
-        <li class="flex-break"></li>
-        <li style="opacity: 0;"><a title="Difference Engine" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/17442"><video autoplay loop muted data-src="thumbs/thumb-difference-engine.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Machine Temple Dyad" target="_blank" href="https://opensea.io/assets/ethereum/0xd07dc4262bcdbf85190c01c996b4c06a461d2430/23237"><video autoplay loop muted data-src="thumbs/thumb-machine-temple-dyad.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="The Lenticular Identity" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/13799"><video autoplay loop muted data-src="thumbs/thumb-lenticular-identity.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Quaterniad" target="_blank" href="https://opensea.io/assets/ethereum/0xd07dc4262bcdbf85190c01c996b4c06a461d2430/65814"><video autoplay loop muted data-src="thumbs/thumb-quaterniad.mp4" poster=""></video></a></li>
-        <li class="flex-break"></li>
-        <li style="opacity: 0;"><a title="Glaskubenspiel" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/12830"><video autoplay loop muted data-src="thumbs/thumb-glaskubenspiel.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Hexagonal Pentatonic" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/13265"><video autoplay loop muted data-src="thumbs/thumb-hexagonal-pentatonic.mp4" poster=""></video></a></li>
-        <li style="opacity: 0;"><a title="Chromoflake" target="_blank" href="https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/13950"><video autoplay loop muted data-src="thumbs/thumb-chromoflake.mp4" poster=""></video></a></li>
-      </ul> -->
+      <canvas class="player abs-full" data-program="video"></canvas>
+      <div class="contain-w">
+        <div class="video-outer">
+          <div class="translucent-box video-inner" id="video-container">
+            <button class="button-left" id="button-prev">&#x25bc;</button>
+            <button class="button-right" id="button-next">&#x25b2;</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="block content">
       <div class="wrapper">
         <p>
-          For NFT art, check out my profiles on <a target="_blank" href="https://superrare.co/hexagontruth">SuperRare</a>, <a target="_blank" href="https://opensea.io/accounts/hexagontruth">OpenSea</a>, or <a target="_blank" href="https://foundation.app/@hexagontruth">Foundation</a>. Also be sure to stop by our <a target="_blank" title="Voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U">Voxels gallery</a>, which features both tokenized and untokenized Hexagon Truth pieces as well as a curated collection of works by other hexagonal artists.
+          For additional art NFTs, check out our profiles on <a target="_blank" href="https://superrare.co/hexagontruth">SuperRare</a>, <a target="_blank" href="https://opensea.io/accounts/hexagontruth">OpenSea</a>, or <a target="_blank" href="https://foundation.app/@hexagontruth">Foundation</a>. Also be sure to stop by our <a target="_blank" title="Voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U">Voxels gallery</a>, which features both tokenized and untokenized Hexagon Truth pieces as well as a curated collection of works by other hexagonal artists.
         </p>
       </div>
     </div>
   </section>
   <section class="scroll-block flex" id="projects">
     <div class="block window">
-      <ul class="hex large">
-        <li><a title="Legacy hexagonal awareness content site" target="_blank" href="https://hexnet.org/"><i class="icon-hexnet"></i><span>Hexnet</span></a></li>
-        <li><a title="Sternhalma implementation for up to six human or AI players" target="_blank" href="https://hexagontruth.github.io/minhalma/"><i class="icon-minhalma"></i><span>Minhalma</span></li></a>
-        <li><a title="Cellular automaton designer with media recording tools" target="_blank" href="https://hexagontruth.github.io/hexular/"><i class="icon-hexular"></i><span>Hexular</span></li></a>
-      </ul>
+      <div class="translucent-box pad-2">
+        <ul class="big-hex">
+          <li><a title="Legacy hexagonal awareness content site" target="_blank" href="https://hexnet.org/"><i class="icon-hexnet"></i><span>Hexnet</span></a></li>
+          <li><a title="Sternhalma implementation for up to six human or AI players" target="_blank" href="https://hexagontruth.github.io/minhalma/"><i class="icon-minhalma"></i><span>Minhalma</span></a></li>
+          <li><a title="Cellular automaton designer with media recording tools" target="_blank" href="https://hexagontruth.github.io/hexular/"><i class="icon-hexular"></i><span>Hexular</span></a></li>
+        </ul>
+      </div>
     </div>
     <div class="block content">
       <div class="wrapper">

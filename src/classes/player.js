@@ -1,4 +1,4 @@
-import Hook from './hook.js';
+import HookSet from './hook-set.js';
 import Program from './program.js';
 import playerDefs from '../player-defs.js';
 
@@ -32,7 +32,8 @@ const BASE_UNIFORMS = {
 };
 
 export default class Player {
-  constructor(name, canvas, controls) {
+  constructor(page, name, canvas, controls) {
+    this.page = page;
     this.name = name;
     this.config = playerDefs[name];
     this.shaderDefs = this.config.shaders;
@@ -47,13 +48,9 @@ export default class Player {
     this.minPixelRatio = this.config.minPixelRatio || 1;
     this.hidden = false;
 
-    this.hooks = {
-      beforeRun: new Hook(),
-      afterRun: new Hook(),
-    };
+    this.hooks = new HookSet(['beforeRun', 'afterRun']);
 
     if (this.config.size && !isNaN(this.config.size)) {
-      console.log(this.name);
       this.config.size = [this.config.size, this.config.size];
     }
     this.setSize();
@@ -68,7 +65,7 @@ export default class Player {
   }
 
   clear() {
-    this.gl.clearColor(0, 0, 0, 1);
+    this.gl.clearColor(0, 0, 0, 0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT);
   }
 
@@ -111,11 +108,11 @@ export default class Player {
     this.counter = 0;
     this.uniforms.resize = true;
     this.uniforms.dir = [0, 0];
-    this.callHook('afterRun');
+    this.hooks.call('afterRun');
   }
 
   run() {
-    this.callHook('beforeRun');
+    this.hooks.call('beforeRun');
     const {gl, programs, uniforms} = this;
     const cur = this.counter % 2;
     const last = (cur + 1) % 2;
@@ -133,7 +130,7 @@ export default class Player {
       uniforms.cover = program.cover;
       uniforms.contain = program.contain;
       uniforms.aspect = program.aspect;
-      
+
       const lastTexture = program.textures[last];
       let inputTexture = programs[li].textures[cur];
       if (programCount > 1 && i == 0) {
@@ -152,7 +149,7 @@ export default class Player {
 
     this.hidden && this.setHidden(false);
 
-    this.callHook('afterRun');
+    this.hooks.call('afterRun');
     uniforms.resize = false;
     this.counter++;
   }
@@ -186,18 +183,6 @@ export default class Player {
 
   toggleControls(state=undefined) {
     this.controls?.classList.toggle('hidden', state);
-  }
-
-  addHook(key, fn) {
-    return this.hooks[key]?.add(fn);
-  }
-
-  removeHook(key) {
-    return this.hooks[key]?.remove(key);
-  }
-
-  callHook(key, ...args) {
-    return this.hooks[key]?.call(...args);
   }
 
   handleResize(ev) {

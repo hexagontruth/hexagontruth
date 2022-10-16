@@ -1,5 +1,5 @@
 export default {
-  background: {
+  main: {
     shaders: [
       [
         'vertex-position',
@@ -20,6 +20,17 @@ export default {
       //   'passthru',
       // ],
       ],
+  },
+  video: {
+    customTextures: {
+      mainTexture: (player) => player.page.players.main.canvas,
+    },
+    shaders: [
+      [
+        'vertex-position',
+        'video',
+      ],
+    ],
   },
   logo: {
     minPixelRatio: 2,
