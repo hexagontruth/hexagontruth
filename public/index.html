@@ -25,11 +25,11 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
 <body class="home" style="opacity: 0;">
   <header class="header">
     <div class="controls hidden" id="controls">
-      <div class="counter"></div>
+      <div class="counter" id="counter"></div>
     </div>
   </header>
   <div class="background">
-    <canvas class="player" data-program="main" data-controls="#controls"></canvas>
+    <canvas class="player abs-full" data-program="main"></canvas>
     <!-- <video autoplay muted loop style="background-image: url(media/bc-placeholder.jpg);" data-slug="media/bc-%.mp4" data-sizes="2880,2160,1440,1080" data-breakpoints="2400,1440,1080,0"></video> -->
   </div>
   <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
@@ -37,7 +37,7 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
     <div class="block flex center text-center title">
       <div class="title-block end">
         <div class="title-logo" id="logo-container">
-          <canvas class="player" data-program="logo"></canvas>
+          <canvas class="player abs-full" data-program="logo"></canvas>
         </div>
       </div>
       <div class="title-text">
@@ -83,16 +83,13 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
   <section class="scroll-block flex" id="art">
     <div class="block window">
       <canvas class="player abs-full" data-program="video"></canvas>
-      <div class="contain-w">
-        <div class="video-outer">
-          <div class="translucent-box video-inner" id="video-container">
-            <button class="button-left" id="button-prev">&#x25bc;</button>
-            <button class="button-right" id="button-next">&#x25b2;</button>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="block content">
+      <div>
+        <button class="button-left" id="video-prev">&#x25bc;</button>
+        <a id="video-link" target="_blank"></a>
+        <button class="button-right" id="video-next">&#x25b2;</button>
+      </div>
       <div class="wrapper">
         <p>
           For additional art NFTs, check out our profiles on <a target="_blank" href="https://superrare.co/hexagontruth">SuperRare</a>, <a target="_blank" href="https://opensea.io/accounts/hexagontruth">OpenSea</a>, or <a target="_blank" href="https://foundation.app/@hexagontruth">Foundation</a>. Also be sure to stop by our <a target="_blank" title="Voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U">Voxels gallery</a>, which features both tokenized and untokenized Hexagon Truth pieces as well as a curated collection of works by other hexagonal artists.
@@ -101,7 +98,7 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
     </div>
   </section>
   <section class="scroll-block flex" id="projects">
-    <div class="block window">
+    <div class="block window pad-2">
       <div class="translucent-box pad-2">
         <ul class="big-hex">
           <li><a title="Legacy hexagonal awareness content site" target="_blank" href="https://hexnet.org/"><i class="icon-hexnet"></i><span>Hexnet</span></a></li>

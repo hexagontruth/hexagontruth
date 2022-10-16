@@ -1,3 +1,6 @@
+import CanvasInput from './classes/canvas-input.js';
+import VideoInput from './classes/video-input.js';
+
 export default {
   main: {
     shaders: [
@@ -22,8 +25,13 @@ export default {
       ],
   },
   video: {
-    customTextures: {
-      mainTexture: (player) => player.page.players.main.canvas,
+    customInput: {
+      videoTexture: (player) => new VideoInput(player, {size: 512}),
+      mainTexture: (player) => new CanvasInput(player, {canvas: player.page.players.main.canvas}),
+    },
+    uniforms: {
+      startCounter: 0,
+      srcCounter: 0,
     },
     shaders: [
       [

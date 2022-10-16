@@ -1,6 +1,6 @@
 export default [
   {
-    name: 'Descent of Form',
+    name: 'The Descent of Form',
     link: 'https://opensea.io/assets/ethereum/0x3b3ee1931dc30c1957379fac9aba94d1c48a5405/95416',
     src: 'videos/descent-of-form.mp4',
   },

@@ -55,23 +55,33 @@ export default class Page {
       const player = new Player(this, name, el, controls);
       this.players[name] = player;
     });
+    Object.values(this.players).forEach((e) => e.loadCustomTextures());
+
     this.players.main.hooks.add('afterRun', () => this.updateCounter());
 
     this.hooks = new HookSet(['afterSnap']);
     this.hooks.add('afterSnap', () => {
       if (this.scrollId == 'art') {
-        this.players.video.start(false);
+        this.startVideo();
       }
       else if (this.players.video.playing) {
-        this.players.video.hide();
+        this.stopVideo();
       }
     });
 
-    this.counter = document.querySelector('.counter');
+    this.videoDefs = videoDefs.slice();
+    this.videoLink = document.querySelector('#video-link');
+    this.videoPrev = document.querySelector('#video-prev');
+    this.videoNext = document.querySelector('#video-next');
+    this.videoPrev.addEventListener('click', () => this.rotateVideo(-1));
+    this.videoNext.addEventListener('click', () => this.rotateVideo(1));
+    this.videoInitialized = false;
+    this.videoIdx = 0;
+
+    this.controls = document.querySelector('#controls');
+    this.counter = document.querySelector('#counter');
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
-
-    this.initializeVideo();
 
     document.querySelectorAll('.video-thumbs li').forEach((thumb) => {
       let video = thumb.querySelector('video');
@@ -107,26 +117,17 @@ export default class Page {
     this.players.main.start();
   }
 
-  initializeVideo() {
-    this.videoDefs = videoDefs.slice();
-    this.videoContainer = document.querySelector('#video-container');
-    this.videoLink = this.createElement(null, 'a', this.videoContainer);
-    this.videoLink.target = "_blank";
-    this.videoPlayers = Array(2).fill(null).map(() => {
-      const video = this.createElement(null, 'video', this.videoLink);
-      video.muted = true;
-      video.loop = true;
-      return video;
-    });
-    this.videoIdx = 0;
-    this.videoPlayerIdx = 0;
+  startVideo() {
+    this.players.video.uniforms.startCounter = this.players.video.counter;
+    this.players.video.start(false);
+    if (!this.videoInitialized) {
+      this.videoInitialized = true;
+      this.loadVideo(this.videoIdx);
+    }
+  }
 
-    this.buttonPrev = document.querySelector('#button-prev');
-    this.buttonNext = document.querySelector('#button-next');
-    this.buttonPrev.addEventListener('click', () => this.rotateVideo(-1));
-    this.buttonNext.addEventListener('click', () => this.rotateVideo(1));
-
-    this.loadVideo(this.videoIdx);
+  stopVideo() {
+    this.players.video.hide();
   }
 
   rotateVideo(offset) {
@@ -136,18 +137,11 @@ export default class Page {
 
   loadVideo(idx) {
     const videoDef = this.videoDefs[idx];
-    const lastPlayer = this.videoPlayers[this.videoPlayerIdx % 2];
-    const nextPlayer = this.videoPlayers[++this.videoPlayerIdx % 2];
-
-    lastPlayer.classList.remove('active');
-    lastPlayer.pause();
-
-    nextPlayer.src = videoDef.src;
-    nextPlayer.classList.add('active');
-    nextPlayer.play();
+    this.players.video.customInput.videoTexture.setSrc(videoDef.src);
+    this.players.video.uniforms.srcCounter = this.players.video.counter;
 
     this.videoLink.href = videoDef.link;
-    this.videoLink.title = videoDef.name;
+    this.videoLink.innerHTML = videoDef.name;
   }
 
   updateCounter() {
@@ -269,6 +263,10 @@ export default class Page {
     this.gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-MC0FHVSG9W';
   }
 
+  toggleControls(state=undefined) {
+    this.controls?.classList.toggle('hidden', state);
+  }
+
   eq(y, ep=5) {
     return Math.abs(window.scrollY - y) < ep; 
   }
@@ -304,7 +302,7 @@ export default class Page {
         main.toggle();
       }
       else if (key == 'C') {
-        main.toggleControls();
+        this.toggleControls();
       }
       else if (key == 'G') {
         if (main.playing)

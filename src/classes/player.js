@@ -32,13 +32,12 @@ const BASE_UNIFORMS = {
 };
 
 export default class Player {
-  constructor(page, name, canvas, controls) {
+  constructor(page, name, canvas) {
     this.page = page;
     this.name = name;
     this.config = playerDefs[name];
     this.shaderDefs = this.config.shaders;
     this.canvas = canvas;
-    this.controls = controls;
     this.gl = canvas.getContext('webgl2');
 
     this.uniforms = Object.assign({}, BASE_UNIFORMS, this.config.uniforms);
@@ -46,6 +45,9 @@ export default class Player {
     this.counter = 0;
     this.interval = this.config.interval || DEFAULT_INTERVAL;
     this.minPixelRatio = this.config.minPixelRatio || 1;
+    this.customInputKeys = [];
+    this.customInput = {};
+    this.customTextures = {};
     this.hidden = false;
 
     this.hooks = new HookSet(['beforeRun', 'afterRun']);
@@ -62,6 +64,28 @@ export default class Player {
     this.handleScroll();
     this.clear();
     this.programs = Program.build(this, this.shaderDefs);
+  }
+
+  loadCustomTextures() {
+    const {customInput, customTextures, gl} = this;
+    if (this.config.customInput) {
+      this.customInputKeys = Object.keys(this.config.customInput);
+      this.customInputKeys.forEach((key) => {
+        const fn = this.config.customInput[key];
+        const inputObject = fn(this);
+        customInput[key] = inputObject;
+        const texture = gl.createTexture();
+        customTextures[key] = texture;
+
+        const [w, h] = [inputObject.canvas.width, inputObject.canvas.height];
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
+      });
+    }
   }
 
   clear() {
@@ -121,7 +145,21 @@ export default class Player {
     uniforms.counter = this.counter;
     uniforms.time = (this.uniforms.counter % this.uniforms.duration) / this.uniforms.duration;
     uniforms.clock = Date.now();
-
+    this.customInputKeys.forEach((key) => {
+      const texture = this.customTextures[key];
+      const ctx = this.customInput[key].ctx;
+      const src = this.customInput[key].textureSrc;
+      // Workaround for flickering
+      if (ctx) {
+        const data = ctx.getImageData(0, 0, 1, 1).data;
+        if (data[3] == 0) {
+          return;
+        }
+      }
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, src.width, src.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, src);
+    });
+    
     for (let i = 0; i < programCount; i++) {
       const li = (i + programCount - 1) % programCount;
       const program = programs[i];
@@ -137,7 +175,7 @@ export default class Player {
         inputTexture = programs[programCount - 2].textures[last];
       }
 
-      program.setTextures({inputTexture, lastTexture});
+      program.setTextures({inputTexture, lastTexture, ...this.customTextures});
       program.setUniforms(uniforms);
 
       const framebuffer = i < programCount - 1 ? program.framebuffers[cur] : null;
@@ -179,10 +217,6 @@ export default class Player {
 
   toggle() {
     this.playing ? this.stop() : this.start(false);
-  }
-
-  toggleControls(state=undefined) {
-    this.controls?.classList.toggle('hidden', state);
   }
 
   handleResize(ev) {
