@@ -63,7 +63,7 @@ export default class Page {
         this.players.video.start(false);
       }
       else if (this.players.video.playing) {
-        this.players.video.stop();
+        this.players.video.hide();
       }
     });
 
