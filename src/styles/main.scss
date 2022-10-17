@@ -485,20 +485,26 @@ section {
 
 .control-block {
   @include flex(row);
+  padding: 0 4rem;
   background: $nav-bg;
   color: $nav-fg;
   line-height: 3rem;
   gap: 1rem;
-  * {
-    
+  .wrapper {
+    justify-content: space-between;
+
   }
   a {
     text-align: center;
     flex: 1 0 50%;
   }
   button {
-    flex: 0 1 25%;
-    transform: rotate(90deg);
+    line-height: 3rem;
+    flex: 0 1;
+    span {
+      display: block;
+      transform: rotate(90deg);
+    }
     &:hover {
       color: $link-fg
     }

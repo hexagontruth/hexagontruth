@@ -6,7 +6,6 @@ export default class CanvasInput {
     Object.assign(this, defaults, args);
 
     this.page = page;
-    this.ctx = this.canvas.getContext('2d');
   }
 
   get textureSrc() {

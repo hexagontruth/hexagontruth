@@ -83,15 +83,17 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
   <section class="scroll-block flex" id="art">
     <div class="block window">
       <div class="wrapper">
-        <canvas class="player abs-full" data-program="video"></canvas>
+        <!-- <canvas class="player abs-full" data-program="video"></canvas> -->
         <button class="button-touch touch-left video-next"></button>
         <button class="button-touch touch-right video-next"></button>
       </div>
     </div>
       <div class="block control-block">
-        <button class="button-left video-prev">&#x25bc;</button>
-        <a id="video-link" target="_blank"></a>
-        <button class="button-right video-next">&#x25b2;</button>
+        <div class="wrapper flex row">
+          <button class="button-left video-prev"><span>&#x25bc;</span></button>
+          <a id="video-link" target="_blank"></a>
+          <button class="button-right video-next"><span>&#x25b2;</span></button>
+        </div>
     </div>
     <div class="block content">
 

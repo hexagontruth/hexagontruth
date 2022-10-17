@@ -39,6 +39,12 @@ export default {
         'video',
       ],
     ],
+    shaders: [
+      [
+        'vertex-position',
+        'passthru',
+      ],
+    ],
   },
   logo: {
     minPixelRatio: 2,

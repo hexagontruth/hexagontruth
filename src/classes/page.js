@@ -64,7 +64,7 @@ export default class Page {
       if (this.scrollId == 'art') {
         this.startVideo();
       }
-      else if (this.players.video.playing) {
+      else {
         this.stopVideo();
       }
     });
@@ -82,16 +82,6 @@ export default class Page {
     this.counter = document.querySelector('#counter');
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
-
-    document.querySelectorAll('.video-thumbs li').forEach((thumb) => {
-      let video = thumb.querySelector('video');
-      let dataSrc = video?.getAttribute('data-src');
-      if (!dataSrc) return;
-      video.src = dataSrc;
-      video.addEventListener('canplay', () => {
-        thumb.style.opacity = 1;
-      });
-    });
 
     window.addEventListener('keydown', (ev) => this.handleKey(ev));
     window.addEventListener('keyup', (ev) => this.handleKey(ev));
@@ -118,8 +108,10 @@ export default class Page {
   }
 
   startVideo() {
-    this.players.video.uniforms.startCounter = this.players.video.counter;
-    this.players.video.start(false);
+    if (this.players.video) {
+      this.players.video.uniforms.startCounter = this.players.video.counter;
+      this.players.video.start(false);
+    }
     if (!this.videoInitialized) {
       this.videoInitialized = true;
       this.loadVideo(this.videoIdx);
@@ -127,7 +119,9 @@ export default class Page {
   }
 
   stopVideo() {
-    this.players.video.hide();
+    if (this.players.video) {
+      this.players.video.hide();
+    }
   }
 
   rotateVideo(offset) {
@@ -137,9 +131,10 @@ export default class Page {
 
   loadVideo(idx) {
     const videoDef = this.videoDefs[idx];
-    this.players.video.customInput.videoTexture.setSrc(videoDef.src);
-    this.players.video.uniforms.srcCounter = this.players.video.counter;
-
+    if (this.players.video) {
+      this.players.video.customInput.videoTexture.setSrc(videoDef.src);
+      this.players.video.uniforms.srcCounter = this.players.video.counter;
+    }
     this.videoLink.href = videoDef.link;
     this.videoLink.innerHTML = videoDef.name;
   }
@@ -364,8 +359,8 @@ export default class Page {
   // This is only seemingly helping on desktop Chrome, and possibly only on Linux? Why does Chrome scroll snapping suck so badly?
   onWheel(ev) {
     if (!this.hasScroll) return;
-    let pts = this.scrollBlocks.map((e) => e.offsetTop);
-    let newY = window.scrollY;
+    const pts = this.scrollBlocks.map((e) => e.offsetTop);
+    const newY = window.scrollY;
     let nextPoint;
     if (ev.deltaY > 0) {
       nextPoint = pts.find((e) => e != pts[this.snap] && e > newY);

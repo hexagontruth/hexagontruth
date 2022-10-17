@@ -1,3 +1,5 @@
+import webglUtils from '../webgl-utils.js';
+
 function requireAll(ctx) {
   const kvPairs = ctx.keys().map((e) => {
     const key = e.match(/([\w\-]+)\.(fs|vs)$/)?.[1];
@@ -75,13 +77,7 @@ export default class Program {
 
       gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
 
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.MIRRORED_REPEAT);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.MIRRORED_REPEAT);
+      webglUtils.resetTexture(gl, texture, w, h);
 
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     };

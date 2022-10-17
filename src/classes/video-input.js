@@ -9,7 +9,9 @@ export default class VideoInput extends CanvasInput {
       size: 256,
     };
     Object.assign(this, defaults);
+    this.ctx = this.canvas.getContext('2d', {willReadFrequently: true});
     this.active = false;
+    this.flip = true;
     this.updateQueued = 0;
     this.video.loop = true;
     this.video.muted = true;
