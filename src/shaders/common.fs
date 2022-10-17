@@ -183,6 +183,10 @@ vec2 dreflect(vec2 cv, float a) {
   return cv;
 }
 
+vec2 treflect(vec2 cv, float a) {
+  return dreflect(cv, a * tau);
+}
+
 float qw(float n, float q, float w) {
   return smoothstep(w/2. + q/2., w/2. - q/2., abs(n));
 }

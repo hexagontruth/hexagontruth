@@ -21,6 +21,11 @@ module.exports = {
     compress: true,
     port: PORT,
     hot: true,
+    proxy: {
+      '/media/**': {
+        target: 'http://localhost:8081',
+      },
+    },
   },
   module: {
     rules: [

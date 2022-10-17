@@ -1,9 +1,8 @@
 import HookSet from './hook-set.js';
 import Player from './player.js';
+import config from '../config.js';
 import redirectDefs from '../redirect-defs.js';
 import videoDefs from '../video-defs.js';
-
-const PROD_HOST = 'hexagontruth.com';
 
 export default class Page {
   constructor() {
@@ -14,8 +13,7 @@ export default class Page {
     this.letterInterval = 150;
     this.titleHidden = false;
 
-    this.prod = window.location.host == PROD_HOST;
-
+    this.setEnv();
     this.setArgs();
 
     window.addEventListener('load', (ev) => this.onLoad(ev));
@@ -38,6 +36,12 @@ export default class Page {
     });
   }
 
+  setEnv() {
+    this.isProduction = window.location.host == config.productionHost;
+    this.env = this.isProduction ? 'production' : 'development';
+    this.mediaBaseUrl = config.envs[this.env].mediaBaseUrl;
+  }
+
   onLoad(ev) {
     if (this.loaded) return;
     this.loaded = true;
@@ -45,7 +49,7 @@ export default class Page {
     this.body = document.body;
     this.header = document.querySelector('.header');
     this.footer = document.querySelector('.footer');
-    this.prod && this.onProd();
+    this.isProduction && this.onProd();
 
     this.players = {};
     document.querySelectorAll('.player').forEach((el) => {
@@ -130,7 +134,6 @@ export default class Page {
       this.players.video.start(false);
     }
     else if (this.videoContainer) {
-      console.log('hello');
       this.curPlayer.play();
       window.setTimeout(() => this.videoContainer.classList.remove('hidden'), 500);
     }
@@ -165,7 +168,8 @@ export default class Page {
       lastPlayer.classList.remove('active');
       lastPlayer.pause();
 
-      nextPlayer.src = videoDef.src;
+      const src = this.mediaBaseUrl + videoDef.src;
+      nextPlayer.src = src;
       nextPlayer.classList.add('active');
       
       this.curPlayer = nextPlayer;

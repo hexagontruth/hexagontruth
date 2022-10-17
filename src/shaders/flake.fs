@@ -46,7 +46,6 @@ void main() {
     t = fract(time + jj/6.);
     s = 1. / (1. + jj);
     cv = ov * s;
-    // TODO: Reflections instead of this
     for (int i = 0; i < 6; i++) {
       float ii = float(i);
       sex = angle(cv, ii, 0.);
