@@ -17,29 +17,23 @@ float rad(vec3 hex, float r) {
 }
 
 void main() {
-  vec3 c, d, cc, dd;
+  vec3 c;
   c = unit.yyy;
-  vec2 uv, cv, ov, vv, v;
+  vec2 uv, cv, ov;
   uv = gl_FragCoord.xy / size;
   ov = uv * 2. - 1.;
-  vec3 hex, gex, sex, pix, cel, samp, p[3], dist;
-  float a, b, b1, e, r, n, x, x1, x2, y, z, q, s, w, t, t1, scale;
+  vec3 hex, sex;
+  float a, b, e, r, x, y, z, q, s, w, t, scale;
 
   ov *= cover;
   ov.y += parallax.y * 0.5;
-  ov += dir/10.;
-
-  // if (cursorDown) {
-  //   float t = counter - cursorDownAt;
-  //   vec2 dir = vec2(cos(cursorAngle), sin(cursorAngle));
-  //   ov -= dir * t / 30.;
-  // }
+  ov += dir / 10.;
 
   scale = 6.;
   ov *= scale;
   cv = ov;
 
-  q = 2./amax(size) * scale * sr3 ;
+  q = 2./ amax(size) * scale * sr3 ;
   w = 1./960. * scale * sr3;
 
   hex = cart2hex * cv;
@@ -47,62 +41,43 @@ void main() {
   a = 0.;
 
   b = xsum(b, a);
-  for (int j = 0; j <4; j++) {
-    // if (j != 3) continue;
-    // b = a;
+  for (int j = 0; j <6; j++) {
     float jj = float(j);
-    t = fract(time + jj/4.);
-    // t = time;
+    t = fract(time + jj/6.);
     s = 1. / (1. + jj);
-    // s = (1. + jj) / 4.;
     cv = ov * s;
-    t1 = fract(t + 0.5);
-    x1 = x2 = 0.;
+    // TODO: Reflections instead of this
     for (int i = 0; i < 6; i++) {
       float ii = float(i);
-      float coef;
-      coef = (1. + ii);
-      coef = 1.;
       sex = angle(cv, ii, 0.);
       e = rad(sex, 2. * max(0., t - 0.5));
       a = istep(0., e);
       y = max(y, qw(abs(e), q * s, w * s));
-      x += a * coef;
+      x += a;
       b = xsum(b, a);
 
       sex = angle(cv, ii, 2. * t);
       e = rad(sex, 1.);
       a = istep(0., e);
       y = max(y, qw(abs(e), q * s, w * s));
-      x += a * coef;
+      x += a;
       b = xsum(b, a);
 
       sex = angle(cv, ii, 2. + t);
       e = rad(sex, 1. - t);
       a = istep(0., e);
       y = max(y, qw(abs(e), q * s, w * s));
-      x += a * coef;
+      x += a;
       b = xsum(b, a);
 
     }
   }
-  // b = xsum(b, quantize(amax(hex / 2.), 8.));
-  c = vec3(xsum(0., b));
-  // c *= (2. - length(hex) * 0.5) / 2.;
-  c = clamp(c, 0., 1.);
 
-  b = 0.;
-  // b = quantize(fract(amax(hex)/4. - 0.), 4.)/5.;
-  b = fract(b + quantize(fract(tatan(ov) + 0.), 6.));
-  b += fract(x / 36.);
-  d = hsv2rgb(vec3(b, 3./4., 5./6.));
-
-
-  c = c * d;
-
+  a = 0.;
+  a = fract(a + quantize(fract(tatan(ov) + 0.), 6.));
+  a += fract(x / 36.);
+  c = b * hsv2rgb(vec3(a, 3./4., 5./6.));
   c -= y;
-
-  // c = max(c, unit.xxx * 1. / 8.);
 
   fragColor = vec4(c, 1);
 }

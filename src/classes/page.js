@@ -59,8 +59,8 @@ export default class Page {
 
     this.players.main.hooks.add('afterRun', () => this.updateCounter());
 
-    this.hooks = new HookSet(['afterSnap']);
-    this.hooks.add('afterSnap', () => {
+    this.hooks = new HookSet(['onSnap', 'onScroll']);
+    this.hooks.add('onSnap', () => {
       if (this.scrollId == 'art') {
         this.startVideo();
       }
@@ -68,15 +68,11 @@ export default class Page {
         this.stopVideo();
       }
     });
+    this.hooks.add('onScroll', () => {
+      this.hideVideo();
+    });
 
-    this.videoDefs = videoDefs.slice();
-    this.videoLink = document.querySelector('#video-link');
-    this.videoPrev = Array.from(document.querySelectorAll('.video-prev'));
-    this.videoNext = Array.from(document.querySelectorAll('.video-next'));
-    this.videoPrev.forEach((e) => e.addEventListener('click', () => this.rotateVideo(-1)));
-    this.videoNext.forEach((e) => e.addEventListener('click', () => this.rotateVideo(1)));
-    this.videoInitialized = false;
-    this.videoIdx = 0;
+    this.initializeVideo();
 
     this.controls = document.querySelector('#controls');
     this.counter = document.querySelector('#counter');
@@ -107,14 +103,36 @@ export default class Page {
     this.players.main.start();
   }
 
+  initializeVideo() {
+    this.videoDefs = videoDefs.slice();
+    this.videoContainer = document.querySelector('#video-container');
+    this.videoLink = Array.from(document.querySelectorAll('.video-link'));
+    this.videoPrev = Array.from(document.querySelectorAll('.video-prev'));
+    this.videoNext = Array.from(document.querySelectorAll('.video-next'));
+    this.videoPrev.forEach((e) => e.addEventListener('click', () => this.rotateVideo(-1)));
+    this.videoNext.forEach((e) => e.addEventListener('click', () => this.rotateVideo(1)));
+    this.videoIdx = 0;
+    this.videoPlayerIdx = 0;
+
+    this.videoPlayers = Array(2).fill(null).map(() => {
+      const video = this.createElement(null, 'video', this.videoContainer);
+      video.muted = true;
+      video.loop = true;
+      return video;
+    });
+
+    this.loadVideo(this.videoIdx);
+  }
+
   startVideo() {
     if (this.players.video) {
       this.players.video.uniforms.startCounter = this.players.video.counter;
       this.players.video.start(false);
     }
-    if (!this.videoInitialized) {
-      this.videoInitialized = true;
-      this.loadVideo(this.videoIdx);
+    else if (this.videoContainer) {
+      console.log('hello');
+      this.curPlayer.play();
+      window.setTimeout(() => this.videoContainer.classList.remove('hidden'), 500);
     }
   }
 
@@ -124,9 +142,14 @@ export default class Page {
     }
   }
 
+  hideVideo() {
+    this.scrollId != 'art' && this.videoContainer.classList.add('hidden');
+  }
+
   rotateVideo(offset) {
     this.videoIdx = (this.videoIdx + offset + this.videoDefs.length) % this.videoDefs.length;
     this.loadVideo(this.videoIdx);
+    this.startVideo();
   }
 
   loadVideo(idx) {
@@ -135,8 +158,25 @@ export default class Page {
       this.players.video.customInput.videoTexture.setSrc(videoDef.src);
       this.players.video.uniforms.srcCounter = this.players.video.counter;
     }
-    this.videoLink.href = videoDef.link;
-    this.videoLink.innerHTML = videoDef.name;
+    else if (this.videoContainer) {
+      const lastPlayer = this.videoPlayers[this.videoPlayerIdx % 2];
+      const nextPlayer = this.videoPlayers[++this.videoPlayerIdx % 2];
+
+      lastPlayer.classList.remove('active');
+      lastPlayer.pause();
+
+      nextPlayer.src = videoDef.src;
+      nextPlayer.classList.add('active');
+      
+      this.curPlayer = nextPlayer;
+    }
+    this.videoLink.forEach((e) => e.href = videoDef.link);
+    // this.videoLink.forEach((e) => e.title = videoDef.name);
+    this.videoLink.forEach((e) => {
+      if (this.videoPlayers?.[0]?.parentNode != e) {console.log(e);
+        e.innerHTML = videoDef.name;
+      }
+    });
   }
 
   updateCounter() {
@@ -226,7 +266,7 @@ export default class Page {
     let snap = this.getSnapObject();
     snap[window.location.pathname] = n;
     sessionStorage.setItem('snap', JSON.stringify(snap));
-    this.hooks.call('afterSnap');
+    this.hooks.call('onSnap');
   }
 
   getSnap() {
@@ -354,6 +394,7 @@ export default class Page {
     else if (window.scrollY == 0) {
       this.animateTitle();
     }
+    this.hooks.call('onScroll');
   }
 
   // This is only seemingly helping on desktop Chrome, and possibly only on Linux? Why does Chrome scroll snapping suck so badly?

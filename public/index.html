@@ -82,7 +82,9 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
   </section>
   <section class="scroll-block flex" id="art">
     <div class="block window">
-      <div class="wrapper">
+        <div class="video-outer abs-full">
+          <div class="video-inner hidden" id="video-container"></div>
+        </div>
         <!-- <canvas class="player abs-full" data-program="video"></canvas> -->
         <button class="button-touch touch-left video-next"></button>
         <button class="button-touch touch-right video-next"></button>
@@ -91,7 +93,7 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
       <div class="block control-block">
         <div class="wrapper flex row">
           <button class="button-left video-prev"><span>&#x25bc;</span></button>
-          <a id="video-link" target="_blank"></a>
+          <a class="video-link" target="_blank"></a>
           <button class="button-right video-next"><span>&#x25b2;</span></button>
         </div>
     </div>

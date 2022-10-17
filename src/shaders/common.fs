@@ -162,6 +162,27 @@ float tatan(vec2 v) {
   return a;
 }
 
+vec4 dreflect(vec4 cv, vec4 n) {
+  cv -= n * min(0., dot(cv, n)) * 2.;
+  return cv;
+}
+
+vec3 dreflect(vec3 cv, vec3 n) {
+  cv -= n * min(0., dot(cv, n)) * 2.;
+  return cv;
+}
+
+vec2 dreflect(vec2 cv, vec2 n) {
+  cv -= n * min(0., dot(cv, n)) * 2.;
+  return cv;
+}
+
+vec2 dreflect(vec2 cv, float a) {
+  vec2 n = vec2(cos(a), sin(a));
+  cv -= n * min(0., dot(cv, n)) * 2.;
+  return cv;
+}
+
 float qw(float n, float q, float w) {
   return smoothstep(w/2. + q/2., w/2. - q/2., abs(n));
 }
