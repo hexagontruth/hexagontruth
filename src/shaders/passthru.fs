@@ -8,4 +8,5 @@ uniform sampler2D inputTexture;
 void main() {
   vec2 uv = gl_FragCoord.xy / size;
   fragColor = texture(inputTexture, uv);
+  // fragColor.a = 1.;
 }

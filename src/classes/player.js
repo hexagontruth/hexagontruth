@@ -168,6 +168,7 @@ export default class Player {
       const lastTexture = program.textures[last];
       let inputTexture = programs[li].textures[cur];
       if (programCount > 1 && i == 0) {
+        // This assumes a final top shader layer not fed back to the bottom
         inputTexture = programs[programCount - 2].textures[last];
       }
 

@@ -4,25 +4,25 @@ import VideoInput from './classes/video-input.js';
 export default {
   main: {
     shaders: [
+      // [
+      //   'vertex-position',
+      //   'flake',
+      // ],
       [
         'vertex-position',
-        'flake',
+        'ca-state',
+        {size: 64, uniforms: { gridSize: 15, skip: 30 }},
       ],
-      // [
-      //   'vertex-position',
-      //   'ca-state',
-      //   {size: 64, uniforms: { gridSize: 15, skip: 30 }},
-      // ],
-      // [
-      //   'vertex-position',
-      //   'ca-display',
-      //   {uniforms: { gridSize: 15, skip: 30 }},
-      // ],
+      [
+        'vertex-position',
+        'ca-display',
+        {uniforms: { gridSize: 15, skip: 30 }},
+      ],
       // [
       //   'vertex-position',
       //   'passthru',
       // ],
-      ],
+    ],
   },
   video: {
     customInput: {
