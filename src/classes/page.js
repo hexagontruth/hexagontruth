@@ -90,6 +90,7 @@ export default class Page {
     window.addEventListener('pointermove', (ev) => this.handlePointer(ev));
     window.addEventListener('pointerout', (ev) => this.handlePointer(ev));
     window.addEventListener('pointerup', (ev) => this.handlePointer(ev));
+    window.addEventListener('resize', (ev) => this.handleResize(ev));
     window.addEventListener('scroll', (ev) => this.handleScroll(ev));
 
     // This goes against everything I believe in but fuck you Chrome
@@ -175,9 +176,9 @@ export default class Page {
       this.curPlayer = nextPlayer;
     }
     this.videoLink.forEach((e) => e.href = videoDef.link);
-    // this.videoLink.forEach((e) => e.title = videoDef.name);
     this.videoLink.forEach((e) => {
-      if (this.videoPlayers?.[0]?.parentNode != e) {console.log(e);
+      // if (this.videoPlayers?.[0]?.parentNode != e)
+      if (this.videoContainer != e) {
         e.innerHTML = videoDef.name;
       }
     });
@@ -239,7 +240,7 @@ export default class Page {
     const tabTemplate = this.createElement('scroll-tab', 'div');
     this.createElement('scroll-tab-inner', 'div', tabTemplate);
 
-    this.scrollTabGroup = this.createElement('scroll-tabs', 'nav', this.header);
+    this.scrollTabGroup = document.querySelector('.scroll-tabs');
     this.scrollBlocks = Array.from(document.querySelectorAll('.scroll-block'));
 
     if (!this.hasScroll) return;
@@ -255,6 +256,7 @@ export default class Page {
 
       tab.addEventListener('click', () => {
         location.hash = this.scrollBlocks?.[i].id || '';
+        window.scrollTo(0, this.scrollBlocks[i].offsetTop);
       });
     }
   }
@@ -382,6 +384,10 @@ export default class Page {
     }
 
     uniforms.cursorAngle = Math.atan2(pos[1], pos[0]);
+  }
+
+  handleResize(ev) {
+    this.snap == 0 && this.animateTitle();
   }
 
   handleScroll(ev) {

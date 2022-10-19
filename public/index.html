@@ -29,20 +29,21 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
     <div class="controls hidden" id="controls">
       <div class="counter" id="counter"></div>
     </div>
+    <nav class="nav scroll-tabs"></nav>
   </header>
   <div class="background">
     <canvas class="player abs-full" data-program="main"></canvas>
     <!-- <video autoplay muted loop style="background-image: url(media/bc-placeholder.jpg);" data-slug="media/bc-%.mp4" data-sizes="2880,2160,1440,1080" data-breakpoints="2400,1440,1080,0"></video> -->
   </div>
   <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
-  <section class="scroll-block flex">
-    <div class="block flex center text-center title">
-      <div class="title-block end">
+  <section class="scroll-block">
+    <div class="block block-title flex center text-center title">
+      <div class="title-spacer justify-end">
         <div class="title-logo" id="logo-container">
           <canvas class="player abs-full" data-program="logo"></canvas>
         </div>
       </div>
-      <div class="title-text">
+      <div class="title-spacer title-text">
         <h1>
           <span>H</span>
           <span>e</span>
@@ -58,8 +59,8 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
           <span>h</span>
         </h1>
       </div>
-      <div class="title-block start">
-        <ul class="links title-links mono light lowercase">
+      <div class="title-spacer justify-start">
+        <ul class="title-links mono light lowercase">
           <li><a href="#about">About</a></li>
           <li><a href="#art">Art</a></li>
           <li><a href="#projects">Projects</a></li>
@@ -68,12 +69,12 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
       </div>
     </div>
   </section>
-  <section class="scroll-block flex" id="about">
-    <div class="block window pad-4">
-      <div class="opaque-box pad">
+  <section class="scroll-block" id="about">
+    <div class="block window pad-3">
+      <div class="content content-box">
         <div class="wrapper">
           <p>
-            Hexagon Truth is an interdisciplinary digital art project produced in partnership with the Global Hexagonal Awareness Project.
+            Hexagon Truth is an interdisciplinary digital artist working in partnership with the Global Hexagonal Awareness Project. His work explores the nature of hexagonal consciousness and hexagonal identity through a variety of generative, mathematical modalities, using tools such as cellular automata, fragment shaders, and 3D modeling.
           </p>
           <p>
             He presently lives in St Petersburg, Florida with his two Christmas cacti, and spends his free time writing about himself in the third person.
@@ -82,25 +83,24 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
       </div>
     </div>
   </section>
-  <section class="scroll-block flex" id="art">
+  <section class="scroll-block" id="art">
     <div class="block window">
         <div class="video-outer abs-full">
-          <div class="video-inner hidden" id="video-container"></div>
+          <a class="video-inner video-link hidden" id="video-container" target="_blank"></a>
         </div>
         <!-- <canvas class="player abs-full" data-program="video"></canvas> -->
-        <button class="button-touch touch-left video-next"></button>
-        <button class="button-touch touch-right video-next"></button>
+      <!--   <button class="button-touch touch-left video-next"></button>
+        <button class="button-touch touch-right video-next"></button> -->
       </div>
     </div>
-      <div class="block control-block">
-        <div class="wrapper flex row">
+      <div class="block block-control">
+        <div class="wrapper flex flex-row">
           <button class="button-left video-prev"><span>&#x25bc;</span></button>
           <a class="video-link" target="_blank"></a>
           <button class="button-right video-next"><span>&#x25b2;</span></button>
         </div>
     </div>
-    <div class="block content">
-
+    <div class="block content content-bottom">
       <div class="wrapper">
         <p>
           For additional art NFTs, check out our profiles on <a target="_blank" href="https://superrare.co/hexagontruth">SuperRare</a>, <a target="_blank" href="https://opensea.io/accounts/hexagontruth">OpenSea</a>, or <a target="_blank" href="https://foundation.app/@hexagontruth">Foundation</a>. Also be sure to stop by our <a target="_blank" title="Voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U">Voxels gallery</a>, which features both tokenized and untokenized Hexagon Truth pieces as well as a curated collection of works by other hexagonal artists.
@@ -108,30 +108,28 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
       </div>
     </div>
   </section>
-  <section class="scroll-block flex" id="projects">
-    <div class="block window pad-2">
-      <div class="translucent-box pad-2">
-        <ul class="big-hex">
-          <li><a title="Legacy hexagonal awareness content site" target="_blank" href="https://hexnet.org/"><i class="icon-hexnet"></i><span>Hexnet</span></a></li>
-          <li><a title="Sternhalma implementation for up to six human or AI players" target="_blank" href="https://hexagontruth.github.io/minhalma/"><i class="icon-minhalma"></i><span>Minhalma</span></a></li>
-          <li><a title="Cellular automaton designer with media recording tools" target="_blank" href="https://hexagontruth.github.io/hexular/"><i class="icon-hexular"></i><span>Hexular</span></a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="block content">
-      <div class="wrapper">
-        <p>
-          Some other hexagonal projects I've worked on in recent years (mostly before the adoption of the Hexagon Truth identity).
-        </p>
-        <p>
-          Interested in collaborating on a hexagonal project? Feel free to drop me an <a href="mailto:graham@hexagontruth.com">email</a>.
-        </p>
+  <section class="scroll-block" id="projects">
+    <div class="block window pad-3">
+      <div class="content content-box">
+        <div class="wrapper">
+          <ul class="big-icons">
+            <li><a title="Legacy hexagonal awareness content site" target="_blank" href="https://hexnet.org/"><i class="icon-hexnet"></i><span>Hexnet</span></a></li>
+            <li><a title="Sternhalma implementation for up to six human or AI players" target="_blank" href="https://hexagontruth.github.io/minhalma/"><i class="icon-minhalma"></i><span>Minhalma</span></a></li>
+            <li><a title="Cellular automaton designer with media recording tools" target="_blank" href="https://hexagontruth.github.io/hexular/"><i class="icon-hexular"></i><span>Hexular</span></a></li>
+          </ul>
+          <p>
+            Some related hexagonal work. <a target="_blank" href="https://hexnet.org/">Hexnet</a> is a legacy hexagonal awareness site with a history stretching back to the '90s. <a target="_blank" href="https://hexagontruth.github.io/minhalma/">Minhalma</a> implements the board game Sterhalma (commonly known by the regrettable name "Chinese checkers") for up to six human or AI players. <a target="_blank" href="https://hexagontruth.github.io/hexular/">Hexular</a> is a browser-based tool for developing and recording hexagonal cellular automata &mdash; check out our <a target="_blank" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g">YouTube channel</a> for some examples of its output.
+          </p>
+<!--           <p>
+            Interested in collaborating on a hexagonal project? Feel free to drop us an <a href="mailto:contact@hexagontruth.com">email</a>.
+          </p> -->
+        </div>
       </div>
     </div>
   </section>
-  <section class="scroll-block flex" id="links">
+  <section class="scroll-block" id="links">
     <div class="block window"></div>
-    <div class="block content center">
+    <div class="block content content-bottom center">
       <ul class="lowercase columns nowrap">
         <li><a target="_blank" href="https://twitter.com/hexagontruth"><i class="icon-twitter"></i> Twitter</a></li>
         <li><a target="_blank" href="https://www.instagram.com/hexagontruth/"><i class="icon-instagram"></i> Instagram</a></li>
@@ -161,26 +159,23 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
 
         <!-- <li><a target="_blank" href="https://knownorigin.io/hexagontruth"><i class="icon-ethereum"></i> KnownOrigin</a></li> -->
       </ul>
-
       <p class="text-center smaller">
-        Questions? Contact <a href="mailto:graham@hexagontruth.com">graham@hexagontruth.com</a> or <a href="https://twitter.com/hexagontruth">@hexagontruth</a> on the socials.
+        Questions? Email <a href="mailto:contact@hexagontruth.com">contact@hexagontruth.com</a> or <a href="https://twitter.com/hexagontruth">@hexagontruth</a> on the socials.
       </p>
     </div>
   </section>
   <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
   <footer class="footer">
-    <nav class="nav-menu nav-footer">
-      <div class="wrapper pad-h">
-        <ul class="links">
-          <li><a target="_blank" title="Twitter" class="icon-twitter" href="https://twitter.com/hexagontruth"></a></li>
-          <li><a target="_blank" title="Instagram" class="icon-instagram" href="https://www.instagram.com/hexagontruth/"></a></li>
-          <li><a target="_blank" title="Facebook" class="icon-facebook" href="https://www.facebook.com/hexagontruth"></a></li>
-          <!-- <li><a target="_blank" title="YouTube" class="icon-youtube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"></a></li> -->
-          <li><a target="_blank" title="Voxels" class="icon-voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U"></a></li>
-          <li><a target="_blank" title="Discord" class="icon-discord" href="https://discordapp.com/invite/t6hrz7S"></a></li>
-          <li><a target="_blank" title="Patreon" class="icon-patreon" href="https://www.patreon.com/m/hexagontruth"></a></li>
-        </ul>
-      </div>
+    <nav class="nav nav-footer">
+      <ul class="nav-links wrapper">
+        <li><a target="_blank" title="Twitter" class="icon-twitter" href="https://twitter.com/hexagontruth"></a></li>
+        <li><a target="_blank" title="Instagram" class="icon-instagram" href="https://www.instagram.com/hexagontruth/"></a></li>
+        <li><a target="_blank" title="Facebook" class="icon-facebook" href="https://www.facebook.com/hexagontruth"></a></li>
+        <!-- <li><a target="_blank" title="YouTube" class="icon-youtube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"></a></li> -->
+        <li><a target="_blank" title="Voxels" class="icon-voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U"></a></li>
+        <li><a target="_blank" title="Discord" class="icon-discord" href="https://discordapp.com/invite/t6hrz7S"></a></li>
+        <li><a target="_blank" title="Patreon" class="icon-patreon" href="https://www.patreon.com/m/hexagontruth"></a></li>
+      </ul>
     </nav>
   </footer>
   <div style="display: none;">
