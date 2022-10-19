@@ -180,7 +180,7 @@ ul, ol {
           flex: 0 1 auto;
           margin: 0;
           a:hover::before, {
-            transform: scale(1.5);
+            transform: scale(1.25);
           }
         }
       }
@@ -315,7 +315,7 @@ canvas {
         transform: rotate(90deg);
       }
       &:hover {
-        color: $link-fg
+        color: $link-fg;
       }
     }
   }
@@ -395,7 +395,7 @@ canvas {
       text-align: center;
       transition: all $t-short;
       &:hover {
-        transform: scale(1.17);
+        transform: scale(1.25);
       }
       a {
         @include flex;
