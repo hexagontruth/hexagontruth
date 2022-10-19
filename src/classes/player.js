@@ -204,7 +204,7 @@ export default class Player {
     this.last = Date.now();
     this.setup();
     reset && this.reset();
-    this.loop();
+    requestAnimationFrame(() => this.loop());
   }
 
   stop() {

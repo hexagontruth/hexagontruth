@@ -66,14 +66,11 @@ export default class Page {
     this.hooks = new HookSet(['onSnap', 'onScroll']);
     this.hooks.add('onSnap', () => {
       if (this.scrollId == 'art') {
-        this.startVideo();
+        this.startVideo(0);
       }
       else {
-        this.stopVideo();
+        this.hideVideo();
       }
-    });
-    this.hooks.add('onScroll', () => {
-      this.hideVideo();
     });
 
     this.initializeVideo();
@@ -110,74 +107,64 @@ export default class Page {
 
   initializeVideo() {
     this.videoDefs = videoDefs.slice();
+    this.videos = Array(this.videoDefs.length).fill(null);
     this.videoContainer = document.querySelector('#video-container');
     this.videoLink = Array.from(document.querySelectorAll('.video-link'));
     this.videoPrev = Array.from(document.querySelectorAll('.video-prev'));
     this.videoNext = Array.from(document.querySelectorAll('.video-next'));
-    this.videoPrev.forEach((e) => e.addEventListener('click', () => this.rotateVideo(-1)));
-    this.videoNext.forEach((e) => e.addEventListener('click', () => this.rotateVideo(1)));
+    this.videoPrev.forEach((e) => e.addEventListener('click', () => this.startVideo(-1)));
+    this.videoNext.forEach((e) => e.addEventListener('click', () => this.startVideo(1)));
     this.videoIdx = 0;
-    this.videoPlayerIdx = 0;
-
-    this.videoPlayers = Array(2).fill(null).map(() => {
-      const video = this.createElement(null, 'video', this.videoContainer);
-      video.muted = true;
-      video.loop = true;
-      return video;
-    });
-
-    this.loadVideo(this.videoIdx);
+    this.lastVideo = null;
+    this.curVideo = null;
   }
 
-  startVideo() {
-    if (this.players.video) {
-      this.players.video.uniforms.startCounter = this.players.video.counter;
-      this.players.video.start(false);
-    }
-    else if (this.videoContainer) {
-      this.curPlayer.play();
-      window.setTimeout(() => this.videoContainer.classList.remove('hidden'), 500);
-    }
-  }
-
-  stopVideo() {
-    if (this.players.video) {
-      this.players.video.hide();
-    }
+  createVideo(src) {
+    const video = document.createElement('video');
+    video.muted = true;
+    video.loop = true;
+    video.src = this.mediaBaseUrl + src;
+    return video;
   }
 
   hideVideo() {
-    this.scrollId != 'art' && this.videoContainer.classList.add('hidden');
+    this.videoContainer.classList.add('hidden');
+    this.curVideo?.pause();
   }
 
-  rotateVideo(offset) {
+  startVideo(offset) {
     this.videoIdx = (this.videoIdx + offset + this.videoDefs.length) % this.videoDefs.length;
     this.loadVideo(this.videoIdx);
-    this.startVideo();
   }
 
   loadVideo(idx) {
+    if (this.curVideo && this.curVideo == this.videos[idx]) return;
     const videoDef = this.videoDefs[idx];
-    if (this.players.video) {
-      this.players.video.customInput.videoTexture.setSrc(videoDef.src);
-      this.players.video.uniforms.srcCounter = this.players.video.counter;
+    let nextVideo = this.videos[idx];
+    if (!nextVideo) {
+      nextVideo = this.createVideo(videoDef.src);
+      nextVideo.oncanplaythrough = () => this.swapVideo(nextVideo, videoDef);
     }
-    else if (this.videoContainer) {
-      const lastPlayer = this.videoPlayers[this.videoPlayerIdx % 2];
-      const nextPlayer = this.videoPlayers[++this.videoPlayerIdx % 2];
-
-      lastPlayer.classList.remove('active');
-      lastPlayer.pause();
-
-      const src = this.mediaBaseUrl + videoDef.src;
-      nextPlayer.src = src;
-      nextPlayer.classList.add('active');
-      
-      this.curPlayer = nextPlayer;
+    else {
+      this.swapVideo(nextVideo);
     }
+  }
+
+  swapVideo(video, videoDef) {
+    this.lastVideo?.remove();
+    this.lastVideo = this.curVideo;
+    this.lastVideo?.pause();
+
+    this.curVideo = video;
+    this.videoContainer.appendChild(this.curVideo);
+    this.curVideo.play();
+
+    requestAnimationFrame(() => this.lastVideo?.classList.remove('active'));
+    requestAnimationFrame(() => this.curVideo.classList.add('active'));
+    window.setTimeout(() => this.videoContainer.classList.remove('hidden'), 0);
+
     this.videoLink.forEach((e) => e.href = videoDef.link);
     this.videoLink.forEach((e) => {
-      // if (this.videoPlayers?.[0]?.parentNode != e)
       if (this.videoContainer != e) {
         e.innerHTML = videoDef.name;
       }
@@ -193,7 +180,7 @@ export default class Page {
     this.titleHidden = true;
     this.players.logo.hide();
     this.letterTimer && clearTimeout(this.letterTimer);
-    this.letters.forEach((e) => e.classList.toggle('hidden', true));
+    this.letters.forEach((e) => e.classList.add('hidden'));
     this.title.className = 't0';
     this.letterIdx = 0;
   }
@@ -212,7 +199,7 @@ export default class Page {
 
   animateTitleStep() {
     this.title.className = `t${this.letterIdx + 1}`
-    this.letters[this.letterIdx].classList.toggle('hidden', false);
+    this.letters[this.letterIdx].classList.remove('hidden');
     if (++this.letterIdx < this.letters.length) {
       this.setTitleTimer();
     }
@@ -357,7 +344,7 @@ export default class Page {
       else if (ev.key == 'ArrowLeft' || ev.key == 'ArrowRight') {
         if (this.scrollId == 'art') {
           const offset = ev.key == 'ArrowLeft' ? -1 : 1;
-          this.rotateVideo(offset);
+          this.startVideo(offset);
         }
       }
     }
@@ -401,7 +388,7 @@ export default class Page {
     if (Math.ceil(window.scrollY) >= window.innerHeight) {
       this.titleHidden || this.hideTitle();
     }
-    else if (window.scrollY == 0) {
+    else if (this.eq(0, 1)) {
       this.animateTitle();
     }
     this.hooks.call('onScroll');
