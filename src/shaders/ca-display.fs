@@ -1,6 +1,8 @@
 #include common.fs
 #include ca-utils.fs
 
+#define LW 1./360.
+
 vec4 sampNbr(vec3 hex) {
     vec2 uv = cell2uv(hex, lastSize);
     return texture(inputTexture, uv);
@@ -18,9 +20,13 @@ void main() {
   vec4 bin;
   vec3 hex, cel;
 
-  vec3 dist, p[3];
+  vec3 dist, p[3], n[6];
 
-  float t = fract(counter / skip);
+  float t, ts, q, qc;
+  t = fract(counter / skip);
+  ts = smoothstep(0., 0.5, t);
+  q = 4./amax(size);
+  qc = q * gridSize * 2.; // I don't know why this needs to be multiplied by two?
 
   bin = hexbin(cv, 1.);
 
@@ -28,59 +34,96 @@ void main() {
 
   hex = cart2hex * (cv * gridSize);
   dist = interpolatedCubic(hex, p);
+  n = vec3[6](
+    p[1],
+    p[2],
+    p[1] - p[2] + p[0],
+    p[2] - p[1] + p[0],
+    p[0] - p[1] + p[0],
+    p[0] - p[2] + p[0]
+  );
 
-  vec4 s1, s2;
-  vec3 p1, p2;
-  vec2 c1, c2, cd;
-  float lx, ly, r;
-  float cur1max, cur2max, last1max, last2max, curxmax, curymax, lastxmax, lastymax;
+  vec4 s0, s1;
+  vec3 p0, p1;
+  vec2 c0, c1, cd0, cd1;
+  float lx, ly, r, rm, rx, ry, d, gl, cc;
+  vec2 max1, max2, min1, min2;
 
-  p1 = p[0];
-  p2 = p[1];
-  c1 = hex2cart * p1 / gridSize;
-  c2 = hex2cart * p2 / gridSize;
-  s1 = sampNbr(p1);
-  s2 = sampNbr(p2);
+  p0 = p[0];
+  cel = hex2hex * (hex - p0) * sr3;
 
-  cur1max = amax(s1.xy);
-  cur2max = amax(s2.xy);
-  last1max = amax(s1.zw);
-  last2max = amax(s2.zw);
-  curxmax = max(s1.x, s2.x);
-  curymax = max(s1.y, s2.y);
-  lastxmax = max(s1.z, s2.z);
-  lastymax = max(s1.w, s2.w);
+  c0 = hex2cart * p0 / gridSize;
+  cc = length(c0 - cv);
+  s0 = sampNbr(p0);
 
-  cel = hex2hex * (hex - p1) * sr3;
+  max1 = vec2(
+    amax(s0.xz),
+    amax(s0.yw)
+  );
+  min1 = vec2(
+    amin(s0.xy),
+    amin(s0.zw)
+  );
+
   r = amax(cel);
+  rm = r * 12. / 11.;
+  rx = mix(
+    max(ts, s0.z) - rm,
+    min(1. - ts, s0.z)- rm,
+    1. - s0.x
+  );
+  ry = mix(
+    max(ts, s0.w) - rm,
+    min(1. - ts, s0.w)- rm,
+    1. - s0.y
+  );
 
-  lx = smoothstep(0.3, 0.2, amax(cel)) * s1.x;
-  ly = smoothstep(0.3, 0.2, amax(cel)) * s1.y;
+  for (int i = 0; i < 6; i++) {
+    if (i > 1 && cc > LW)
+      break;
+    p1 = n[i];
+    c1 = hex2cart * p1 / gridSize;
+    s1 = sampNbr(p1);
+    gl = length(c0 - c1);
 
-  if (curxmax > 0.) {
-    cd = c2 - c1 * c2.x;
-    lx = max(lx, smoothstep(0.002, 0.001, slength(c1, cd, cv)));
+    max2 = vec2(
+      amax(s1.xz),
+      amax(s1.yw)
+    );
+    min2 = vec2(
+      amin(s1.xy),
+      amin(s1.zw)
+    );
 
+    for (int j = 0; j < 2; j++) {
+      int k = j + 2;
+      if (max1[j] > 0. && max2[j] > 0.) {
+        cd0 = c1 + (c0 - c1) * max(min(s0[j], s0[k]), max((1. - ts) * s0[k], ts * s0[j]));
+        cd1 = c0 + (c1 - c0) * max(min(s1[j], s1[k]), max((1. - ts) * s1[k], ts * s1[j]));
+
+        if (length(c0 - cd0) < gl / 2. || length(c1 - cd1) < gl / 2.) {
+          if (length(cd0 - cd1) > 0.01) {
+
+            d = qw(slength(cd0, cd1, cv), q, LW);
+            ly = max(ly, d);
+          }
+        }
+      }
+    }
   }
-  if (curymax > 0.) {
-    cd = c2 - c1 * c2.y;
-    ly = max(ly, smoothstep(0.002, 0.001, slength(c1, c2, cv)));
-  }
 
-  r = r  + 1./12.- smoothstep(0., 0.5, max(t, s1.g));
-  r = smoothstep(1./24., -1./24., r);
-  
-  c = s1.xyz;
-  c = c.xxy * r;
+  c = unit.xxx * smoothstep(0., qc, ry) * 0.5;
+  c += unit.xxx * smoothstep(0., qc, rx) * 0.25;
 
-  c = rgb2hsv(c);
-  c.x = amax(p1) / gridSize + time;
-  c.y = openStep(0., c.y) * 0.75;
-  c.z = min(c.z, 5. / 6.);
-  c = hsv2rgb(c);
+  // c = rgb2hsv(c);
+  // c.x = amax(p0) / gridSize + time;
+  // c.y = openStep(0., c.y) * 0.75;
+  // c.z = min(c.z, 5. / 6.);
+  // c = hsv2rgb(c);
 
-  c += max(lx, ly);
+  ly = min(ly, 1.);
 
+  c = alphamul(c, unit.xxx, max(lx, ly));
 
   c = clamp(c, 0., 1.) * htWhite;
 

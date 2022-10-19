@@ -14,6 +14,7 @@ uniform float counter;
 uniform float time;
 uniform float clock;
 uniform bool resize;
+uniform float scrollPos;
 uniform float cursorDownAt;
 uniform float cursorUpAt;
 uniform vec2 cursorPos;

@@ -13,12 +13,12 @@ export default {
       [
         'vertex-position',
         'ca-state',
-        {size: 64, uniforms: { gridSize: 15, skip: 30 }},
+        {size: 64, uniforms: { gridSize: 15, skip: 60 }},
       ],
       [
         'vertex-position',
         'ca-display',
-        {uniforms: { gridSize: 15, skip: 30 }},
+        {uniforms: { gridSize: 15, skip: 60 }},
       ],
       // [
       //   'vertex-position',

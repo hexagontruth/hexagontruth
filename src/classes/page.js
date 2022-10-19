@@ -273,10 +273,6 @@ export default class Page {
     return str ? JSON.parse(str) : {};
   }
 
-  get hasScroll() {
-    return !!this.scrollBlocks?.length;
-  }
-
   onProd() {
     // GA stuff
     this.gaScript = document.createElement('script');
@@ -294,9 +290,17 @@ export default class Page {
   toggleControls(state=undefined) {
     this.controls?.classList.toggle('hidden', state);
   }
+  
+  toggleScrollBlocks(state=undefined) {
+    this.scrollBlocks?.forEach((e) => e.classList.toggle('hidden', state));
+  }
 
   eq(y, ep=5) {
     return Math.abs(window.scrollY - y) < ep; 
+  }
+
+  get hasScroll() {
+    return !!this.scrollBlocks?.length;
   }
 
   handleKey(ev) {
@@ -338,8 +342,11 @@ export default class Page {
         else
           main.run();
       }
-      else if (ev.key == 'Escape') {
+      else if (key == 'H') {
         window.scrollTo(0, 0);
+      }
+      else if (ev.key == 'Escape') {
+        this.toggleScrollBlocks();
       }
       else if (ev.key == 'ArrowLeft' || ev.key == 'ArrowRight') {
         if (this.scrollId == 'art') {

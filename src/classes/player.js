@@ -18,6 +18,7 @@ const BASE_UNIFORMS = {
   aspect: 1,
   clock: 0,
   resize: false,
+  scrollPos: 0,
   cursorDownAt: 0,
   cursorUpAt: 0,
   cursorPos: [0, 0],
@@ -236,6 +237,7 @@ export default class Player {
 
   handleScroll(ev) {
     this.scrollPos = window.scrollY / this.scrollRange;
+    this.uniforms.scrollPos = this.scrollPos;
     this.uniforms.parallax[1] = -this.scrollPos * 2 + 1;
   }
 }

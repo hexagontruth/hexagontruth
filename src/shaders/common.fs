@@ -23,6 +23,10 @@ bool isNan(float n) {
   return !(n <= 0. || 0. <= n);
 }
 
+float amax(vec4 v) {
+  return max(max(max(abs(v.x), abs(v.y)), abs(v.z)), abs(v.w));
+}
+
 float amax(vec3 v) {
   return max(max(abs(v.x), abs(v.y)), abs(v.z));
 }
@@ -191,6 +195,10 @@ float qw(float n, float q, float w) {
   return smoothstep(w/2. + q/2., w/2. - q/2., abs(n));
 }
 
+float qs(float n, float q) {
+  return smoothstep(-q/2., q/2., n);
+}
+
 float qwp(float n, float q, float w) {
   return qw(abs(fract(n + 0.5) - 0.5), q, w);
 }
@@ -315,6 +323,7 @@ vec3 quantize(vec3 f, float n) {
 
 vec4 rgb2hsv(vec4 c)
 {
+    c = clamp(c, 0., 1.);
     vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
     vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
     vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
@@ -326,6 +335,7 @@ vec4 rgb2hsv(vec4 c)
 
 vec4 hsv2rgb(vec4 c)
 {
+    c.yzw = clamp(c.yzw, 0., 1.);
     vec4 K = vec4(1., 2. / 3., 1. / 3., 3.);
     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
     return vec4(c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y), c.w);
@@ -337,4 +347,12 @@ vec3 rgb2hsv(vec3 c) {
 
 vec3 hsv2rgb(vec3 c) {
   return hsv2rgb(vec4(c, 1)).xyz;
+}
+
+vec4 alphamul(vec4 a, vec4 b) {
+  return vec4(b.a * b.rgb + a.a * a.rgb * (1. - b.a), b.a + a.a * (1. - b.a)); 
+}
+
+vec3 alphamul(vec3 a, vec3 b, float alpha) {
+  return alphamul(vec4(a, 1), vec4(b, alpha)).rgb;
 }

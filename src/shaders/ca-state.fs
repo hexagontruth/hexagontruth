@@ -223,14 +223,14 @@ vec4 rule(vec3 hex, float p) {
 }
 
 void main() {
-  vec4 c = fragColor = unit.yyyx;
+  vec4 c;
   vec2 uv = gl_FragCoord.xy / size;
   vec2 cv = uv * 2. - 1.;
   // cv.y *= size.y / size.x;
   // cv.y += parallax.y * 0.25;
   vec3 hex = uv2cell(uv);
 
-  fragColor = hsv2rgb(vec4(amax(hex)/gridSize, 1, 1, 1));
+  // fragColor = hsv2rgb(vec4(amax(hex)/gridSize, 1, 1, 1));
   // return;
 
   float r, d, e;
@@ -262,7 +262,7 @@ void main() {
       }
     }
     if (amax(hex) < 8.) {
-      // c.rb += 1.;
+      c.xz += 1.;
     }
   }
   else if (mod(counter, skip) == 0.) {
