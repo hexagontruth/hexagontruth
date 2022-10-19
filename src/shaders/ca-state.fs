@@ -120,7 +120,7 @@ float range = pow(2., 6.);
 
 vec4 getNbr(vec3 hex) {
     vec2 uv = cell2uv(hex);
-    return texture(inputTexture, uv);
+    return texture(lastTexture, uv);
 }
 
 vec3 unpack(vec4 n) {
@@ -194,11 +194,11 @@ vec4 rule(vec3 hex, float p) {
     vec3 v = nbrs[i + 1];
     vec4 nbr = getNbr(hex + v);
     n += nbr.x;
-    map += step(0.001, nbr.b) * pow(2., float(i));
+    map += step(0.001, nbr.y) * pow(2., float(i));
   }
 
   next = cur;
-  next.yw = cur.xz;
+  next.zw = cur.xy;
   next.x = n > 1. && n < 3. ? 1. : 0.;
 
   if (
@@ -213,10 +213,10 @@ vec4 rule(vec3 hex, float p) {
     map == 16. + 2. ||
     map == 8. + 1.
   ) {
-    next.b = 1.;
+    next.y = 1.;
   }
   else {
-    next.b = 0.;
+    next.y = 0.;
   }
 
   return next;
@@ -257,19 +257,19 @@ void main() {
   if (resize) {
     for (int i = 0; i < 10; i++) {
       if (hex == seed[i]) {
-        c.b = 1.;
+        c.yw += 1.;
         break;
       }
     }
     if (amax(hex) < 8.) {
-      c.rg += 1.;
+      // c.rb += 1.;
     }
   }
   else if (mod(counter, skip) == 0.) {
     c = rule(hex, d);
   }
   else {
-    c = texture(inputTexture, uv);
+    c = texture(lastTexture, uv);
   }
 
   // c.xyzw = pack(vec3(30., 0, 0.));
