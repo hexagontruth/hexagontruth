@@ -15,9 +15,11 @@ void main() {
   vec2 cv;
   float scale, stime;
 
-  for (int h = 0; h < 3; h++) {
-    stime = fract(time + float(h) / 3.);
-    scale = 1./(gridSize) + smoothstep(1., 1./gridSize, stime) * 1.;
+  for (int h = 0; h < 1; h++) {
+    // stime = fract(time + float(h) / 3.);
+    // scale = 1./(gridSize) + smoothstep(1., 1./gridSize, stime) * 1.;
+    scale = 1.;
+    stime = 1.;
     c = unit.yyy;
     cv = uv * 2. - 1.;
     cv *= cover;
@@ -173,8 +175,8 @@ void main() {
     c = alphamul(c, unit.xxx, d * 0.25);
     c = alphamul(c, unit.xxx, max(l0.x * (1. - l1.y), xsum(l0.y, l1.y)) * 0.5);
 
-    c *= smoothstep(1., 2./3., stime);
-    c *= smoothstep(0., 1./2., stime);
+    // c *= smoothstep(1., 2./3., stime);
+    // c *= smoothstep(0., 1./2., stime);
     color = max(color, c);
   }
   color = clamp(color, 0., 1.) * htWhite;

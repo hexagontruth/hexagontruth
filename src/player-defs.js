@@ -1,19 +1,23 @@
 
 
 import CanvasInput from './classes/canvas-input.js';
+import NoiseInput from './classes/noise-input.js';
 import VideoInput from './classes/video-input.js';
 
 export default {
   main: {
+    customInput: {
+      noiseTexture: (player) => new NoiseInput(player, {size: 64}),
+    },
     shaders: [
       // [
       //   'vertex-position',
-      //   'flake',
+      //   'flatetke',
       // ],
       [
         'vertex-position',
         'ca-state',
-        {size: 256, uniforms: { gridSize: 15}},
+        {size: 64, uniforms: { gridSize: 15}},
       ],
       [
         'vertex-position',
@@ -23,6 +27,10 @@ export default {
       // [
       //   'vertex-position',
       //   'passthru-rgb',
+      // ],
+      // [
+      //   'vertex-position',
+      //   'test',
       // ],
     ],
   },

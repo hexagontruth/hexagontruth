@@ -56,7 +56,7 @@ export default class Player {
     this.customTextures = {};
     this.hidden = false;
 
-    this.hooks = new HookSet(['beforeRun', 'afterRun']);
+    this.hooks = new HookSet(['beforeRun', 'afterRun', 'onReset']);
 
     if (this.config.size && !isNaN(this.config.size)) {
       this.config.size = [this.config.size, this.config.size];
@@ -133,7 +133,7 @@ export default class Player {
     this.counter = 0;
     this.uniforms.resize = true;
     this.uniforms.dir = [0, 0];
-    this.hooks.call('afterRun');
+    this.hooks.call('onReset');
   }
 
   run() {
@@ -147,18 +147,18 @@ export default class Player {
     // uniforms.time = (this.uniforms.counter % this.uniforms.duration) / this.uniforms.duration;
     // uniforms.skipTime = (this.uniforms.counter % this.uniforms.skipInterval) / this.uniforms.skipInterval;
     // uniforms.skip = this.uniforms.skipTime == 0;
-    uniforms.clock = Date.now();
+    uniforms.clock = (Date.now() % 1000) / 1000,
     this.customInputKeys.forEach((key) => {
       const texture = this.customTextures[key];
       const ctx = this.customInput[key].ctx;
       const src = this.customInput[key].textureSrc;
       // Workaround for flickering
-      if (ctx) {
-        const data = ctx.getImageData(0, 0, 1, 1).data;
-        if (data[3] == 0) {
-          return;
-        }
-      }
+      // if (ctx) {
+      //   const data = ctx.getImageData(0, 0, 1, 1).data;
+      //   if (data[3] == 0) {
+      //     return;
+      //   }
+      // }
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, src.width, src.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, src);
     });

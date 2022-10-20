@@ -62,6 +62,10 @@ export default class Page {
     Object.values(this.players).forEach((e) => e.loadCustomTextures());
 
     this.players.main.hooks.add('afterRun', () => this.updateCounter());
+    this.players.main.hooks.add('onReset', () => {
+      this.updateCounter();
+      this.players.main.customInput.noiseTexture.setNoise();
+    });
 
     this.hooks = new HookSet(['onSnap', 'onScroll']);
     this.hooks.add('onSnap', () => {

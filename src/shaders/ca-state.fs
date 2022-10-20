@@ -1,122 +1,16 @@
 #include common.fs
 #include ca-utils.fs
 
-vec3 nbrs[61] = vec3[61](
-  vec3(0, 0, 0),
+uniform sampler2D noiseTexture;
 
+vec3 nbrs[6] = vec3[6](
   vec3(1, 0, -1),
   vec3(0, 1, -1),
   vec3(-1, 1, 0),
   vec3(-1, 0, 1),
   vec3(0, -1, 1),
-  vec3(1, -1, 0),
-
-  vec3(2, 0, -2),
-  vec3(0, 2, -2),
-  vec3(-2, 2, 0),
-  vec3(-2, 0, 2),
-  vec3(0, -2, 2),
-  vec3(2, -2, 0),
-
-  vec3(1, 1, -2),
-  vec3(1, -2, 1),
-  vec3(-2, 1, 1),
-  vec3(-1, -1, 2),
-  vec3(-1, 2, -1),
-  vec3(2, -1, -1),
-
-  vec3(3, 0, -3),
-  vec3(0, 3, -3),
-  vec3(-3, 3, 0),
-  vec3(-3, 0, 3),
-  vec3(0, -3, 3),
-  vec3(3, -3, 0),
-
-  vec3(-3, 2, 1),
-  vec3(2, 1, -3),
-  vec3(1, -3, 2),
-  vec3(3, -2, -1),
-  vec3(-2, -1, 3),
-  vec3(-1, 3, -2),
-
-  vec3(1, 2, -3),
-  vec3(2, -3, 1),
-  vec3(-3, 1, 2),
-  vec3(-1, -2, 3),
-  vec3(-2, 3, -1),
-  vec3(3, -1, -2),
-
-  vec3(4, 0, -4),
-  vec3(0, 4, -4),
-  vec3(-4, 4, 0),
-  vec3(-4, 0, 4),
-  vec3(0, -4, 4),
-  vec3(4, -4, 0),
-
-  vec3(4, -1, -3),
-  vec3(-1, 4, -3),
-  vec3(-3, 4, -1),
-  vec3(-3, -1, 4),
-  vec3(-1, -3, 4),
-  vec3(4, -3, -1),
-
-  vec3(4, -2, -2),
-  vec3(-2, 4, -2),
-  vec3(-2, -2, 4),
-  vec3(-4, 2, 2),
-  vec3(2, -4, 2),
-  vec3(2, 2, -4),
-
-  vec3(3, 1, -4),
-  vec3(1, 3, -4),
-  vec3(-4, 3, 1),
-  vec3(-4, 1, 3),
-  vec3(1, -4, 3),
-  vec3(3, -4, 1)
+  vec3(1, -1, 0)
 );
-
-float kernel[19] = float[19](
-  0.,
-
-  0.15,
-  0.25,
-  0.5,
-  0.25,
-  -0.5,
-  0.25,
-
-  -1.,
-  -1.,
-  0.,
-  1.,
-  -9.,
-  -1.,
-
-  0.5,
-  -0.8,
-  0.5,
-  10.8,
-  -0.5,
-  2.1
-);
-
-float hexSize = 1./3.;
-
-vec3 consts[2] = vec3[2](
-  vec3(
-   1./12.,
-    1. - 0./16.,
-    1. + 0./256.
-  ),
-  vec3( 
-    1./12.,
-    1. - 0./64.,
-    1. - 1./4.
-  )
-);
-
-float range = pow(2., 6.);
-
 
 vec4 getNbr(vec3 hex) {
     vec2 uv = cell2uv(hex);
@@ -129,7 +23,7 @@ vec4 rule(vec3 hex, float p) {
 
   cur = getNbr(hex);
   for (int i = 0; i < 6; i++) {
-    vec3 v = nbrs[i + 1];
+    vec3 v = nbrs[i];
     vec4 nbr = getNbr(hex + v);
     n += openStep(0., nbr.x);
     map += openStep(0., nbr.y) * pow(2., float(i));
@@ -163,9 +57,10 @@ vec4 rule(vec3 hex, float p) {
 
   if (cur.x == 0. && n == 1.) {
     next.x = 1.;
+    next.y = 1.;
   }
   else {
-    next.x = max(0., cur.x - 1./8.);
+    next.x = max(0., cur.x - 1./8. - 1./8. * next.y);
   }
 
   next.zw = cur.xy;
@@ -216,7 +111,11 @@ void main() {
       }
       if (j > 1) break;
     }
-    // c.x = 1. - step(1., amax(hex));
+    vec2 v = hex2cart * hex / gridSize;
+    v = v * 0.5 + 0.5;
+    vec2 tx = texture(noiseTexture, v).xy;
+    tx = openStep(0., tx);
+    c.xy = tx;
   }
   else if (skip) {
     c = rule(hex, d);
