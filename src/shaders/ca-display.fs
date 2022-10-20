@@ -9,7 +9,7 @@ vec4 sampNbr(vec3 hex) {
 }
 
 void main() {
-  vec3 c = unit.yyy;
+  vec3 c;
   fragColor = unit.yyyx;
   vec2 uv = gl_FragCoord.xy / size;
   vec2 cv = uv * 2. - 1.;
@@ -23,17 +23,28 @@ void main() {
   cv = cv * scale;
 
   vec4 bin;
-  vec3 hex, cel;
+  vec3 hex, cel, ncel;
   vec3 dist, p[3], n[6];
 
-  float t, ts, te, q, qc, lw;
+  float d;
+  float t, ts, te, q, qc, lw, lwc;
 
-  lw = 1./360. * scale;
+  vec4 s0, s1, b0, b1;
+  vec3 p0, p1;
+  vec2 c0, c1, cd0, cd1, ld, l0, l1;
+  float r, rp, rx, ry, gl, cc, sl;
+  vec2 max1, max2, min1, min2;
+
+
+
   t = skipTime;
   ts = smoothstep(0., 0.5, t);
   te = smoothstep(0.5, 1., t);
   q = 4./amax(size) * scale;
   qc = q * gridSize * 2.; // I don't know why this needs to be multiplied by two?
+  lw = 1./360. * scale;
+  lwc = lw * gridSize * 2.;
+  rp = 1./12.;
 
   bin = hexbin(cv, 1.);
 
@@ -50,19 +61,13 @@ void main() {
     p[0] - p[2] + p[0]
   );
 
-  vec4 s0, s1, b0, b1;
-  vec3 p0, p1;
-  vec2 c0, c1, cd0, cd1, ld, l0, l1;
-  float r, rm, rx, ry, gl, cc, sl;
-  vec2 max1, max2, min1, min2;
-
   p0 = p[0];
   cel = hex2hex * (hex - p0) * sr3;
 
   c0 = hex2cart * p0 / gridSize;
   cc = length(c0 - cv);
   s0 = sampNbr(p0);
-  s0.xz *= 16./15.;
+  // s0.xz *= 8./9.;
   b0 = openStep(0., s0);
 
   max1 = vec2(
@@ -74,18 +79,46 @@ void main() {
     amin(s0.zw)
   );
 
-  r = amax(cel);
-  rm = r * 12. / 11.;
   ld += 100.;
+  d += 100.;
+  gl = length(c0 - hex2cart * n[0] / gridSize);
+
+  ncel = (hex - p0) * 2.;
+  r = amax(ncel) / (2.);
+  // rx = mix(
+  //   smoothstep(0., 1., s0.z - (s0.z - s0.x) * t),
+  //   max(te, s0.z),
+  //   openStep(0., s0.x - s0.z)
+  // ) - r;
+  ry = mix(
+    min(1. - ts, s0.w),
+    max(ts, s0.w),
+    b0.y
+  ) - r;
+  d = mix(d, min(d, abs(ry)), amax(b0.yw));
 
   for (int i = 0; i < 6; i++) {
-    if (i > 1 && cc > lw * 3.)
-      break;
     p1 = n[i];
     c1 = hex2cart * p1 / gridSize;
     s1 = sampNbr(p1);
     b1 = openStep(0., s1);
-    gl = length(c0 - c1);
+
+    ncel = (hex - p1) * 2.;
+    r = amax(ncel) / (2.);
+    // rx = mix(
+    //   smoothstep(0., 1., s1.z - (s1.z - s1.x) * t),
+    //   max(te, s1.z),
+    //   openStep(0., s1.x - s1.z)
+    // ) - r;
+    ry = mix(
+      min(1. - ts, s1.w),
+      max(ts, s1.w),
+      b1.y
+    ) - r;
+    d = min(d, abs(ry));
+
+    if (i > 1 && cc > lw * 3.)
+      break;
 
     max2 = vec2(
       amax(s1.xz),
@@ -111,29 +144,30 @@ void main() {
       }
     }
   }
-  l0 = qw(ld, q, lw);
-  l1 = qw(ld, q, lw * 3.);
 
+  r = length(cel) * sr3 / 2. / (1. - rp * 2.);
   rx = mix(
-    // cv.x > 0. ? 0. : min(1. - ts, s0.z),
     smoothstep(0., 1., s0.z - (s0.z - s0.x) * t),
     max(te, s0.z),
     openStep(0., s0.x - s0.z)
-  ) - rm;
+  ) - r;
+  r = amax(cel) / (1. - rp);
   ry = mix(
     min(1. - ts, s0.w),
     max(ts, s0.w),
     b0.y
-  ) - rm;
+  ) - r;
 
-  c = unit.xxx * smoothstep(0., qc, ry) * 0.5;
-  c += unit.xxx * smoothstep(0., qc, rx) * 0.25;
-  // c.r += (1. - step(0.005, cc)) * openStep(0., s0.x - s0.z);
-  // c = rgb2hsv(c);
-  // c.x = amax(p0) / gridSize + time;
-  // c.y = openStep(0., c.y) * 0.75;
-  // c.z = min(c.z, 5. / 6.);
-  // c = hsv2rgb(c);
+  // ld.x = min(ld.x, 1. - qs(rx, qc));
+  c += unit.xxx * qs(rx, qc) * 0.25;
+  c += unit.xxx * qs(ry, qc) * 0.5;
+
+  l0 = qw(ld, q, lw);
+  l1 = qw(ld, q, lw * 3.);
+  d = qw(d, qc / 2., lwc / 2.);
+  d = xsum(d, l1.y);
+
+  c = alphamul(c, unit.xxx, d * 0.25);
 
   c = alphamul(c, unit.xxx, max(l0.x * (1. - l1.y), xsum(l0.y, l1.y)) * 0.5);
 

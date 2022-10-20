@@ -162,10 +162,10 @@ vec4 rule(vec3 hex, float p) {
   }
 
   if (cur.x == 0. && n == 1.) {
-    next.x = 1. - 1./16.;
+    next.x = 1.;
   }
   else {
-    next.x = max(0., cur.x - 1./16.);
+    next.x = max(0., cur.x - 1./8.);
   }
 
   next.zw = cur.xy;
@@ -210,7 +210,7 @@ void main() {
         c.y += 1.;
         j++;
       }
-      if (hex == -seed[i]) {
+      if (hex == -seed[i] && amax(hex) > 1.) {
         c.x += 1.;
         j++;
       }
