@@ -67,31 +67,17 @@ export default class Program {
     this.uniforms = config.uniforms || {};
   }
 
-  handleResize(ev) {
-    const {gl} = this;
-    const [w, h] = this.size || this.player.size;
-    this.contain = w > h ? [w / h, 1] : [1, h / w];
-    this.cover = w > h ? [1, h / w] : [w / h, 1];
-    this.aspect = Math.max(...this.contain);
-
-    if (!this.persistent || !ev) { // This is terrible
-      const {gl} = this;
-      for (let i = 0; i < 2; i++) {
-        const [texture, fb] = [this.textures[i], this.framebuffers[i]];
-        gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-        webglUtils.resetTexture(gl, texture, w, h);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-      };
-    }
-  }
-
   setUniforms(uniforms) {
     const {gl, program} = this;
     gl.useProgram(program);
-    uniforms = Object.assign({}, uniforms, this.uniforms);  
+    uniforms = Object.assign({}, uniforms, this.uniforms);
     for (let [key, value] of Object.entries(uniforms)) {
-      if (value == null)
+      if (value == null) {
         continue;
+      }
+      if (typeof value == 'function') {
+        value = value(uniforms);
+      }
       const idx = gl.getUniformLocation(program, key);
       if (!value.length)
         value = [value];
@@ -112,5 +98,23 @@ export default class Program {
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.uniform1i(uniformLoc, idx);
     });
+  }
+
+  handleResize(ev) {
+    const {gl} = this;
+    const [w, h] = this.size || this.player.size;
+    this.contain = w > h ? [w / h, 1] : [1, h / w];
+    this.cover = w > h ? [1, h / w] : [w / h, 1];
+    this.aspect = Math.max(...this.contain);
+
+    if (!this.persistent || !ev) { // This is terrible
+      const {gl} = this;
+      for (let i = 0; i < 2; i++) {
+        const [texture, fb] = [this.textures[i], this.framebuffers[i]];
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+        webglUtils.resetTexture(gl, texture, w, h);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+      };
+    }
   }
 }

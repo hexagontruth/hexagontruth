@@ -29,7 +29,7 @@ void main() {
   float t, ts, te, q, qc, lw;
 
   lw = 1./360. * scale;
-  t = fract(counter / skip);
+  t = skipTime;
   ts = smoothstep(0., 0.5, t);
   te = smoothstep(0.5, 1., t);
   q = 4./amax(size) * scale;

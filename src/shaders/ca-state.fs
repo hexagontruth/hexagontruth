@@ -218,15 +218,12 @@ void main() {
     }
     // c.x = 1. - step(1., amax(hex));
   }
-  else if (mod(counter, skip) == 0.) {
+  else if (skip) {
     c = rule(hex, d);
   }
   else {
     c = texture(lastTexture, uv);
   }
 
-  // c.xyzw = pack(vec3(30., 0, 0.));
-
-  // c.rg = uv;
   fragColor = vec4(c);
 }

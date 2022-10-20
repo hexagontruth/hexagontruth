@@ -3,6 +3,15 @@ precision highp float;
 
 out vec4 fragColor;
 in vec4 vColor;
+
+uniform float counter;
+uniform float duration;
+uniform float time;
+uniform float skipInterval;
+uniform float skipTime;
+uniform bool skip;
+uniform float clock;
+
 uniform vec2 size;
 uniform vec2 cover;
 uniform vec2 contain;
@@ -10,9 +19,7 @@ uniform vec2 lastSize;
 uniform vec2 parallax;
 uniform vec2 dir;
 uniform float aspect;
-uniform float counter;
-uniform float time;
-uniform float clock;
+
 uniform float resizeAt;
 uniform bool resize;
 uniform float cursorDownAt;

@@ -8,7 +8,10 @@ const DEFAULT_INTERVAL = 33;
 const BASE_UNIFORMS = {
   duration: 720,
   counter: 0,
-  time: 0,
+  time: (u) => (u.counter % u.duration) / u.duration,
+  skipInterval: 30,
+  skipTime: (u) => (u.counter % u.skipInterval) / u.skipInterval,
+  skip: (u) => (u.counter % u.skipInterval) == 0,
   size: [0, 0],
   cover: [1, 1],
   contain: [1, 1],
@@ -141,7 +144,9 @@ export default class Player {
     const programCount = this.programs.length;
 
     uniforms.counter = this.counter;
-    uniforms.time = (this.uniforms.counter % this.uniforms.duration) / this.uniforms.duration;
+    // uniforms.time = (this.uniforms.counter % this.uniforms.duration) / this.uniforms.duration;
+    // uniforms.skipTime = (this.uniforms.counter % this.uniforms.skipInterval) / this.uniforms.skipInterval;
+    // uniforms.skip = this.uniforms.skipTime == 0;
     uniforms.clock = Date.now();
     this.customInputKeys.forEach((key) => {
       const texture = this.customTextures[key];

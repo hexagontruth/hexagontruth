@@ -1,5 +1,4 @@
 uniform float gridSize;
-uniform float skip;
 
 vec3 uv2cell(vec2 uv, vec2 txSize) {
   uv = uv * 2. - 1.;
