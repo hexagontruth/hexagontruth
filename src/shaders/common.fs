@@ -195,6 +195,10 @@ float qw(float n, float q, float w) {
   return smoothstep(w/2. + q/2., w/2. - q/2., abs(n));
 }
 
+vec2 qw(vec2 n, float q, float w) {
+  return smoothstep(w/2. + q/2., w/2. - q/2., abs(n));
+}
+
 float qs(float n, float q) {
   return smoothstep(-q/2., q/2., n);
 }
@@ -205,6 +209,22 @@ float qwp(float n, float q, float w) {
 
 float openStep(float m, float n) {
   return 1. - step(m, -n);
+}
+
+vec2 openStep(float m, vec2 n) {
+  return 1. - step(m, -n);
+}
+
+vec3 openStep(float m, vec3 n) {
+  return 1. - step(m, -n);
+}
+
+vec4 openStep(float m, vec4 n) {
+  return 1. - step(m, -n);
+}
+
+float linearStep(float a, float b, float n) {
+  return clamp((n - a) / (b - a), 0., 1.);
 }
 
 float slength(vec2 u, vec2 v, vec2 p) {
@@ -317,6 +337,10 @@ vec2 quantize(vec2 f, float n) {
 
 vec3 quantize(vec3 f, float n) {
   return quantize(f, n, 1./16384.);
+}
+
+vec2 scaleUv(vec2 uv, float n) {
+  return ((uv * 2. - 1.) * n) * 0.5 + 0.5;
 }
 
 // Color

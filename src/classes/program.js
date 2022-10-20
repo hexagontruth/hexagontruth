@@ -60,8 +60,10 @@ export default class Program {
   buildConfig(config) {
     if (config.size) {
       const size = Array.isArray(config.size) ? config.size : [config.size, config.size];
+      this.persistent = true;
       this.size = size;
     }
+
     this.uniforms = config.uniforms || {};
   }
 
@@ -72,15 +74,15 @@ export default class Program {
     this.cover = w > h ? [1, h / w] : [w / h, 1];
     this.aspect = Math.max(...this.contain);
 
-    for (let i = 0; i < 2; i++) {
-      const [texture, fb] = [this.textures[i], this.framebuffers[i]];
-
-      gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-
-      webglUtils.resetTexture(gl, texture, w, h);
-
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-    };
+    if (!this.persistent || !ev) { // This is terrible
+      const {gl} = this;
+      for (let i = 0; i < 2; i++) {
+        const [texture, fb] = [this.textures[i], this.framebuffers[i]];
+        gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+        webglUtils.resetTexture(gl, texture, w, h);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+      };
+    }
   }
 
   setUniforms(uniforms) {

@@ -13,16 +13,16 @@ export default {
       [
         'vertex-position',
         'ca-state',
-        {size: 64, uniforms: { gridSize: 15, skip: 60 }},
+        {size: 256, uniforms: { gridSize: 15, skip: 30 }},
       ],
       [
         'vertex-position',
         'ca-display',
-        {uniforms: { gridSize: 15, skip: 60 }},
+        {uniforms: { gridSize: 15, skip: 30 }},
       ],
       // [
       //   'vertex-position',
-      //   'passthru',
+      //   'passthru-rgb',
       // ],
     ],
   },

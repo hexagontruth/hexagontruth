@@ -123,101 +123,52 @@ vec4 getNbr(vec3 hex) {
     return texture(lastTexture, uv);
 }
 
-vec3 unpack(vec4 n) {
-  vec3 s, m;
-  n.w = fract(round(n.w * 64.) / 64.);
-  s.x = mod(floor(n.w * 2.), 2.) * 2. - 1.;
-  s.y = mod(floor(n.w * 4.), 2.) * 2. - 1.;
-  s.z = mod(floor(n.w * 8.), 2.) * 2. - 1.;
-  m = round(n.xyz * range) * s;
-  return m;
-}
-vec4 pack(vec3 n) {
-  float w;
-  vec3 p, s;
-  s = sign(n) * 0.5 + 0.5;
-  s = mix(unit.yyy, s, abs(sign(n)));
-  p = round(clamp(abs(n), 0., range)) / range;
-  w = s.x * 1./2. + s.y * 1./4. + s.z * 1./8.;
-  return vec4(p, w);
-}
-
-vec4 rule2(vec3 hex, float p) {
-  vec3 n, next, nbr;
-  vec3 cur, result;
-  int i;
-  float hc[6], hv[6];
-  float nc, nv;
-  cur = unpack(getNbr(hex));
-
-  for (int i = 0; i < 6; i++) {
-    // if (amax(hex + v) >= gridSize -1.) continue;
-    vec3 v = nbrs[i + 1];
-    nbr = unpack(getNbr(hex + v));
-    n += nbr;
-    hv[i] = nbr.x;
-    hc[i] = step(1., nbr.x);
-    nv += nbr.x;
-  }
-  nc = hc[0] *32. + hc[1] * 16. + hc[2] * 8. + hc[3] * 4. + hc[4] * 2. + hc[5];
-
-  result = cur;
-  if (
-    nc == 32. + 16. ||
-    nc == 16. + 8. ||
-    nc == 8. + 4. ||
-    nc == 4. + 2. ||
-    nc == 2. + 1. ||
-    nc == 1. + 32. ||
-
-    nc == 32. + 4. ||
-    nc == 16. + 2. ||
-    nc == 8. + 1.
-  ) {
-    result.x += 1.;
-  }
-  else {
-    result.x = 0.;
-  }
-
-  result = max(result, 0.);
-  return pack(result);
-}
-
 vec4 rule(vec3 hex, float p) {
   vec4 cur, next;
   float n, map;
 
   cur = getNbr(hex);
-  n = cur.x;
   for (int i = 0; i < 6; i++) {
     vec3 v = nbrs[i + 1];
     vec4 nbr = getNbr(hex + v);
-    n += nbr.x;
-    map += step(0.001, nbr.y) * pow(2., float(i));
+    n += openStep(0., nbr.x);
+    map += openStep(0., nbr.y) * pow(2., float(i));
   }
-
   next = cur;
-  next.zw = cur.xy;
-  next.x = n > 1. && n < 3. ? 1. : 0.;
 
   if (
-    map == 32. + 16. ||
-    map == 16. + 8. ||
-    map == 8. + 4. ||
-    map == 4. + 2. ||
-    map == 2. + 1. ||
-    map == 1. + 32. ||
+    (
+      map == 32. + 16. ||
+      map == 16. + 8. ||
+      map == 8. + 4. ||
+      map == 4. + 2. ||
+      map == 2. + 1. ||
+      map == 1. + 32. ||
 
-    map == 32. + 4. ||
-    map == 16. + 2. ||
-    map == 8. + 1.
+      map == 32. + 4. ||
+      map == 16. + 2. ||
+      map == 8. + 1.
+    ) ||
+      cur.y > 0. && (
+      map == 1. + 4. + 16. ||
+      map == 2. + 8. + 32.
+    )
+
   ) {
     next.y = 1.;
   }
   else {
     next.y = 0.;
   }
+
+  if (cur.x == 0. && n == 1.) {
+    next.x = 1. - 1./16.;
+  }
+  else {
+    next.x = max(0., cur.x - 1./16.);
+  }
+
+  next.zw = cur.xy;
 
   return next;
 }
@@ -245,25 +196,27 @@ void main() {
     vec3(1, 0, -1),
     vec3(0, 1, -1),
     vec3(-1, 1, 0),
-
     vec3(-1, -1, 2),
-    // vec3(1, -2, 1),
     vec3(2, -1, -1),
-    // vec3(1, 1, -2),
     vec3(-1, 2, -1)
+    // vec3(1, -2, 1),
+    // vec3(1, 1, -2),
     // vec3(-2, 1, 1)
   );
 
-  if (resize) {
-    for (int i = 0; i < 10; i++) {
+  if (counter == 0.) {
+    for (int i = 0, j = 0; i < 10; i++) {
       if (hex == seed[i]) {
-        c.yw += 1.;
-        break;
+        c.y += 1.;
+        j++;
       }
+      if (hex == -seed[i]) {
+        c.x += 1.;
+        j++;
+      }
+      if (j > 1) break;
     }
-    if (amax(hex) < 8.) {
-      c.xz += 1.;
-    }
+    // c.x = 1. - step(1., amax(hex));
   }
   else if (mod(counter, skip) == 0.) {
     c = rule(hex, d);
