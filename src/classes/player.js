@@ -6,7 +6,7 @@ import webglUtils from '../webgl-utils.js';
 const DEFAULT_INTERVAL = 33;
 
 const BASE_UNIFORMS = {
-  duration: 360,
+  duration: 720,
   counter: 0,
   time: 0,
   size: [0, 0],
