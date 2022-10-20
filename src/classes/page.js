@@ -241,11 +241,13 @@ export default class Page {
       this.scrollTabs.push(tab);
       this.scrollMap[id] = i;
 
-      tab.addEventListener('click', () => {
-        location.hash = this.scrollBlocks?.[i].id || '';
-        window.scrollTo(0, this.scrollBlocks[i].offsetTop);
-      });
+      tab.addEventListener('click', () => this.scrollTo(i));
     }
+  }
+
+  scrollTo(idx) {
+    location.hash = this.scrollBlocks?.[idx].id || '';
+    window.scrollTo(0, this.scrollBlocks[idx].offsetTop);
   }
 
   getScrollId() {
@@ -292,7 +294,10 @@ export default class Page {
   }
   
   toggleScrollBlocks(state=undefined) {
-    this.scrollBlocks?.forEach((e) => e.classList.toggle('hidden', state));
+    this.scrollBlocks?.forEach((e) => {
+      e.classList.toggle('hidden', state);
+      e.classList.toggle('no-pointer', state);
+    });
   }
 
   eq(y, ep=5) {
@@ -307,6 +312,7 @@ export default class Page {
     const {main} = this.players;
     const {uniforms} = main;
     const key = ev.key.toUpperCase();
+    const number = Number.parseInt(ev.key);
     const uniformKey = `key${key}`;
     if ('WASD'.includes(key)) {
       const wasdMap = {
@@ -343,7 +349,10 @@ export default class Page {
           main.run();
       }
       else if (key == 'H') {
-        window.scrollTo(0, 0);
+        uniforms.dir = [0, 0];;
+      }
+      else if (number && number <= this.scrollBlocks.length) {
+        this.scrollTo(number - 1);
       }
       else if (ev.key == 'Escape') {
         this.toggleScrollBlocks();
