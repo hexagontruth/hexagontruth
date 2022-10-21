@@ -18,6 +18,7 @@ const BASE_UNIFORMS = {
   lastSize: [0, 0],
   parallax: [0, 0],
   dir: [0, 0],
+  zoom: 1,
   aspect: 1,
   clock: 0,
   resize: false,
@@ -234,7 +235,7 @@ export default class Player {
     this.canvas.width = w;
     this.canvas.height = h;
     this.setSize();
-    this.scrollRange = document.documentElement.scrollHeight - dw;
+    this.scrollRange = document.documentElement.scrollHeight - dh;
 
     this.uniforms.resize = true;
     this.uniforms.resizeAt = true;
@@ -243,7 +244,8 @@ export default class Player {
   }
 
   handleScroll(ev) {
+    // TODO: Figure out wtf is wrong with this
     this.scrollPos = window.scrollY / this.scrollRange;
-    this.uniforms.parallax[1] = -this.scrollPos * 2 + 1;
+    this.uniforms.parallax[1] = this.scrollPos * 2 + 1;
   }
 }

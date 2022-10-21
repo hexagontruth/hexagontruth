@@ -82,35 +82,35 @@ void main() {
   float r, d, e;
 
 
-  vec3 seed[10] = vec3[10](
-    vec3(0, 0, 0),
+  // vec3 seed[10] = vec3[10](
+  //   vec3(0, 0, 0),
 
-    vec3(-1, 0, 1),
-    vec3(0, -1, 1),
-    vec3(1, -1, 0),
-    vec3(1, 0, -1),
-    vec3(0, 1, -1),
-    vec3(-1, 1, 0),
-    vec3(-1, -1, 2),
-    vec3(2, -1, -1),
-    vec3(-1, 2, -1)
-    // vec3(1, -2, 1),
-    // vec3(1, 1, -2),
-    // vec3(-2, 1, 1)
-  );
+  //   vec3(-1, 0, 1),
+  //   vec3(0, -1, 1),
+  //   vec3(1, -1, 0),
+  //   vec3(1, 0, -1),
+  //   vec3(0, 1, -1),
+  //   vec3(-1, 1, 0),
+  //   vec3(-1, -1, 2),
+  //   vec3(2, -1, -1),
+  //   vec3(-1, 2, -1)
+  //   // vec3(1, -2, 1),
+  //   // vec3(1, 1, -2),
+  //   // vec3(-2, 1, 1)
+  // );
 
   if (counter == 0.) {
-    for (int i = 0, j = 0; i < 10; i++) {
-      if (hex == seed[i]) {
-        c.y += 1.;
-        j++;
-      }
-      if (hex == -seed[i] && amax(hex) > 1.) {
-        c.x += 1.;
-        j++;
-      }
-      if (j > 1) break;
-    }
+    // for (int i = 0, j = 0; i < 10; i++) {
+    //   if (hex == seed[i]) {
+    //     c.y += 1.;
+    //     j++;
+    //   }
+    //   if (hex == -seed[i] && amax(hex) > 1.) {
+    //     c.x += 1.;
+    //     j++;
+    //   }
+    //   if (j > 1) break;
+    // }
     vec2 v = hex2cart * hex / gridSize;
     v = v * 0.5 + 0.5;
     vec2 tx = texture(noiseTexture, v).xy;

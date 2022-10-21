@@ -3,6 +3,8 @@
 
 #define LW 1./360.
 
+uniform vec2 autoscroll;
+
 vec4 sampNbr(vec3 hex) {
     vec2 uv = cell2uv(hex, lastSize);
     return texture(inputTexture, uv);
@@ -13,24 +15,31 @@ void main() {
   fragColor = unit.yyyx;
   vec2 uv = gl_FragCoord.xy / size;
   vec2 cv;
-  float scale, stime;
+  float scale;
+  // float stime;
 
   for (int h = 0; h < 1; h++) {
     // stime = fract(time + float(h) / 3.);
     // scale = 1./(gridSize) + smoothstep(1., 1./gridSize, stime) * 1.;
     scale = 1.;
-    stime = 1.;
+    // stime = 1.;
     c = unit.yyy;
     cv = uv * 2. - 1.;
     cv *= cover;
     // cv += vec2(tsin(1./6.), tcos(1./6.)) * float(h);
-    cv.y += parallax.y * stime;
-    cv += (dir / 10.) * stime;
 
-    cv = cv.yx;
-    cv = cv * scale;
+    cv *= zoom;
 
-    cv = hexbin(cv, 1.).yx;
+    cv.y += parallax.y * 0.5;
+    cv += dir / gridSize / 2.;
+    cv += counter / duration / 2. * autoscroll;
+
+    // cv.x += 0.00001; // weird centerline bugfix
+
+    // cv = cv.yx;
+    // cv = cv * scale;
+
+    // cv = hexbin(cv, 1.).yx;
 
     vec3 hex, cel, ncel;
     vec3 dist, p[3], n[6];
@@ -41,15 +50,15 @@ void main() {
     vec4 s0, s1, b0, b1;
     vec3 p0, p1;
     vec2 c0, c1, cd0, cd1, ld, l0, l1;
-    float r, rp, rx, ry, gl, cc, sl;
+    float r, rp, rx, ry, gl, cc, sl, lc;
     vec2 max1, max2, min1, min2;
 
     t = skipTime;
     ts = smoothstep(0., 0.5, t);
     te = smoothstep(0.5, 1., t);
-    q = 4./amax(size) * scale;
+    q = 4./amax(size) * scale * zoom;
     qc = q * gridSize * 2.; // I don't know why this needs to be multiplied by two?
-    lw = 1./360. * scale;
+    lw = 1./360. * scale * zoom;
     lwc = lw * gridSize * 2.;
     rp = 1./12.;
 
@@ -99,8 +108,8 @@ void main() {
       min(1. - ts, s0.w),
       max(ts, s0.w),
       b0.y
-    ) - r;
-    d = mix(d, min(d, abs(ry)), amax(b0.yw));
+    );
+    d = mix(d, min(d, abs(ry -r)), amax(b0.yw) * step(0.5, 1. - t));
 
     for (int i = 0; i < 6; i++) {
       p1 = n[i];
@@ -119,10 +128,10 @@ void main() {
         min(1. - ts, s1.w),
         max(ts, s1.w),
         b1.y
-      ) - r;
-      d = min(d, abs(ry));
+      );
+      d = min(d, abs(ry - r));
 
-      if (i > 1 && cc > lw * 3.)
+      if (i > 1 && cc > lw * 4.)
         break;
 
       max2 = vec2(
@@ -150,33 +159,49 @@ void main() {
       }
     }
 
-    r = length(cel) * sr3 / 2. / (1. - rp * 2.);
     rx = mix(
-      smoothstep(0., 1., s0.z - (s0.z - s0.x) * t),
+      smoothstep(0.25, 1., s0.z - (s0.z - s0.x) * t),
       max(te, s0.z),
       openStep(0., s0.x - s0.z)
-    ) - r;
-    r = amax(cel) / (1. - rp);
+    );
     ry = mix(
       min(1. - ts, s0.w),
       max(ts, s0.w),
       b0.y
-    ) - r;
+    );
 
-    // ld.x = min(ld.x, 1. - qs(rx, qc));
-    c += unit.xxx * qs(rx, qc) * 0.25;
-    c += unit.xxx * qs(ry, qc) * 0.5;
+    r = length(cel) * sr3 / 2. / (1. - rp * 2.);
+    c += unit.xxx * qs(rx - r, qc) * 0.25 * smoothstep(1./16., 1./8., rx);
+    r = amax(cel) / (1. - rp);
+    c += unit.xxx * qs(ry - r, qc) * 0.5;
 
     l0 = qw(ld, q, lw);
     l1 = qw(ld, q, lw * 3.);
-    d = qw(d, qc / 2., lwc / 2.);
-    d = xsum(d, l1.y);
+    lc = max(l0.x * (1. - l1.y), xsum(l0.y, l1.y));
 
-    c = alphamul(c, unit.xxx, d * 0.25);
-    c = alphamul(c, unit.xxx, max(l0.x * (1. - l1.y), xsum(l0.y, l1.y)) * 0.5);
-
+    c = alphamul(c, unit.xxx, lc * 0.5);
+    // c = alphamul(c, hsv2rgb(vec3(
+    //   quantize(amax(hex / gridSize), gridSize) + s0.x,
+    //   0.75,
+    //   1.
+    // )), max(l0.x * (1. - l1.y), xsum(l0.y, l1.y)) * 0.5);
     // c *= smoothstep(1., 2./3., stime);
     // c *= smoothstep(0., 1./2., stime);
+
+    d = qw(d, qc / 2., lwc / 2.);
+    d = max(0., d - max(l0.x, l1.y));
+    c = alphamul(c, unit.xxx, d * 0.25);
+
+    // Color line bands -- requires changing loop escape radius
+    // l0 = qw(ld, q, lw * vec2(5., 9.));
+    // l1 = qw(ld, q, lw * vec2(7., 11.));
+    // lc = xsum(l0.x, l1.x);
+    // c = alphamul(c, hsv2rgb(vec3(
+    //   amax(hex) / gridSize * 1.5 - time,
+    //   0.75,
+    //   1.
+    // )), lc * 0.75);
+
     color = max(color, c);
   }
   color = clamp(color, 0., 1.) * htWhite;

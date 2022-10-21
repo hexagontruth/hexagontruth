@@ -199,6 +199,10 @@ vec2 qw(vec2 n, float q, float w) {
   return smoothstep(w/2. + q/2., w/2. - q/2., abs(n));
 }
 
+vec2 qw(vec2 n, float q, vec2 w) {
+  return smoothstep(w/2. + q/2., w/2. - q/2., abs(n));
+}
+
 float qs(float n, float q) {
   return smoothstep(-q/2., q/2., n);
 }

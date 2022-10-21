@@ -117,7 +117,7 @@ ul, ol {
   }
 }
 
-.header, .footer {
+.nav-block {
   position: fixed;
   @include flex(row, center, stretch);
   z-index: 100;
@@ -126,6 +126,7 @@ ul, ol {
   width: 100%;
   background-color: $nav-bg;
   color: $nav-fg;
+  transition: all $t-short;
   &.header {
     top: 0;
     height: $nav-top-height;
@@ -139,10 +140,16 @@ ul, ol {
         line-height: 1;
       }
     }
+    &.hidden {
+      transform: translateY(-100%);
+    }
   }
   &.footer {
     bottom: 0;
     height: $nav-bottom-height;
+  &.hidden {
+    transform: translateY(100%);
+  }
   }
   .nav {
     @include flex(row, center, stretch);

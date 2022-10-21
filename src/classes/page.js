@@ -84,6 +84,7 @@ export default class Page {
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
 
+    document.body.addEventListener('dblclick', () => this.toggleElements());
     window.addEventListener('keydown', (ev) => this.handleKey(ev));
     window.addEventListener('keyup', (ev) => this.handleKey(ev));
     window.addEventListener('pointercancel', (ev) => this.handlePointer(ev));
@@ -297,8 +298,8 @@ export default class Page {
     this.controls?.classList.toggle('hidden', state);
   }
   
-  toggleScrollBlocks(state=undefined) {
-    this.scrollBlocks?.forEach((e) => {
+  toggleElements(state=undefined) {
+    document.querySelectorAll('.scroll-block, .nav-block').forEach((e) => {
       e.classList.toggle('hidden', state);
       e.classList.toggle('no-pointer', state);
     });
@@ -353,13 +354,20 @@ export default class Page {
           main.run();
       }
       else if (key == 'H') {
-        uniforms.dir = [0, 0];;
+        uniforms.dir = [0, 0];
+        uniforms.zoom = 1;
+      }
+      else if (key == ',') {
+        uniforms.zoom *= 12/11;
+      }
+      else if (key == '.') {
+        uniforms.zoom *= 11/12;
       }
       else if (number && number <= this.scrollBlocks.length) {
         this.scrollTo(number - 1);
       }
       else if (ev.key == 'Escape') {
-        this.toggleScrollBlocks();
+        this.toggleElements();
       }
       else if (ev.key == 'ArrowLeft' || ev.key == 'ArrowRight') {
         if (this.scrollId == 'art') {

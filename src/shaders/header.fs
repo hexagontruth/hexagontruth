@@ -18,6 +18,7 @@ uniform vec2 contain;
 uniform vec2 lastSize;
 uniform vec2 parallax;
 uniform vec2 dir;
+uniform float zoom;
 uniform float aspect;
 
 uniform float resizeAt;
@@ -30,6 +31,7 @@ uniform vec2 cursorDownPos;
 uniform vec2 cursorUpPos;
 uniform bool cursorDown;
 uniform float cursorAngle;
+
 uniform sampler2D inputTexture;
 uniform sampler2D lastTexture;
 

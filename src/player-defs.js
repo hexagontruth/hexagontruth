@@ -22,7 +22,7 @@ export default {
       [
         'vertex-position',
         'ca-display',
-        {uniforms: { gridSize: 15}},
+        {uniforms: { gridSize: 10, autoscroll: [0, 1]}},
       ],
       // [
       //   'vertex-position',
