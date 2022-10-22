@@ -11,14 +11,14 @@ function requireAll(ctx) {
 
 const SHADERS = requireAll(require.context('../shaders/', true, /\.(fs|vs)$/));
 
-export default class Program {
+export default class ShaderProgram {
   static build(player, shaderDefs) {
     return shaderDefs.map((shaderDef) => {
       const [vertText, fragText] = shaderDef.slice(0, 2).map((shaderName) => {
         return SHADERS[shaderName];
       });
       const config = shaderDef[2]; // Optional
-      const program = new Program(player, vertText, fragText, config);
+      const program = new ShaderProgram(player, vertText, fragText, config);
       return program;
     });
   }

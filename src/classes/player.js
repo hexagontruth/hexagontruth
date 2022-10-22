@@ -1,5 +1,5 @@
 import HookSet from './hook-set.js';
-import Program from './program.js';
+import ShaderProgram from './shader-program.js';
 import playerDefs from '../player-defs.js';
 import webglUtils from '../webgl-utils.js';
 
@@ -48,7 +48,7 @@ export default class Player {
     this.gl = canvas.getContext('webgl2');
 
     this.uniforms = Object.assign({}, BASE_UNIFORMS, this.config.uniforms);
-    this.programs = [];
+    this.shaderPrograms = [];
     this.counter = 0;
     this.interval = this.config.interval || DEFAULT_INTERVAL;
     this.minPixelRatio = this.config.minPixelRatio || 1;
@@ -78,7 +78,7 @@ export default class Player {
     this.handleResize();
     this.handleScroll();
     this.clear();
-    this.programs = Program.build(this, this.shaderDefs);
+    this.shaderPrograms = ShaderProgram.build(this, this.shaderDefs);
   }
 
   loadCustomTextures() {
@@ -116,7 +116,7 @@ export default class Player {
     gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, vertArray, gl.STATIC_DRAW);
 
-    for (const program of this.programs) {
+    for (const program of this.shaderPrograms) {
       const vertPositionAttribute = gl.getAttribLocation(program.program, 'vertexPosition');
       gl.enableVertexAttribArray(vertPositionAttribute);
       gl.bindBuffer(gl.ARRAY_BUFFER, vertBuffer);
@@ -147,10 +147,10 @@ export default class Player {
 
   run() {
     this.hooks.call('beforeRun');
-    const {gl, programs, uniforms} = this;
+    const {gl, shaderPrograms, uniforms} = this;
     const cur = this.counter % 2;
     const last = (cur + 1) % 2;
-    const programCount = this.programs.length;
+    const programCount = this.shaderPrograms.length;
 
     uniforms.counter = this.counter;
     // uniforms.time = (this.uniforms.counter % this.uniforms.duration) / this.uniforms.duration;
@@ -174,7 +174,7 @@ export default class Player {
     
     for (let i = 0; i < programCount; i++) {
       const li = (i + programCount - 1) % programCount;
-      const program = programs[i];
+      const program = shaderPrograms[i];
       uniforms.lastSize = uniforms.size.slice();
       uniforms.size = program.size || this.size;
       uniforms.cover = program.cover;
@@ -182,10 +182,10 @@ export default class Player {
       uniforms.aspect = program.aspect;
 
       const lastTexture = program.textures[last];
-      let inputTexture = programs[li].textures[cur];
+      let inputTexture = shaderPrograms[li].textures[cur];
       if (programCount > 1 && i == 0) {
         // This assumes a final top shader layer not fed back to the bottom
-        inputTexture = programs[programCount - 2].textures[last];
+        inputTexture = shaderPrograms[programCount - 2].textures[last];
       }
 
       program.setTextures({inputTexture, lastTexture, ...this.customTextures});
@@ -250,7 +250,7 @@ export default class Player {
     this.uniforms.resize = true;
     this.uniforms.resizeAt = true;
     this.gl.viewport(0, 0, w, h);
-    this.programs.forEach((e) => e.handleResize(ev));
+    this.shaderPrograms.forEach((e) => e.handleResize(ev));
   }
 
   handleScroll(ev) {
