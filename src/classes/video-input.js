@@ -1,7 +1,7 @@
 import CanvasInput from './canvas-input.js';
 
 export default class VideoInput extends CanvasInput {
-  constructor(page, args={}) {
+  constructor(args={}) {
     super(page, args);
     let defaults = {
       video: args.video || document.createElement('video'),

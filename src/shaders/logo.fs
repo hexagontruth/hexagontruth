@@ -1,4 +1,30 @@
-#include common.fs
+#include header.fs
+
+mat2x3 cart2hex = mat2x3(
+  vec3(-1, 1, 0),
+  vec3(-1. / sr3, -1. / sr3, 2. / sr3)
+);
+
+vec2 rot(vec2 p, float a) {
+  float ca = cos(a);
+  float sa = sin(a);
+  return mat2(
+    ca, sa,
+    -sa, ca
+  ) * p;
+}
+
+float amax(vec3 v) {
+  return max(max(abs(v.x), abs(v.y)), abs(v.z));
+}
+
+float xsum(float s, float q) {
+  return s + q - 2. * s * q;
+}
+
+float qw(float n, float q, float w) {
+  return smoothstep(w/2. + q/2., w/2. - q/2., abs(n));
+}
 
 float istep(float n, float v) {
   return 1. - step(n, v);

@@ -1,5 +1,5 @@
 import HookSet from './hook-set.js';
-import Player from './player.js';
+import PlayerFactory from './player-factory.js';
 import config from '../config.js';
 import redirectDefs from '../redirect-defs.js';
 import videoDefs from '../video-defs.js';
@@ -12,6 +12,7 @@ export default class Page {
     this.letterTimer = null;
     this.letterInterval = 150;
     this.titleHidden = false;
+    this.counter = 0;
 
     this.setEnv();
     this.setArgs();
@@ -22,11 +23,12 @@ export default class Page {
   }
 
   setArgs() {
-    let [base, query] = window.location.href.split('?');
-    let argPairs = (query || '').split('&').map((e) => e.split('='));
+    let query = window.location.search.replace('?', '') || '';
+
+    let argPairs = query.split('&').filter((e) => e != '').map((e) => e.split('='));
     this.args = {};
     for (let [k, v] of argPairs) {
-      this.args[k] = k;
+      this.args[k] = v !== undefined ? v : true;
     }
 
     Object.entries(redirectDefs).forEach(([k, v]) => {
@@ -47,8 +49,9 @@ export default class Page {
     this.loaded = true;
 
     this.body = document.body;
-    this.header = document.querySelector('.header');
-    this.footer = document.querySelector('.footer');
+    this.page = document.querySelector('#page');
+    this.header = document.querySelector('#header');
+    this.footer = document.querySelector('#footer');
     this.isProduction && this.onProd();
 
     this.players = {};
@@ -56,18 +59,12 @@ export default class Page {
       const name = el.getAttribute('data-program');
       const controlsSelector = el.getAttribute('data-controls');
       const controls = document.querySelector(controlsSelector);
-      const player = new Player(this, name, el, controls);
+      const player = PlayerFactory(this, name, el);
       this.players[name] = player;
     });
-    Object.values(this.players).forEach((e) => e.loadCustomTextures());
+    Object.values(this.players).forEach((e) => e.initialize());
 
-    this.players.main.hooks.add('afterRun', () => this.updateCounter());
-    this.players.main.hooks.add('onReset', () => {
-      this.updateCounter();
-      this.players.main.customInput.noiseTexture.setNoise();
-    });
-
-    this.hooks = new HookSet(['onSnap', 'onScroll']);
+    this.hooks = new HookSet(['onSnap', 'onScroll'], this);
     this.hooks.add('onSnap', () => {
       if (this.scrollId == 'art') {
         this.startVideo(0);
@@ -80,18 +77,20 @@ export default class Page {
     this.initializeVideo();
 
     this.controls = document.querySelector('#controls');
-    this.counter = document.querySelector('#counter');
+    this.counterDisplay = document.querySelector('#counter');
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
+    this.hidden = false;
+    this.scrollPos = 0;
+    this.lastPointer = 0;
 
-    document.body.addEventListener('dblclick', () => this.toggleElements());
+    this.page.addEventListener('pointercancel', (ev) => this.handlePointer(ev));
+    this.page.addEventListener('pointerdown', (ev) => this.handlePointer(ev));
+    this.page.addEventListener('pointermove', (ev) => this.handlePointer(ev));
+    this.page.addEventListener('pointerout', (ev) => this.handlePointer(ev));
+    this.page.addEventListener('pointerup', (ev) => this.handlePointer(ev));
     window.addEventListener('keydown', (ev) => this.handleKey(ev));
     window.addEventListener('keyup', (ev) => this.handleKey(ev));
-    window.addEventListener('pointercancel', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerdown', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointermove', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerout', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerup', (ev) => this.handlePointer(ev));
     window.addEventListener('resize', (ev) => this.handleResize(ev));
     window.addEventListener('scroll', (ev) => this.handleScroll(ev));
 
@@ -103,6 +102,9 @@ export default class Page {
     this.setScrollBlocks();
     this.setAnchor();
     this.handleScroll();
+
+    this.args.hide && this.toggleHidden();
+    this.args.counter && this.toggleControls();
 
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;
@@ -176,9 +178,10 @@ export default class Page {
     });
   }
 
-  updateCounter() {
-    const paddedCount = ('00000' + this.players.main.counter).slice(-6);
-    this.counter.innerHTML = paddedCount;
+  updateCounter(count) {
+    this.counter = count || this.counter;
+    const paddedCount = ('00000' + this.counter).slice(-6);
+    this.counterDisplay.innerHTML = paddedCount;
   }
 
   hideTitle() {
@@ -221,7 +224,7 @@ export default class Page {
     }
   }
 
-  createElement(className, tag='div', parent=document.body) {
+  createElement(tag='div', className, parent) {
     let element = document.createElement(tag);
     element.className = className || '';
     parent && parent.appendChild(element);
@@ -229,8 +232,8 @@ export default class Page {
   }
 
   setScrollBlocks(scrollBlocks) {
-    const tabTemplate = this.createElement('scroll-tab', 'div');
-    this.createElement('scroll-tab-inner', 'div', tabTemplate);
+    const tabTemplate = this.createElement('div', 'scroll-tab');
+    this.createElement('div', 'scroll-tab-inner', tabTemplate);
 
     this.scrollTabGroup = document.querySelector('.scroll-tabs');
     this.scrollBlocks = Array.from(document.querySelectorAll('.scroll-block'));
@@ -298,10 +301,10 @@ export default class Page {
     this.controls?.classList.toggle('hidden', state);
   }
   
-  toggleElements(state=undefined) {
+  toggleHidden(state=!this.hidden) {
+    this.hidden = state;
     document.querySelectorAll('.scroll-block, .nav-block').forEach((e) => {
-      e.classList.toggle('hidden', state);
-      e.classList.toggle('no-pointer', state);
+      e.classList.toggle('hidden', this.hidden);
     });
   }
 
@@ -314,60 +317,16 @@ export default class Page {
   }
 
   handleKey(ev) {
-    const {main} = this.players;
-    const {uniforms} = main;
-    const key = ev.key.toUpperCase();
     const number = Number.parseInt(ev.key);
-    const uniformKey = `key${key}`;
-    if ('WASD'.includes(key)) {
-      const wasdMap = {
-        W: [0, 1],
-        A: [-1, 0],
-        S: [0, -1],
-        D: [1, 0],
-      };
-      const dirDelta = wasdMap[key];
-      if (ev.type == 'keydown') {
-        uniforms[uniformKey] = true;
-        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
-      }
-      else if (ev.type == 'keyup') {
-        uniforms[uniformKey] = false;
-        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
-      }
-    }
-    else if (ev.type == 'keydown') {
-      if (key == 'R') {
-        main.reset();
-        main.run();
-      }
-      else if (key == 'T') {
-        main.toggle();
-      }
-      else if (key == 'C') {
-        this.toggleControls();
-      }
-      else if (key == 'G') {
-        if (main.playing)
-          main.stop();
-        else
-          main.run();
-      }
-      else if (key == 'H') {
-        uniforms.dir = [0, 0];
-        uniforms.zoom = 1;
-      }
-      else if (key == ',') {
-        uniforms.zoom *= 12/11;
-      }
-      else if (key == '.') {
-        uniforms.zoom *= 11/12;
-      }
-      else if (number && number <= this.scrollBlocks.length) {
+    if (ev.type == 'keydown') {
+      if (number && number <= this.scrollBlocks.length) {
         this.scrollTo(number - 1);
       }
+      else if (ev.key == 'c') {
+        this.toggleControls();
+      }
       else if (ev.key == 'Escape') {
-        this.toggleElements();
+        this.toggleHidden();
       }
       else if (ev.key == 'ArrowLeft' || ev.key == 'ArrowRight') {
         if (this.scrollId == 'art') {
@@ -376,33 +335,35 @@ export default class Page {
         }
       }
     }
+    this.players.main?.hooks.call('onKey', ev);
   }
 
   handlePointer(ev) {
-    const {uniforms} = this.players.main;
-    const pos = [
-      ev.clientX / this.dw * 2 - 1,
-      ev.clientY / this.dh * -2 + 1,
-    ];
-    uniforms.cursorLast = uniforms.cursorPos;
-    uniforms.cursorPos = pos;
-
     if (ev.type == 'pointerdown') {
-      uniforms.cursorDown = true;
-      uniforms.cursorDownAt = this.counter;
-      uniforms.cursorDownPos = pos.slice();
-    }
-    else if (ev.type == 'pointerup' || ev.type == 'pointerout' || ev.type == 'pointercancel') {
-      uniforms.cursorDown = false;
-      uniforms.cursorUpAt = this.counter;
-      uniforms.cursorUpPos = pos.slice();
-    }
+      const {abs, min} = Math;
+      const [w, h] = [window.innerWidth, window.innerHeight];
+      const last = this.lastPointer;
+      const cur = ev.timeStamp;
+      this.lastPointer = cur;
+      const distToEdge = min(
+        abs(w / 2 - abs(ev.pageX % w - w / 2)) / window.innerWidth,
+        abs(h / 2 - abs(ev.pageY % h - h / 2)) / window.innerHeight,
+      );
 
-    uniforms.cursorAngle = Math.atan2(pos[1], pos[0]);
+      const cond = distToEdge < 0.1 || ev.pointerType == 'mouse';
+      // I am getting so fucking sick of default double click speeds
+      if (cond && cur - last < 200) {
+        this.toggleHidden();
+      }
+    }
+    this.players.main?.hooks.call('onPointer', ev);
+    // this.hidden && ev.stopPropagation();
+    // this.hidden && ev.preventDefault();
   }
 
   handleResize(ev) {
     this.snap == 0 && this.animateTitle();
+    Object.values(this.players).forEach((e) => e.handleResize(ev));
   }
 
   handleScroll(ev) {
@@ -419,10 +380,13 @@ export default class Page {
     else if (this.eq(0, 1)) {
       this.animateTitle();
     }
+
+    this.scrollPos = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
     this.hooks.call('onScroll');
+    Object.values(this.players).forEach((e) => e.handleScroll(ev));
   }
 
-  // This is only seemingly helping on desktop Chrome, and possibly only on Linux? Why does Chrome scroll snapping suck so badly?
+  // Why does Chrome scroll snapping suck so badly?
   onWheel(ev) {
     if (!this.hasScroll) return;
     const pts = this.scrollBlocks.map((e) => e.offsetTop);

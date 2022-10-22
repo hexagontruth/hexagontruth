@@ -24,5 +24,6 @@ void main() {
   // c.b *= clamp((counter - srcCounter) / 100., 0., 1.);
   // c.b = uv.y;
   // c.g = c.a;
+  c = unit.xyyx;
   fragColor = c;
 }

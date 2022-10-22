@@ -3,6 +3,19 @@
 
 uniform sampler2D noiseTexture;
 
+uniform sampler2D[3] textureArray;
+
+
+vec4 sampCell(vec3 hex) {
+  vec2 uv = cell2uv(hex);
+  return texture(lastTexture, uv);
+}
+
+vec4 sampCursor(vec3 hex) {
+  vec2 uv = cell2uv(hex);
+  return texture(textureArray[0], uv);
+}
+
 vec3 nbrs[6] = vec3[6](
   vec3(1, 0, -1),
   vec3(0, 1, -1),
@@ -12,19 +25,14 @@ vec3 nbrs[6] = vec3[6](
   vec3(1, -1, 0)
 );
 
-vec4 getNbr(vec3 hex) {
-    vec2 uv = cell2uv(hex);
-    return texture(lastTexture, uv);
-}
-
-vec4 rule(vec3 hex, float p) {
+vec4 rule(vec3 hex) {
   vec4 cur, next;
   float n, map;
 
-  cur = getNbr(hex);
+  cur = sampCell(hex);
   for (int i = 0; i < 6; i++) {
     vec3 v = nbrs[i];
-    vec4 nbr = getNbr(hex + v);
+    vec4 nbr = sampCell(hex + v);
     n += openStep(0., nbr.x);
     map += openStep(0., nbr.y) * pow(2., float(i));
   }
@@ -72,15 +80,7 @@ void main() {
   vec4 c;
   vec2 uv = gl_FragCoord.xy / size;
   vec2 cv = uv * 2. - 1.;
-  // cv.y *= size.y / size.x;
-  // cv.y += parallax.y * 0.25;
   vec3 hex = uv2cell(uv);
-
-  // fragColor = hsv2rgb(vec4(amax(hex)/gridSize, 1, 1, 1));
-  // return;
-
-  float r, d, e;
-
 
   // vec3 seed[10] = vec3[10](
   //   vec3(0, 0, 0),
@@ -116,13 +116,19 @@ void main() {
     vec2 tx = texture(noiseTexture, v).xy;
     tx = openStep(0., tx);
     c.xy = tx;
+    c.xy *= (1. - float(shiftKey));
   }
   else if (skip) {
-    c = rule(hex, d);
+    c = rule(hex);
   }
   else {
     c = texture(lastTexture, uv);
   }
+
+  vec2 click = sampCursor(hex).xy;
+
+  c += step(1., click.x) - step(1., click.y);
+
 
   fragColor = vec4(c);
 }

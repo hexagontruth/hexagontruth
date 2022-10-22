@@ -11,14 +11,14 @@ function requireAll(ctx) {
 
 const SHADERS = requireAll(require.context('../shaders/', true, /\.(fs|vs)$/));
 
-export default class Program {
+export default class ShaderProgram {
   static build(player, shaderDefs) {
     return shaderDefs.map((shaderDef) => {
       const [vertText, fragText] = shaderDef.slice(0, 2).map((shaderName) => {
         return SHADERS[shaderName];
       });
       const config = shaderDef[2]; // Optional
-      const program = new Program(player, vertText, fragText, config);
+      const program = new ShaderProgram(player, vertText, fragText, config);
       return program;
     });
   }
@@ -30,6 +30,7 @@ export default class Program {
     this.vertText = vertText;
     this.fragText = fragText;
     this.buildConfig(config);
+
     const gl = this.gl;
     this.vertShader = gl.createShader(gl.VERTEX_SHADER);
     this.fragShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -46,11 +47,13 @@ export default class Program {
 
     this.textures = [];
     this.framebuffers = [];
-    for (let i = 0; i < 2; i++) {
+    this.numTextureBuffers = this.stateful ? 2 : 1;
+    for (let i = 0; i < this.numTextureBuffers; i++) {
       const texture = gl.createTexture();
       const fb = gl.createFramebuffer();
       this.textures.push(texture);
       this.framebuffers.push(fb);
+      webglUtils.resetTexture(gl, texture);
     };
 
     this.cover = this.contain = this.aspect = null;
@@ -63,8 +66,17 @@ export default class Program {
       this.persistent = true;
       this.size = size;
     }
-
+    this.stateful = !!config.state;
     this.uniforms = config.uniforms || {};
+  }
+
+
+  getTexture(idx) {
+    return this.textures[idx % this.numTextureBuffers];
+  }
+
+  getFramebuffer(idx) {
+    return this.framebuffers[idx % this.numTextureBuffers];
   }
 
   setUniforms(uniforms) {
@@ -91,13 +103,20 @@ export default class Program {
     const {gl} = this;
     gl.useProgram(this.program);
     const entries = Object.entries(textures);
-    entries.forEach(([uniformName, texture], idx) => {
-      const enumKey = 'TEXTURE%'.replace('%', idx);
+    let idx = 0;
+    for (let [uniformName, textureData] of entries) {
+      const textures = Array.isArray(textureData) ? textureData : [textureData];
       const uniformLoc = gl.getUniformLocation(this.program, uniformName);
-      gl.activeTexture(gl[enumKey]);
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.uniform1i(uniformLoc, idx);
-    });
+      const idxRange = [];
+      for (const texture of textures) {
+        const enumKey = 'TEXTURE%'.replace('%', idx);
+        gl.activeTexture(gl[enumKey]);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        idxRange.push(idx);
+        idx++;
+      }
+      gl.uniform1iv(uniformLoc, idxRange);
+    }
   }
 
   handleResize(ev) {
@@ -108,11 +127,10 @@ export default class Program {
     this.aspect = Math.max(...this.contain);
 
     if (!this.persistent || !ev) { // This is terrible
-      const {gl} = this;
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < this.numTextureBuffers; i++) {
         const [texture, fb] = [this.textures[i], this.framebuffers[i]];
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-        webglUtils.resetTexture(gl, texture, w, h);
+        webglUtils.resetTexture(gl, texture, {w, h});
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
       };
     }
