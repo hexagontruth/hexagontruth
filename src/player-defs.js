@@ -9,6 +9,13 @@ export default {
     customInput: {
       noiseTexture: (player) => new NoiseInput(player, {size: 64}),
     },
+    hooks: {
+      afterRun: (player) => player.page.updateCounter(player.counter),
+      onReset: (player) => {
+        player.page.updateCounter(player.counter);
+        player.customInput.noiseTexture.setNoise();
+      },
+    },
     shaders: [
       // [
       //   'vertex-position',

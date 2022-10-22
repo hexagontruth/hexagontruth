@@ -12,6 +12,7 @@ export default class Page {
     this.letterTimer = null;
     this.letterInterval = 150;
     this.titleHidden = false;
+    this.counter = 0;
 
     this.setEnv();
     this.setArgs();
@@ -61,13 +62,7 @@ export default class Page {
     });
     Object.values(this.players).forEach((e) => e.loadCustomTextures());
 
-    this.players.main.hooks.add('afterRun', () => this.updateCounter());
-    this.players.main.hooks.add('onReset', () => {
-      this.updateCounter();
-      this.players.main.customInput.noiseTexture.setNoise();
-    });
-
-    this.hooks = new HookSet(['onSnap', 'onScroll']);
+    this.hooks = new HookSet(['onSnap', 'onScroll'], this);
     this.hooks.add('onSnap', () => {
       if (this.scrollId == 'art') {
         this.startVideo(0);
@@ -80,7 +75,7 @@ export default class Page {
     this.initializeVideo();
 
     this.controls = document.querySelector('#controls');
-    this.counter = document.querySelector('#counter');
+    this.counterDisplay = document.querySelector('#counter');
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
 
@@ -176,9 +171,10 @@ export default class Page {
     });
   }
 
-  updateCounter() {
-    const paddedCount = ('00000' + this.players.main.counter).slice(-6);
-    this.counter.innerHTML = paddedCount;
+  updateCounter(count) {
+    this.counter = count || this.counter;
+    const paddedCount = ('00000' + this.counter).slice(-6);
+    this.counterDisplay.innerHTML = paddedCount;
   }
 
   hideTitle() {

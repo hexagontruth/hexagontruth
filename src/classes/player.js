@@ -57,7 +57,15 @@ export default class Player {
     this.customTextures = {};
     this.hidden = false;
 
-    this.hooks = new HookSet(['beforeRun', 'afterRun', 'onReset']);
+    this.config.hooks = this.config.hooks || {};
+    this.hooks = new HookSet([
+      'beforeRun',
+      'afterRun',
+      'onReset',
+      'onStart',
+      'onStop',
+    ], this);
+    this.hooks.addAll(this.config.hooks);
 
     if (this.config.size && !isNaN(this.config.size)) {
       this.config.size = [this.config.size, this.config.size];
@@ -213,11 +221,13 @@ export default class Player {
     this.last = Date.now();
     this.setup();
     reset && this.reset();
+    this.hooks.call('onStart');
     requestAnimationFrame(() => this.loop());
   }
 
   stop() {
     this.playing = false;
+    this.hooks.call('onStop');
   }
 
   toggle() {
