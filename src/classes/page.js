@@ -332,6 +332,9 @@ export default class Page {
   }
 
   handlePointer(ev) {
+    if (ev.target.classList?.contains('window')) {
+      ev.preventDefault();
+    }
     this.players.main?.hooks.call('onPointer', ev);
   }
 
