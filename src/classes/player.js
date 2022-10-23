@@ -168,13 +168,6 @@ export default class Player {
       const texture = this.customTextures[key];
       const ctx = this.customInput[key].ctx;
       const src = this.customInput[key].textureSrc;
-      // Workaround for flickering
-      // if (ctx) {
-      //   const data = ctx.getImageData(0, 0, 1, 1).data;
-      //   if (data[3] == 0) {
-      //     return;
-      //   }
-      // }
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, src.width, src.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, src);
     });
@@ -188,8 +181,8 @@ export default class Player {
       uniforms.contain = program.contain;
       uniforms.aspect = program.aspect;
 
-      const lastTexture = program.textures[last];
-      let inputTexture = shaderPrograms[li].textures[cur];
+      const lastTexture = program.getTexture(last);
+      let inputTexture = shaderPrograms[li].getTexture(cur);
       if (programCount > 1 && i == 0) {
         // This assumes a final top shader layer not fed back to the bottom
         inputTexture = shaderPrograms[programCount - 2].textures[last];
@@ -198,7 +191,7 @@ export default class Player {
       program.setTextures({inputTexture, lastTexture, ...this.customTextures});
       program.setUniforms(uniforms);
 
-      const framebuffer = i < programCount - 1 ? program.framebuffers[cur] : null;
+      const framebuffer = i < programCount - 1 ? program.getFramebuffer(cur) : null;
       gl.viewport(0, 0, ...uniforms.size);
       gl.useProgram(program.program);
       gl.bindFramebuffer(gl.FRAMEBUFFER,framebuffer);

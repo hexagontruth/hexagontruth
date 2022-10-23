@@ -17,7 +17,7 @@ vec4 getNbr(vec3 hex) {
     return texture(lastTexture, uv);
 }
 
-vec4 rule(vec3 hex, float p) {
+vec4 rule(vec3 hex) {
   vec4 cur, next;
   float n, map;
 
@@ -72,15 +72,7 @@ void main() {
   vec4 c;
   vec2 uv = gl_FragCoord.xy / size;
   vec2 cv = uv * 2. - 1.;
-  // cv.y *= size.y / size.x;
-  // cv.y += parallax.y * 0.25;
   vec3 hex = uv2cell(uv);
-
-  // fragColor = hsv2rgb(vec4(amax(hex)/gridSize, 1, 1, 1));
-  // return;
-
-  float r, d, e;
-
 
   // vec3 seed[10] = vec3[10](
   //   vec3(0, 0, 0),
@@ -116,11 +108,9 @@ void main() {
     vec2 tx = texture(noiseTexture, v).xy;
     tx = openStep(0., tx);
     c.xy = tx;
-
-    // c.x = 1. - amax(hex);
   }
   else if (skip) {
-    c = rule(hex, d);
+    c = rule(hex);
   }
   else {
     c = texture(lastTexture, uv);

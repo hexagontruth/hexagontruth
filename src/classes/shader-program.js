@@ -30,6 +30,7 @@ export default class ShaderProgram {
     this.vertText = vertText;
     this.fragText = fragText;
     this.buildConfig(config);
+
     const gl = this.gl;
     this.vertShader = gl.createShader(gl.VERTEX_SHADER);
     this.fragShader = gl.createShader(gl.FRAGMENT_SHADER);
@@ -46,7 +47,8 @@ export default class ShaderProgram {
 
     this.textures = [];
     this.framebuffers = [];
-    for (let i = 0; i < 2; i++) {
+    this.numTextureBuffers = this.stateful ? 2 : 1;
+    for (let i = 0; i < this.numTextureBuffers; i++) {
       const texture = gl.createTexture();
       const fb = gl.createFramebuffer();
       this.textures.push(texture);
@@ -64,8 +66,17 @@ export default class ShaderProgram {
       this.persistent = true;
       this.size = size;
     }
-
+    this.stateful = !!config.state;
     this.uniforms = config.uniforms || {};
+  }
+
+
+  getTexture(idx) {
+    return this.textures[idx % this.numTextureBuffers];
+  }
+
+  getFramebuffer(idx) {
+    return this.framebuffers[idx % this.numTextureBuffers];
   }
 
   setUniforms(uniforms) {
@@ -109,8 +120,7 @@ export default class ShaderProgram {
     this.aspect = Math.max(...this.contain);
 
     if (!this.persistent || !ev) { // This is terrible
-      const {gl} = this;
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < this.numTextureBuffers; i++) {
         const [texture, fb] = [this.textures[i], this.framebuffers[i]];
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
         webglUtils.resetTexture(gl, texture, {w, h});

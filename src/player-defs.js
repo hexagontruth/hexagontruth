@@ -30,14 +30,15 @@ export default {
       },
     },
     shaders: [
-      // [
-      //   'vertex-position',
-      //   'flate',
-      // ],
+      [
+        'vertex-position',
+        'ca-cursor',
+        {size: 64, state: true},
+      ],
       [
         'vertex-position',
         'ca-state',
-        {size: 64},
+        {size: 64, state: true},
       ],
       [
         'vertex-position',
