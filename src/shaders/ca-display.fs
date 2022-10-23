@@ -3,6 +3,8 @@
 
 #define LW 1./360.
 
+uniform sampler2D[3] textureArray;
+
 vec4 sampNbr(vec3 hex) {
     vec2 uv = cell2uv(hex, lastSize);
     return texture(inputTexture, uv);

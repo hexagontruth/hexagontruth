@@ -3,6 +3,8 @@
 
 uniform sampler2D noiseTexture;
 
+uniform sampler2D[3] textureArray;
+
 vec3 nbrs[6] = vec3[6](
   vec3(1, 0, -1),
   vec3(0, 1, -1),

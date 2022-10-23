@@ -103,13 +103,20 @@ export default class ShaderProgram {
     const {gl} = this;
     gl.useProgram(this.program);
     const entries = Object.entries(textures);
-    entries.forEach(([uniformName, texture], idx) => {
-      const enumKey = 'TEXTURE%'.replace('%', idx);
+    let idx = 0;
+    for (let [uniformName, textureData] of entries) {
+      const textures = Array.isArray(textureData) ? textureData : [textureData];
       const uniformLoc = gl.getUniformLocation(this.program, uniformName);
-      gl.activeTexture(gl[enumKey]);
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.uniform1i(uniformLoc, idx);
-    });
+      const idxRange = [];
+      for (const texture of textures) {
+        const enumKey = 'TEXTURE%'.replace('%', idx);
+        gl.activeTexture(gl[enumKey]);
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        idxRange.push(idx);
+        idx++;
+      }
+      gl.uniform1iv(uniformLoc, idxRange);
+    }
   }
 
   handleResize(ev) {

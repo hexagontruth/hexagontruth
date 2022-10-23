@@ -171,6 +171,10 @@ export default class Player {
       gl.bindTexture(gl.TEXTURE_2D, texture);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, src.width, src.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, src);
     });
+
+    const textureArray = this.shaderPrograms.map((program) => {
+      return program.getTexture(last);
+    });
     
     for (let i = 0; i < programCount; i++) {
       const li = (i + programCount - 1) % programCount;
@@ -188,7 +192,7 @@ export default class Player {
         inputTexture = shaderPrograms[programCount - 2].textures[last];
       }
 
-      program.setTextures({inputTexture, lastTexture, ...this.customTextures});
+      program.setTextures({inputTexture, lastTexture, textureArray, ...this.customTextures});
       program.setUniforms(uniforms);
 
       const framebuffer = i < programCount - 1 ? program.getFramebuffer(cur) : null;
