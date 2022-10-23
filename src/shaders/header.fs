@@ -18,19 +18,22 @@ uniform vec2 contain;
 uniform vec2 lastSize;
 uniform vec2 parallax;
 uniform vec2 dir;
-uniform float zoom;
 uniform float aspect;
+uniform float zoom;
 
 uniform float resizeAt;
 uniform bool resize;
 uniform float cursorDownAt;
 uniform float cursorUpAt;
+uniform vec3 cursorHex;
+uniform vec3 cursorHexRounded;
 uniform vec2 cursorPos;
 uniform vec2 cursorLastPos;
 uniform vec2 cursorDownPos;
 uniform vec2 cursorUpPos;
 uniform bool cursorDown;
 uniform float cursorAngle;
+uniform bool shiftKey;
 
 uniform sampler2D inputTexture;
 uniform sampler2D lastTexture;
@@ -40,3 +43,4 @@ vec3 unit = vec3(1, 0, -1);
 #define tau 6.283185307179586
 #define sr2 1.4142135623730951
 #define sr3 1.7320508075688772
+#define ir3 0.5773502691896257

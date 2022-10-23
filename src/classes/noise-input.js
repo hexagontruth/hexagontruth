@@ -1,18 +1,21 @@
 import CanvasInput from './canvas-input.js';
 
 export default class NoiseInput extends CanvasInput {
-  constructor(page, args = {}) {
-    super(page, args);
+  constructor(args = {}) {
+    super(args);
     let defaults = {
-      size: 256,
+      size: 64,
+      channels: 3,
+      spots: 36,
+      spotLength: 8,
     };
     Object.assign(this, defaults, args);
     this.ctx = this.canvas.getContext('2d', { willReadFrequently: true });
     this.setSize();
   }
 
-  setSize(size = this.size) {
-    const { canvas, ctx } = this;
+  setSize(size=this.size) {
+    const {canvas, ctx} = this;
     size = Array.isArray(size) ? size : [size, size];
     this.size = size;
     [canvas.width, canvas.height] = size;
@@ -48,27 +51,14 @@ export default class NoiseInput extends CanvasInput {
     return this.data.data[idx];
   }
 
-  setNoise(options = undefined, type = 'squiggle') {
-    type == 'squiggle' && this.setSquiggleNoise(options);
+  setNoise(type='squiggle') {
+    type == 'squiggle' && this.setSquiggleNoise();
   }
 
-  setSquiggleNoise(options = {}) {
-    const { ctx, size } = this;
-    const { random, floor, sign } = Math;
+  setSquiggleNoise() {
+    const {ctx, size, channels, spots, spotLength} = this;
+    const {random, floor, sign} = Math;
     const on = 255, off = 0;
-    const defaults = {
-      channels: 3,
-      spots: 36,
-      spotLength: 8,
-    };
-    options = Object.assign({}, defaults, options);
-    options.channels = Math.min(4, options.channels);
-    const {
-      channels,
-      spots,
-      spotLength,
-    } = defaults;
-
     const [w, h] = this.size;
     const dirs = [[1, 0], [0, 1], [-1, 0], [0, -1]];
     this.clear(); // Clear canvas and copy new imageData with [0,0,0,1]

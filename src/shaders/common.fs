@@ -12,9 +12,9 @@ mat2x3 cart2hex = mat2x3(
 );
 
 mat3 hex2hex = mat3(
-  vec3(0, 0, 0),
-  vec3(-1. / sr3, 2. / sr3, -1. / sr3),
-  vec3(-2. / sr3, 1. / sr3, 1. / sr3)
+    1./3.,        1./3. - ir3,  1./3. + ir3,
+    1./3. + ir3,  1./3.,        1./3. - ir3,
+    1./3. - ir3,  1./3. + ir3,  1./3.
 );
 
 vec3 htWhite = 1. - vec3(1./36., 1./24., 1./12.);
@@ -250,6 +250,22 @@ vec3 roundCubic(vec3 p) {
   else
     r.z = -r.x - r.y;
   return r;
+}
+
+vec3 hex2grid(vec3 hex) {
+  vec3 p;
+  hex = hex2hex * (hex / sr3);
+  p = roundCubic(hex);
+  p = hex - p;
+  p = -(hex2hex * (p * sr3));
+  return p;
+}
+
+vec3 roundGrid(vec3 hex, float gridSize) {
+  vec3 p = hex2grid(hex);
+  p *= gridSize;
+  p = roundCubic(p);
+  return p;
 }
 
 vec3 interpolatedCubic(vec3 p, out vec3 v[3]) {

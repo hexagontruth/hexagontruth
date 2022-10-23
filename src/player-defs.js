@@ -1,13 +1,12 @@
-
-
 import CanvasInput from './classes/canvas-input.js';
 import NoiseInput from './classes/noise-input.js';
 import VideoInput from './classes/video-input.js';
+import playerUtils from './player-utils.js';
 
 export default {
   main: {
     customInput: {
-      noiseTexture: (player) => new NoiseInput(player, {size: 64}),
+      noiseTexture: (player) => new NoiseInput({size: 64, channels: 2}),
     },
     hooks: {
       afterRun: (player) => player.page.updateCounter(player.counter),
@@ -15,21 +14,34 @@ export default {
         player.page.updateCounter(player.counter);
         player.customInput.noiseTexture.setNoise();
       },
+      onPointer: [
+        (player, ev) => playerUtils.setCursor(player, ev),
+        (player, ev) => playerUtils.setCursorHex(player, ev),
+      ],
+      onKey: (player, ev) => playerUtils.handleKey(player, ev),
+    },
+    uniforms: {
+      autoscroll: [0, 1],
+      gridSize: 15,
+      pan: (uniforms) => {
+        const {dir, gridSize, autoscroll, counter, duration, parallax} = uniforms;
+        // return dir.map((e, i) => e / gridSize / 2);
+        return dir.map((e, i) => e / gridSize / 2 + autoscroll[i] * counter / duration / 2 + parallax[i] / 2)
+      },
     },
     shaders: [
       // [
       //   'vertex-position',
-      //   'flatetke',
+      //   'flate',
       // ],
       [
         'vertex-position',
         'ca-state',
-        {size: 64, uniforms: { gridSize: 15}},
+        {size: 64},
       ],
       [
         'vertex-position',
         'ca-display',
-        {uniforms: { gridSize: 10, autoscroll: [0, 1]}},
       ],
       // [
       //   'vertex-position',

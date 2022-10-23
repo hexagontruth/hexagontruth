@@ -51,6 +51,7 @@ export default class ShaderProgram {
       const fb = gl.createFramebuffer();
       this.textures.push(texture);
       this.framebuffers.push(fb);
+      webglUtils.resetTexture(gl, texture);
     };
 
     this.cover = this.contain = this.aspect = null;
@@ -112,7 +113,7 @@ export default class ShaderProgram {
       for (let i = 0; i < 2; i++) {
         const [texture, fb] = [this.textures[i], this.framebuffers[i]];
         gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-        webglUtils.resetTexture(gl, texture, w, h);
+        webglUtils.resetTexture(gl, texture, {w, h});
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
       };
     }

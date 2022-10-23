@@ -310,57 +310,13 @@ export default class Page {
   }
 
   handleKey(ev) {
-    const {main} = this.players;
-    const {uniforms} = main;
-    const key = ev.key.toUpperCase();
     const number = Number.parseInt(ev.key);
-    const uniformKey = `key${key}`;
-    if ('WASD'.includes(key)) {
-      const wasdMap = {
-        W: [0, 1],
-        A: [-1, 0],
-        S: [0, -1],
-        D: [1, 0],
-      };
-      const dirDelta = wasdMap[key];
-      if (ev.type == 'keydown') {
-        uniforms[uniformKey] = true;
-        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
-      }
-      else if (ev.type == 'keyup') {
-        uniforms[uniformKey] = false;
-        uniforms.dir = uniforms.dir.map((e, i) => e +dirDelta[i]);
-      }
-    }
-    else if (ev.type == 'keydown') {
-      if (key == 'R') {
-        main.reset();
-        main.run();
-      }
-      else if (key == 'T') {
-        main.toggle();
-      }
-      else if (key == 'C') {
-        this.toggleControls();
-      }
-      else if (key == 'G') {
-        if (main.playing)
-          main.stop();
-        else
-          main.run();
-      }
-      else if (key == 'H') {
-        uniforms.dir = [0, 0];
-        uniforms.zoom = 1;
-      }
-      else if (key == ',') {
-        uniforms.zoom *= 12/11;
-      }
-      else if (key == '.') {
-        uniforms.zoom *= 11/12;
-      }
-      else if (number && number <= this.scrollBlocks.length) {
+    if (ev.type == 'keydown') {
+      if (number && number <= this.scrollBlocks.length) {
         this.scrollTo(number - 1);
+      }
+      else if (ev.key == 'c') {
+        this.toggleControls();
       }
       else if (ev.key == 'Escape') {
         this.toggleElements();
@@ -372,29 +328,11 @@ export default class Page {
         }
       }
     }
+    this.players.main?.hooks.call('onKey', ev);
   }
 
   handlePointer(ev) {
-    const {uniforms} = this.players.main;
-    const pos = [
-      ev.clientX / this.dw * 2 - 1,
-      ev.clientY / this.dh * -2 + 1,
-    ];
-    uniforms.cursorLast = uniforms.cursorPos;
-    uniforms.cursorPos = pos;
-
-    if (ev.type == 'pointerdown') {
-      uniforms.cursorDown = true;
-      uniforms.cursorDownAt = this.counter;
-      uniforms.cursorDownPos = pos.slice();
-    }
-    else if (ev.type == 'pointerup' || ev.type == 'pointerout' || ev.type == 'pointercancel') {
-      uniforms.cursorDown = false;
-      uniforms.cursorUpAt = this.counter;
-      uniforms.cursorUpPos = pos.slice();
-    }
-
-    uniforms.cursorAngle = Math.atan2(pos[1], pos[0]);
+    this.players.main?.hooks.call('onPointer', ev);
   }
 
   handleResize(ev) {

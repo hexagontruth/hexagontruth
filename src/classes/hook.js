@@ -21,13 +21,19 @@ export default class Hook {
     return this.fns.length == oldLength - 1;
   }
 
-  call(initialResult, ...args) {
-    let result = initialResult;
+  call(...args) {
     for (let fn of this.fns) {
-      result = fn[1](result, ...args);
-      if (result === false)
-        break;
+      fn[1](...args);
     }
-    return result;
   }
+
+  // call(initialResult, ...args) {
+  //   let result = initialResult;
+  //   for (let fn of this.fns) {
+  //     result = fn[1](result, ...args);
+  //     if (result === false)
+  //       break;
+  //   }
+  //   return result;
+  // }
 }

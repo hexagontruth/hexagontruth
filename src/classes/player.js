@@ -8,10 +8,10 @@ const DEFAULT_INTERVAL = 33;
 const BASE_UNIFORMS = {
   duration: 720,
   counter: 0,
-  time: (u) => (u.counter % u.duration) / u.duration,
+  time: 0,
   skipInterval: 30,
-  skipTime: (u) => (u.counter % u.skipInterval) / u.skipInterval,
-  skip: (u) => (u.counter % u.skipInterval) == 0,
+  skipTime: 0,
+  skip: false,
   size: [0, 0],
   cover: [1, 1],
   contain: [1, 1],
@@ -26,12 +26,15 @@ const BASE_UNIFORMS = {
   scrollPos: 0,
   cursorDownAt: 0,
   cursorUpAt: 0,
+  cursorHex: [0, 0, 0],
+  cursorHexRounded: [0, 0, 0],
   cursorPos: [0, 0],
   cursorLastPos: [0, 0],
   cursorDownPos: [0, 0],
   cursorUpPos: [0, 0],
   cursorDown: false,
   cursorAngle: 0,
+  shiftKey: false,
   keyW: false,
   keyA: false,
   keyS: false,
@@ -50,6 +53,7 @@ export default class Player {
     this.uniforms = Object.assign({}, BASE_UNIFORMS, this.config.uniforms);
     this.shaderPrograms = [];
     this.counter = 0;
+    this.time = 0;
     this.interval = this.config.interval || DEFAULT_INTERVAL;
     this.minPixelRatio = this.config.minPixelRatio || 1;
     this.customInputKeys = [];
@@ -64,6 +68,8 @@ export default class Player {
       'onReset',
       'onStart',
       'onStop',
+      'onPointer',
+      'onKey',
     ], this);
     this.hooks.addAll(this.config.hooks);
 
@@ -93,7 +99,7 @@ export default class Player {
         customTextures[key] = texture;
 
         const [w, h] = [inputObject.canvas.width, inputObject.canvas.height];
-        webglUtils.resetTexture(gl, texture, w, h, {flip: inputObject.flip});
+        webglUtils.resetTexture(gl, texture, {flip: inputObject.flip});
       });
     }
   }
@@ -142,6 +148,7 @@ export default class Player {
     this.counter = 0;
     this.uniforms.resize = true;
     this.uniforms.dir = [0, 0];
+    this.playing || this.run(); // Draw at least one frame
     this.hooks.call('onReset');
   }
 
@@ -153,9 +160,9 @@ export default class Player {
     const programCount = this.shaderPrograms.length;
 
     uniforms.counter = this.counter;
-    // uniforms.time = (this.uniforms.counter % this.uniforms.duration) / this.uniforms.duration;
-    // uniforms.skipTime = (this.uniforms.counter % this.uniforms.skipInterval) / this.uniforms.skipInterval;
-    // uniforms.skip = this.uniforms.skipTime == 0;
+    uniforms.time = (uniforms.counter % uniforms.duration) / uniforms.duration;
+    uniforms.skipTime = (uniforms.counter % uniforms.skipInterval) / uniforms.skipInterval;
+    uniforms.skip = uniforms.skipTime == 0;
     uniforms.clock = (Date.now() % 1000) / 1000,
     this.customInputKeys.forEach((key) => {
       const texture = this.customTextures[key];
@@ -203,6 +210,7 @@ export default class Player {
     this.hooks.call('afterRun');
     uniforms.resize = false;
     this.counter++;
+    this.time = this.counter / uniforms.duration;
   }
 
   loop() {
@@ -246,6 +254,9 @@ export default class Player {
     this.canvas.height = h;
     this.setSize();
     this.scrollRange = document.documentElement.scrollHeight - dh;
+
+    this.contain = w > h ? [w / h, 1] : [1, h / w];
+    this.cover = w > h ? [1, h / w] : [w / h, 1];
 
     this.uniforms.resize = true;
     this.uniforms.resizeAt = true;

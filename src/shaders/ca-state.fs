@@ -116,6 +116,8 @@ void main() {
     vec2 tx = texture(noiseTexture, v).xy;
     tx = openStep(0., tx);
     c.xy = tx;
+
+    // c.x = 1. - amax(hex);
   }
   else if (skip) {
     c = rule(hex, d);
@@ -123,6 +125,9 @@ void main() {
   else {
     c = texture(lastTexture, uv);
   }
+
+  float cursor = float(cursorDown) * max(0., 1. - amax(cursorHexRounded - hex));
+  c += cursor * (float(shiftKey) * -2. + 1.);
 
   fragColor = vec4(c);
 }
