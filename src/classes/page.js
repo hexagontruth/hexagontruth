@@ -217,7 +217,7 @@ export default class Page {
     }
   }
 
-  createElement(className, tag='div', parent=document.body) {
+  createElement(tag='div', className, parent) {
     let element = document.createElement(tag);
     element.className = className || '';
     parent && parent.appendChild(element);
@@ -225,8 +225,8 @@ export default class Page {
   }
 
   setScrollBlocks(scrollBlocks) {
-    const tabTemplate = this.createElement('scroll-tab', 'div');
-    this.createElement('scroll-tab-inner', 'div', tabTemplate);
+    const tabTemplate = this.createElement('div', 'scroll-tab');
+    this.createElement('div', 'scroll-tab-inner', tabTemplate);
 
     this.scrollTabGroup = document.querySelector('.scroll-tabs');
     this.scrollBlocks = Array.from(document.querySelectorAll('.scroll-block'));
