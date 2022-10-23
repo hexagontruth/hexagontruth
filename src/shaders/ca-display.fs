@@ -5,9 +5,14 @@
 
 uniform sampler2D[3] textureArray;
 
-vec4 sampNbr(vec3 hex) {
+vec4 sampCell(vec3 hex) {
     vec2 uv = cell2uv(hex, lastSize);
     return texture(inputTexture, uv);
+}
+
+vec4 sampCursor(vec3 hex) {
+  vec2 uv = cell2uv(hex, lastSize);
+  return texture(textureArray[0], uv);
 }
 
 void main() {
@@ -61,7 +66,7 @@ void main() {
 
   c0 = hex2cart * p0 / gridSize;
   cc = length(c0 - cv);
-  s0 = sampNbr(p0);
+  s0 = sampCell(p0);
   // s0.xz *= 8./9.;
   b0 = openStep(0., s0);
 
@@ -95,7 +100,7 @@ void main() {
   for (int i = 0; i < 6; i++) {
     p1 = n[i];
     c1 = hex2cart * p1 / gridSize;
-    s1 = sampNbr(p1);
+    s1 = sampCell(p1);
     b1 = openStep(0., s1);
 
     ncel = (hex - p1) * 2.;
@@ -187,4 +192,11 @@ void main() {
   c = clamp(c, 0., 1.) * htWhite;
 
   fragColor = vec4(c, 1);
+
+  if (cv.x > 0.) {
+    // c = texture(textureArray[0], uv).rgb;
+    fragColor = texture(textureArray[1], uv);
+    fragColor.b = amax(fragColor.ba);
+    fragColor.a = 1.;
+  }
 }

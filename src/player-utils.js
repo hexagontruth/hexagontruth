@@ -112,7 +112,7 @@ function handleKey(player, ev) {
   const key = ev.key.toUpperCase();
   const uniformKey = `key${key}`;
   uniforms.shiftKey = ev.shiftKey;
-  if ('WASD'.includes(key)) {
+  if ('WASD'.includes(key) && !ev.shiftKey && !ev.ctrlKey) {
     const wasdMap = {
       W: [0, 1],
       A: [-1, 0],

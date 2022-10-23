@@ -11,7 +11,7 @@ vec4 getNbr(vec3 hex) {
 vec4 rule(vec3 hex) {
   vec4 cur, next;
   cur = getNbr(hex);
-  next = cur;
+  next = cur - (1./8. / skipInterval);
   return next;
 }
 
@@ -24,9 +24,10 @@ void main() {
   vec3 hex = uv2cell(uv);
 
   c = rule(hex);
+  c *= openStep(0., counter);
 
   float cursor = float(cursorDown) * max(0., 1. - amax(cursorHexRounded - hex));
-  c.r += cursor * (float(shiftKey) * -2. + 1.);
+  c.rg += cursor * mix(unit.xy, unit.yx, float(shiftKey));
 
   fragColor = vec4(c);
 }
