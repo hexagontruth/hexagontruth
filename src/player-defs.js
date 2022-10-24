@@ -49,7 +49,7 @@ export default {
       ],
       // [
       //   'vertex-position',
-      //   'passthru-rgb',
+      //   'passthru',
       // ],
       // [
       //   'vertex-position',
@@ -57,46 +57,56 @@ export default {
       // ],
     ],
   },
-  video: {
-    type: 'gl',
-    customInput: {
-      videoTexture: (player) => new VideoInput(player, {size: 512}),
-      mainTexture: (player) => new CanvasInput(player, {canvas: player.page.players.main.canvas}),
-    },
-    uniforms: {
-      startCounter: 0,
-      srcCounter: 0,
-    },
-    shaders: [
-      [
-        'vertex-position',
-        'video',
-      ],
-    ],
-    shaders: [
-      [
-        'vertex-position',
-        'passthru',
-      ],
-    ],
-  },
+  // video: {
+  //   type: 'gl',
+  //   customInput: {
+  //     videoTexture: (player) => new VideoInput(player, {size: 512}),
+  //     mainTexture: (player) => new CanvasInput(player, {canvas: player.page.players.main.canvas}),
+  //   },
+  //   uniforms: {
+  //     startCounter: 0,
+  //     srcCounter: 0,
+  //   },
+  //   shaders: [
+  //     [
+  //       'vertex-position',
+  //       'video',
+  //     ],
+  //   ],
+  //   shaders: [
+  //     [
+  //       'vertex-position',
+  //       'passthru',
+  //     ],
+  //   ],
+  // },
   logo: {
-    type: 'gl',
-    minPixelRatio: 2,
+    type: '2d',
     stopAt: 60,
-    uniforms: {
+    params: {
       duration: 60,
     },
-    shaders: [
-      [
-        'vertex-position',
-        'logo',
-        {size: 512},
-        ],
-      [
-        'vertex-position',
-        'antialias',
-      ]
-    ]
+    scripts: [
+      'logo',
+    ],
   },
+  // logoGL: {
+  //   type: 'gl',
+  //   minPixelRatio: 2,
+  //   stopAt: 60,
+  //   uniforms: {
+  //     duration: 60,
+  //   },
+  //   shaders: [
+  //     [
+  //       'vertex-position',
+  //       'logo',
+  //       {size: 512},
+  //       ],
+  //     [
+  //       'vertex-position',
+  //       'antialias',
+  //     ]
+  //   ]
+  // },
 };

@@ -14,11 +14,7 @@ export default [
     link: 'https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/26077',
     src: 'videos/emptiness.mp4',
   },
-  {
-    name: 'Plerome',
-    link: 'https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/16516',
-    src: 'videos/plerome.mp4',
-  },
+
   {
     name: 'Vacuum Decay',
     link: 'https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/21970',
@@ -49,6 +45,11 @@ export default [
     name: 'Machine Temple Dyad',
     link: 'https://opensea.io/assets/ethereum/0xd07dc4262bcdbf85190c01c996b4c06a461d2430/23237',
     src: 'videos/machine-temple-dyad.mp4',
+  },
+  {
+    name: 'Diurn',
+    link: 'https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/16357',
+    src: 'videos/diurn.mp4',
   },
   // {
   //   name: 'Space Egg',
@@ -97,9 +98,9 @@ export default [
     src: 'videos/seed-cube-concept-5.mp4',
   },
   {
-    name: 'Diurn',
-    link: 'https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/16357',
-    src: 'videos/diurn.mp4',
+    name: 'Triangle Study 1',
+    link: 'https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/32288',
+    src: 'videos/triangle-study-1.mp4',
   },
   {
     name: 'Difference Engine',
@@ -107,9 +108,9 @@ export default [
     src: 'videos/difference-engine.mp4',
   },
   {
-    name: 'Triangle Study 1',
-    link: 'https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/32288',
-    src: 'videos/triangle-study-1.mp4',
+    name: 'Plerome',
+    link: 'https://opensea.io/assets/ethereum/0xb932a70a57673d89f4acffbe830e8ed7f75fb9e0/16516',
+    src: 'videos/plerome.mp4',
   },
   // {
   //   name: 'Chromoflake',

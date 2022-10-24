@@ -62,7 +62,7 @@ export default class Page {
       const player = PlayerFactory(this, name, el);
       this.players[name] = player;
     });
-    Object.values(this.players).forEach((e) => e.loadCustomTextures());
+    Object.values(this.players).forEach((e) => e.initialize());
 
     this.hooks = new HookSet(['onSnap', 'onScroll'], this);
     this.hooks.add('onSnap', () => {

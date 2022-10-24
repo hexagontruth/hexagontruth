@@ -60,7 +60,7 @@ export default class PlayerGL extends Player {
     this.clear();
   }
 
-  loadCustomTextures() {
+  initialize() {
     const {customInput, customTextures, gl} = this;
     if (this.config.customInput) {
       this.customInputKeys = Object.keys(this.config.customInput);
@@ -165,7 +165,6 @@ export default class PlayerGL extends Player {
     this.hooks.call('afterRun');
     uniforms.resize = false;
     this.counter++;
-    this.time = this.counter / uniforms.duration;
   }
 
   handleScroll(ev) {

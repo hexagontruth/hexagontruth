@@ -9,7 +9,6 @@ export default class Player {
     this.config = config;
 
     this.counter = 0;
-    this.time = 0;
     this.interval = this.config.interval || Player.DEFAULT_INTERVAL;
     this.minPixelRatio = this.config.minPixelRatio || 1;
     this.hidden = false;
@@ -33,6 +32,8 @@ export default class Player {
     }
     this.setSize();
   }
+
+  initialize() {}
 
   clear() {}
 
