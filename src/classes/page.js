@@ -23,11 +23,12 @@ export default class Page {
   }
 
   setArgs() {
-    let [base, query] = window.location.href.split('?');
-    let argPairs = (query || '').split('&').map((e) => e.split('='));
+    let query = window.location.search.replace('?', '') || '';
+
+    let argPairs = query.split('&').filter((e) => e != '').map((e) => e.split('='));
     this.args = {};
     for (let [k, v] of argPairs) {
-      this.args[k] = k;
+      this.args[k] = v !== undefined ? v : true;
     }
 
     Object.entries(redirectDefs).forEach(([k, v]) => {
@@ -98,6 +99,9 @@ export default class Page {
     this.setScrollBlocks();
     this.setAnchor();
     this.handleScroll();
+
+    this.args.hide && this.toggleElements();
+    this.args.counter && this.toggleControls();
 
     document.body.style.transition = 'opacity 1000ms';
     document.body.style.opacity = 1;

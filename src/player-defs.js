@@ -23,6 +23,7 @@ export default {
     uniforms: {
       autoscroll: [0, 1],
       gridSize: 15,
+      zoom: 2./3.,
       pan: (uniforms) => {
         const {dir, gridSize, autoscroll, counter, duration, parallax} = uniforms;
         // return dir.map((e, i) => e / gridSize / 2);

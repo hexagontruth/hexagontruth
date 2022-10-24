@@ -116,6 +116,7 @@ void main() {
     vec2 tx = texture(noiseTexture, v).xy;
     tx = openStep(0., tx);
     c.xy = tx;
+    c.xy *= (1. - float(shiftKey));
   }
   else if (skip) {
     c = rule(hex);
@@ -126,7 +127,7 @@ void main() {
 
   vec2 click = sampCursor(hex).xy;
 
-  // c += step(1., click.x) - step(1., click.y);
+  c += step(1., click.x) - step(1., click.y);
 
 
   fragColor = vec4(c);

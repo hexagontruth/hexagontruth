@@ -16,11 +16,11 @@ vec4 sampCursor(vec3 hex) {
 }
 
 void main() {
-  vec3 c, color;
+  vec3 c, ck;
   fragColor = unit.yyyx;
   vec2 uv = gl_FragCoord.xy / size;
   uv += 0.000001; // centerline bugfix
-  vec2 cv;
+  vec2 cv, dv;
   float scale;
 
   scale = 1.;
@@ -29,10 +29,11 @@ void main() {
   cv *= zoom;
   cv += pan;
 
-  vec3 hex, cel, ncel;
+  vec3 hex, cel, ncel, rawhex;
   vec3 dist, p[3], n[6];
+  vec2 k0, k1;
 
-  float d;
+  float d, k;
   float t, ts, te, q, qc, lw, lwc;
 
   vec4 s0, s1, b0, b1;
@@ -46,11 +47,15 @@ void main() {
   te = smoothstep(0.5, 1., t);
   q = 4./amax(size) * scale * zoom;
   qc = q * gridSize * 2.; // I don't know why this needs to be multiplied by two?
-  lw = 1./360. * scale * zoom;
+  lw = 1./360. * scale * min(zoom, 1.);
   lwc = lw * gridSize * 2.;
   rp = 1./12.;
 
-  hex = hex2grid(cart2hex * cv) * gridSize;
+  rawhex = cart2hex * cv;
+  hex = hex2grid(rawhex) * gridSize;
+  dv = hex2cart * hex / gridSize;
+  // hex = cart2hex * cv * gridSize;
+
   dist = interpolatedCubic(hex, p);
   n = vec3[6](
     p[1],
@@ -64,11 +69,13 @@ void main() {
   p0 = p[0];
   cel = hex2hex * (hex - p0) * sr3;
 
-  c0 = hex2cart * p0 / gridSize;
-  cc = length(c0 - cv);
+  c0 = hex2cart * p[0] / gridSize;
+
+  cc = length(c0 - hex2cart * hex / gridSize);
+
   s0 = sampCell(p0);
-  // s0.xz *= 8./9.;
   b0 = openStep(0., s0);
+  k0 = sampCursor(p0).xy;
 
   max1 = vec2(
     amax(s0.xz),
@@ -137,7 +144,7 @@ void main() {
 
         if (length(c0 - cd0) < gl / 2. || length(c1 - cd1) < gl / 2.) {
           if (length(cd0 - cd1) > 0.01) {
-            sl = slength(cd0, cd1, cv);
+            sl = slength(cd0, cd1, dv);
             ld[j] = min(ld[j], sl);
           }
         }
@@ -150,16 +157,19 @@ void main() {
     max(te, s0.z),
     openStep(0., s0.x - s0.z)
   );
+  r = length(cel) * sr3 / 2. / (1. - rp * 2.);
+  c += unit.xxx * qs(rx - r, qc) * 0.25 * smoothstep(1./16., 1./8., rx);
+  k = qs(rx - r, qc) * k0.x;
+  rx = smoothstep(0.25, 1., k0.y);
+  k = max(k, qw(abs(rx - r), qc, lwc) * rx);
+
   ry = mix(
     min(1. - ts, s0.w),
     max(ts, s0.w),
     b0.y
   );
-
   r = amax(cel) / (1. - rp);
   c += unit.xxx * qs(ry - r, qc) * 0.5;
-  r = length(cel) * sr3 / 2. / (1. - rp * 2.);
-  c += unit.xxx * qs(rx - r, qc) * 0.25 * smoothstep(1./16., 1./8., rx);
 
 
   l0 = qw(ld, q, lw);
@@ -189,14 +199,16 @@ void main() {
   //   1.
   // )), lc * 0.75);
 
+  rawhex = roundCubic(rawhex * gridSize) / gridSize;
+  ck = abs(rawhex);
+  ck = rgb2hsv(ck);
+  ck.x += amax(rawhex);
+  ck.y = 0.75;
+  ck.z = 5./6. * amax(k0);
+  ck = hsv2rgb(ck);
+  c = mix(c, ck, k);
+
   c = clamp(c, 0., 1.) * htWhite;
-
+  // c.r += qw(abs(amax(hex) - gridSize /1.), q, 0.1); // Leaving this here because I use it so often
   fragColor = vec4(c, 1);
-
-  if (cv.x > 0.) {
-    // c = texture(textureArray[0], uv).rgb;
-    fragColor = texture(textureArray[1], uv);
-    fragColor.b = amax(fragColor.ba);
-    fragColor.a = 1.;
-  }
 }

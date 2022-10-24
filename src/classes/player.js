@@ -263,7 +263,7 @@ export default class Player {
 
   handleScroll(ev) {
     // TODO: Figure out wtf is wrong with this
-    this.scrollPos = window.scrollY / this.scrollRange;
-    this.uniforms.parallax[1] = this.scrollPos * 2 + 1;
+    this.scrollPos = window.scrollY / (this.scrollRange);
+    this.uniforms.parallax[1] = -this.scrollPos * 2 + 1;
   }
 }

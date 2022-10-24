@@ -108,7 +108,7 @@ function setCursorHex(player, ev) {
 }
 
 function handleKey(player, ev) {
-  const {uniforms} = player;
+  const {config, uniforms} = player;
   const key = ev.key.toUpperCase();
   const uniformKey = `key${key}`;
   uniforms.shiftKey = ev.shiftKey;
@@ -151,7 +151,7 @@ function handleKey(player, ev) {
       }
       else if (key == 'H') {
         uniforms.dir = [0, 0];
-        uniforms.zoom = 1;
+        uniforms.zoom = config.uniforms?.zoom || 1;
       }
     }
   }
