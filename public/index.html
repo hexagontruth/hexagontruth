@@ -25,165 +25,164 @@ Permission is hereby granted to use, copy, modify, and distribute this software 
   <meta name="twitter:image:alt" content="Hexstar"/>
 </head>
 <body class="home" style="opacity: 0;" draggable="false">
-  <header class="nav-block header">
-    <nav class="nav scroll-tabs"></nav>
-  </header>
-  <div class="background">
-    <canvas class="player abs-full" data-program="main"></canvas>
-  </div>
-  <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
-  <section class="scroll-block">
-    <div class="block block-title flex center text-center title">
-      <div class="title-spacer justify-end">
-        <div class="title-logo" id="logo-container">
-          <canvas class="player abs-full" data-program="logo"></canvas>
+  <div id="page">
+    <header class="nav-block header" id="header">
+      <nav class="nav scroll-tabs"></nav>
+    </header>
+    <div class="background">
+      <canvas class="player abs-full" data-program="main"></canvas>
+    </div>
+    <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
+    <section class="scroll-block">
+      <div class="block block-title flex center text-center title">
+        <div class="title-spacer justify-end">
+          <div class="title-logo" id="logo-container">
+            <canvas class="player abs-full" data-program="logo"></canvas>
+          </div>
+        </div>
+        <div class="title-spacer title-text">
+          <h1>
+            <span>H</span>
+            <span>e</span>
+            <span>x</span>
+            <span>a</span>
+            <span>g</span>
+            <span>o</span>
+            <span>n</span>
+            <span>t</span>
+            <span>r</span>
+            <span>u</span>
+            <span>t</span>
+            <span>h</span>
+          </h1>
+        </div>
+        <div class="title-spacer justify-start">
+          <ul class="title-links mono light lowercase">
+            <li><a href="#about">About</a></li>
+            <li><a href="#art">Art</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#links">Links</a></li>
+          </ul>
         </div>
       </div>
-      <div class="title-spacer title-text">
-        <h1>
-          <span>H</span>
-          <span>e</span>
-          <span>x</span>
-          <span>a</span>
-          <span>g</span>
-          <span>o</span>
-          <span>n</span>
-          <span>t</span>
-          <span>r</span>
-          <span>u</span>
-          <span>t</span>
-          <span>h</span>
-        </h1>
+    </section>
+    <section class="scroll-block" id="about">
+      <div class="block window pad-3">
+        <div class="content content-box">
+          <div class="wrapper">
+            <p>
+              Hexagon Truth is an interdisciplinary digital artist working in partnership with the Global Hexagonal Awareness Project. His work explores the nature of hexagonal consciousness and hexagonal identity through a variety of generative, mathematical modalities, using tools such as cellular automata, fragment shaders, and 3D modeling.
+            </p>
+            <p>
+              He presently lives in St Petersburg, Florida with his two Christmas cacti, and spends his free time writing about himself in the third person.
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="title-spacer justify-start">
-        <ul class="title-links mono light lowercase">
-          <li><a href="#about">About</a></li>
-          <li><a href="#art">Art</a></li>
-          <li><a href="#projects">Projects</a></li>
-          <li><a href="#links">Links</a></li>
-        </ul>
+    </section>
+    <section class="scroll-block" id="art">
+      <div class="block window">
+          <div class="video-outer abs-full">
+            <a class="video-inner video-link hidden" id="video-container" target="_blank"></a>
+          </div>
+          <!-- <canvas class="player abs-full" data-program="video"></canvas> -->
+        <!--   <button class="button-touch touch-left video-next"></button>
+          <button class="button-touch touch-right video-next"></button> -->
+        </div>
+        <div class="block block-control">
+          <div class="wrapper flex flex-row">
+            <button class="button-left video-prev"><span>&#x25bc;</span></button>
+            <a class="video-link" target="_blank"></a>
+            <button class="button-right video-next"><span>&#x25b2;</span></button>
+          </div>
       </div>
-    </div>
-  </section>
-  <section class="scroll-block" id="about">
-    <div class="block window pad-3">
-      <div class="content content-box">
+      <div class="block content content-bottom">
         <div class="wrapper">
           <p>
-            Hexagon Truth is an interdisciplinary digital artist working in partnership with the Global Hexagonal Awareness Project. His work explores the nature of hexagonal consciousness and hexagonal identity through a variety of generative, mathematical modalities, using tools such as cellular automata, fragment shaders, and 3D modeling.
-          </p>
-          <p>
-            He presently lives in St Petersburg, Florida with his two Christmas cacti, and spends his free time writing about himself in the third person.
+            For additional art NFTs, check out our profiles on <a target="_blank" href="https://superrare.co/hexagontruth">SuperRare</a>, <a target="_blank" href="https://opensea.io/accounts/hexagontruth">OpenSea</a>, or <a target="_blank" href="https://foundation.app/@hexagontruth">Foundation</a>. Also be sure to stop by our <a target="_blank" title="Voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U">Voxels gallery</a>, which features both tokenized and untokenized Hexagon Truth pieces as well as a curated collection of works by other hexagonal artists.
           </p>
         </div>
       </div>
-    </div>
-  </section>
-  <section class="scroll-block" id="art">
-    <div class="block window">
-        <div class="video-outer abs-full">
-          <a class="video-inner video-link hidden" id="video-container" target="_blank"></a>
+    </section>
+    <section class="scroll-block" id="projects">
+      <div class="block window pad-3">
+        <div class="content content-box">
+          <div class="wrapper">
+            <ul class="big-icons">
+              <li><a title="Legacy hexagonal awareness content site" target="_blank" href="https://hexnet.org/"><i class="icon-hexnet"></i><span>Hexnet</span></a></li>
+              <li><a title="Sternhalma implementation for up to six human or AI players" target="_blank" href="https://hexagontruth.github.io/minhalma/"><i class="icon-minhalma"></i><span>Minhalma</span></a></li>
+              <li><a title="Cellular automaton designer with media recording tools" target="_blank" href="https://hexagontruth.github.io/hexular/"><i class="icon-hexular"></i><span>Hexular</span></a></li>
+            </ul>
+            <p>
+              Some related hexagonal work. <a target="_blank" href="https://hexnet.org/">Hexnet</a> is a legacy hexagonal awareness site with a history stretching back to the '90s. <a target="_blank" href="https://hexagontruth.github.io/minhalma/">Minhalma</a> implements the board game Sterhalma (commonly known by the regrettable name "Chinese checkers") for up to six human or AI players. <a target="_blank" href="https://hexagontruth.github.io/hexular/">Hexular</a> is a browser-based tool for developing and recording hexagonal cellular automata &mdash; check out our <a target="_blank" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g">YouTube channel</a> for some examples of its output.
+            </p>
+  <!--           <p>
+              Interested in collaborating on a hexagonal project? Feel free to drop us an <a href="mailto:contact@hexagontruth.com">email</a>.
+            </p> -->
+          </div>
         </div>
-        <!-- <canvas class="player abs-full" data-program="video"></canvas> -->
-      <!--   <button class="button-touch touch-left video-next"></button>
-        <button class="button-touch touch-right video-next"></button> -->
       </div>
-    </div>
-      <div class="block block-control">
-        <div class="wrapper flex flex-row">
-          <button class="button-left video-prev"><span>&#x25bc;</span></button>
-          <a class="video-link" target="_blank"></a>
-          <button class="button-right video-next"><span>&#x25b2;</span></button>
-        </div>
-    </div>
-    <div class="block content content-bottom">
-      <div class="wrapper">
-        <p>
-          For additional art NFTs, check out our profiles on <a target="_blank" href="https://superrare.co/hexagontruth">SuperRare</a>, <a target="_blank" href="https://opensea.io/accounts/hexagontruth">OpenSea</a>, or <a target="_blank" href="https://foundation.app/@hexagontruth">Foundation</a>. Also be sure to stop by our <a target="_blank" title="Voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U">Voxels gallery</a>, which features both tokenized and untokenized Hexagon Truth pieces as well as a curated collection of works by other hexagonal artists.
+    </section>
+    <section class="scroll-block" id="links">
+      <div class="block window"></div>
+      <div class="block content content-bottom center">
+        <ul class="lowercase columns nowrap">
+          <li><a target="_blank" href="https://twitter.com/hexagontruth"><i class="icon-twitter"></i> Twitter</a></li>
+          <li><a target="_blank" href="https://www.instagram.com/hexagontruth/"><i class="icon-instagram"></i> Instagram</a></li>
+          <li><a target="_blank" href="https://facebook.com/hexagontruth"><i class="icon-facebook"></i> Facebook</a></li>
+          <li><a title="YouTube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"><i class="icon-youtube"></i> YouTube</a></li>
+          <!-- <li><a target="_blank" href="https://vimeo.com/hexagontruth"><i class="icon-vimeo"></i> Vimeo</a></li> -->
+          <!-- <li><a target="_blank" href="https://www.twitch.tv/hexagontruth"><i class="icon-twitch"></i> Twitch</a></li> -->
+
+
+          <!-- <li><a target="_blank" href="https://www.thingiverse.com/hexagontruth/"><i class="icon-thingiverse"></i> Thingiverse</a></li> -->
+          <li><a target="_blank" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U"><i class="icon-voxels"></i> Voxels</a></li>
+          <li><a target="_blank" href="https://discordapp.com/invite/t6hrz7S" title="Discord"><i class="icon-discord"></i> Discord</a></li>
+
+          <!-- <li><a target="_blank" href="https://hexagontruth.bandcamp.com/"><i class="icon-bandcamp"></i> Bandcamp</a></li> -->
+          <!-- <li><a target="_blank" href="https://www.redbubble.com/people/hexagrahamaton/shop"><i class="icon-tshirt"></i> Redbubble</a></li> -->
+
+
+          <!-- <li><a target="_blank" href="https://showtime.xyz/@hexagontruth"><i class="icon-ethereum"></i> Showtime</a></li> -->
+          <li><a target="_blank" href="https://superrare.co/hexagontruth"><i class="icon-superrare"></i> SuperRare</a></li>
+          <li><a target="_blank" href="https://opensea.io/accounts/hexagontruth"><i class="icon-opensea"></i> OpenSea</a></li>
+          <li><a target="_blank" href="https://app.rarible.com/hexagontruth"><i class="icon-rarible"></i> Rarible</a></li>
+          <li><a target="_blank" href="https://foundation.app/@hexagontruth"><i class="icon-ethereum"></i>Foundation</a></li>
+          <li><a target="_blank" href="https://www.patreon.com/m/hexagontruth"><i class="icon-patreon"></i> Patreon</a></li>
+          <li><a target="_blank" href="https://github.com/hexagontruth"><i class="icon-github"></i> Github</a></li>
+          <!-- <li><a target="_blank" href="https://www.cryptoartnet.com/directory-artists/listing/hexagon-truth/"><i class="icon-ethereum"></i> CryptoArtNet</a> -->
+
+
+          <!-- <li><a target="_blank" href="https://knownorigin.io/hexagontruth"><i class="icon-ethereum"></i> KnownOrigin</a></li> -->
+        </ul>
+        <p class="text-center smaller">
+          Questions? Email <a href="mailto:contact@hexagontruth.com">contact@hexagontruth.com</a> or <a href="https://twitter.com/hexagontruth">@hexagontruth</a> on the socials.
         </p>
       </div>
+    </section>
+    <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
+    <footer class="nav-block footer" id="footer">
+      <nav class="nav nav-footer">
+        <ul class="nav-links wrapper">
+          <li><a target="_blank" title="Twitter" class="icon-twitter" href="https://twitter.com/hexagontruth"></a></li>
+          <li><a target="_blank" title="Instagram" class="icon-instagram" href="https://www.instagram.com/hexagontruth/"></a></li>
+          <li><a target="_blank" title="Facebook" class="icon-facebook" href="https://www.facebook.com/hexagontruth"></a></li>
+          <!-- <li><a target="_blank" title="YouTube" class="icon-youtube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"></a></li> -->
+          <li><a target="_blank" title="Voxels" class="icon-voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U"></a></li>
+          <li><a target="_blank" title="Discord" class="icon-discord" href="https://discordapp.com/invite/t6hrz7S"></a></li>
+          <li><a target="_blank" title="Patreon" class="icon-patreon" href="https://www.patreon.com/m/hexagontruth"></a></li>
+        </ul>
+      </nav>
+    </footer>
+    <div class="controls hidden" id="controls">
+        <div class="counter" id="counter"></div>
     </div>
-  </section>
-  <section class="scroll-block" id="projects">
-    <div class="block window pad-3">
-      <div class="content content-box">
-        <div class="wrapper">
-          <ul class="big-icons">
-            <li><a title="Legacy hexagonal awareness content site" target="_blank" href="https://hexnet.org/"><i class="icon-hexnet"></i><span>Hexnet</span></a></li>
-            <li><a title="Sternhalma implementation for up to six human or AI players" target="_blank" href="https://hexagontruth.github.io/minhalma/"><i class="icon-minhalma"></i><span>Minhalma</span></a></li>
-            <li><a title="Cellular automaton designer with media recording tools" target="_blank" href="https://hexagontruth.github.io/hexular/"><i class="icon-hexular"></i><span>Hexular</span></a></li>
-          </ul>
-          <p>
-            Some related hexagonal work. <a target="_blank" href="https://hexnet.org/">Hexnet</a> is a legacy hexagonal awareness site with a history stretching back to the '90s. <a target="_blank" href="https://hexagontruth.github.io/minhalma/">Minhalma</a> implements the board game Sterhalma (commonly known by the regrettable name "Chinese checkers") for up to six human or AI players. <a target="_blank" href="https://hexagontruth.github.io/hexular/">Hexular</a> is a browser-based tool for developing and recording hexagonal cellular automata &mdash; check out our <a target="_blank" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g">YouTube channel</a> for some examples of its output.
-          </p>
-<!--           <p>
-            Interested in collaborating on a hexagonal project? Feel free to drop us an <a href="mailto:contact@hexagontruth.com">email</a>.
-          </p> -->
-        </div>
-      </div>
+    <div style="display: none;">
+      <svg version="1.1" id="pointy-hex" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+         width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
+        <polygon points="93.302,75 50,100 6.698,75 6.698,25 50,0 93.302,25 "/>
+      </svg>
     </div>
-  </section>
-  <section class="scroll-block" id="links">
-    <div class="block window"></div>
-    <div class="block content content-bottom center">
-      <ul class="lowercase columns nowrap">
-        <li><a target="_blank" href="https://twitter.com/hexagontruth"><i class="icon-twitter"></i> Twitter</a></li>
-        <li><a target="_blank" href="https://www.instagram.com/hexagontruth/"><i class="icon-instagram"></i> Instagram</a></li>
-        <li><a target="_blank" href="https://facebook.com/hexagontruth"><i class="icon-facebook"></i> Facebook</a></li>
-        <li><a title="YouTube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"><i class="icon-youtube"></i> YouTube</a></li>
-        <!-- <li><a target="_blank" href="https://vimeo.com/hexagontruth"><i class="icon-vimeo"></i> Vimeo</a></li> -->
-        <!-- <li><a target="_blank" href="https://www.twitch.tv/hexagontruth"><i class="icon-twitch"></i> Twitch</a></li> -->
-
-
-        <!-- <li><a target="_blank" href="https://www.thingiverse.com/hexagontruth/"><i class="icon-thingiverse"></i> Thingiverse</a></li> -->
-        <li><a target="_blank" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U"><i class="icon-voxels"></i> Voxels</a></li>
-        <li><a target="_blank" href="https://discordapp.com/invite/t6hrz7S" title="Discord"><i class="icon-discord"></i> Discord</a></li>
-
-        <!-- <li><a target="_blank" href="https://hexagontruth.bandcamp.com/"><i class="icon-bandcamp"></i> Bandcamp</a></li> -->
-        <!-- <li><a target="_blank" href="https://www.redbubble.com/people/hexagrahamaton/shop"><i class="icon-tshirt"></i> Redbubble</a></li> -->
-
-
-        <!-- <li><a target="_blank" href="https://showtime.xyz/@hexagontruth"><i class="icon-ethereum"></i> Showtime</a></li> -->
-        <li><a target="_blank" href="https://superrare.co/hexagontruth"><i class="icon-superrare"></i> SuperRare</a></li>
-        <li><a target="_blank" href="https://opensea.io/accounts/hexagontruth"><i class="icon-opensea"></i> OpenSea</a></li>
-        <li><a target="_blank" href="https://app.rarible.com/hexagontruth"><i class="icon-rarible"></i> Rarible</a></li>
-        <li><a target="_blank" href="https://foundation.app/@hexagontruth"><i class="icon-ethereum"></i>Foundation</a></li>
-        <li><a target="_blank" href="https://www.patreon.com/m/hexagontruth"><i class="icon-patreon"></i> Patreon</a></li>
-        <li><a target="_blank" href="https://github.com/hexagontruth"><i class="icon-github"></i> Github</a></li>
-        <!-- <li><a target="_blank" href="https://www.cryptoartnet.com/directory-artists/listing/hexagon-truth/"><i class="icon-ethereum"></i> CryptoArtNet</a> -->
-
-
-        <!-- <li><a target="_blank" href="https://knownorigin.io/hexagontruth"><i class="icon-ethereum"></i> KnownOrigin</a></li> -->
-      </ul>
-      <p class="text-center smaller">
-        Questions? Email <a href="mailto:contact@hexagontruth.com">contact@hexagontruth.com</a> or <a href="https://twitter.com/hexagontruth">@hexagontruth</a> on the socials.
-      </p>
-    </div>
-  </section>
-  <div style='height: 0.01px;'><!-- Firefox scroll snapping fix --></div>
-  <footer class="nav-block footer">
-    <nav class="nav nav-footer">
-      <ul class="nav-links wrapper">
-        <li><a target="_blank" title="Twitter" class="icon-twitter" href="https://twitter.com/hexagontruth"></a></li>
-        <li><a target="_blank" title="Instagram" class="icon-instagram" href="https://www.instagram.com/hexagontruth/"></a></li>
-        <li><a target="_blank" title="Facebook" class="icon-facebook" href="https://www.facebook.com/hexagontruth"></a></li>
-        <!-- <li><a target="_blank" title="YouTube" class="icon-youtube" href="https://www.youtube.com/channel/UCf-ml0bmw7OJZHZCIB0cx3g"></a></li> -->
-        <li><a target="_blank" title="Voxels" class="icon-voxels" href="https://www.cryptovoxels.com/play?coords=W@375.5W,603S,0.5U"></a></li>
-        <li><a target="_blank" title="Discord" class="icon-discord" href="https://discordapp.com/invite/t6hrz7S"></a></li>
-        <li><a target="_blank" title="Patreon" class="icon-patreon" href="https://www.patreon.com/m/hexagontruth"></a></li>
-      </ul>
-    </nav>
-  </footer>
-  <div class="controls hidden" id="controls">
-      <div class="counter" id="counter"></div>
   </div>
-  <div style="display: none;">
-    <svg version="1.1" id="pointy-hex" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-       width="100px" height="100px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" xml:space="preserve">
-      <polygon points="93.302,75 50,100 6.698,75 6.698,25 50,0 93.302,25 "/>
-    </svg>
-  </div>
-
-
 </body>
 </html>

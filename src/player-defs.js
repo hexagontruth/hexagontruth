@@ -19,6 +19,7 @@ export default {
         (player, ev) => playerUtils.setCursorHex(player, ev),
       ],
       onKey: (player, ev) => playerUtils.handleKey(player, ev),
+      onScroll: (player) => player.uniforms.parallax[1] = (player.page.scrollPos * 2 - 1) || 0,
     },
     uniforms: {
       autoscroll: [0, 1],

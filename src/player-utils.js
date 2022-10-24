@@ -6,7 +6,8 @@ export default {
   hex2hex,
   setCursor,
   setCursorHex,
-  handleKey
+  handleKey,
+  extractCells,
 };
 
 const sr3 = 3 ** 0.5;
@@ -155,4 +156,8 @@ function handleKey(player, ev) {
       }
     }
   }
+}
+
+function extractCells(player, program) {
+  // TODO
 }

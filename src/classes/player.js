@@ -23,7 +23,6 @@ const BASE_UNIFORMS = {
   clock: 0,
   resize: false,
   resizeAt: 0,
-  scrollPos: 0,
   cursorDownAt: 0,
   cursorUpAt: 0,
   cursorHex: [0, 0, 0],
@@ -70,6 +69,7 @@ export default class Player {
       'onStop',
       'onPointer',
       'onKey',
+      'onScroll',
     ], this);
     this.hooks.addAll(this.config.hooks);
 
@@ -77,10 +77,6 @@ export default class Player {
       this.config.size = [this.config.size, this.config.size];
     }
     this.setSize();
-
-    window.addEventListener('resize', (ev) => this.handleResize(ev));
-    window.addEventListener('scroll', (ev) => this.handleScroll(ev));
-
     this.handleResize();
     this.handleScroll();
     this.clear();
@@ -262,8 +258,6 @@ export default class Player {
   }
 
   handleScroll(ev) {
-    // TODO: Figure out wtf is wrong with this
-    this.scrollPos = window.scrollY / (this.scrollRange);
-    this.uniforms.parallax[1] = -this.scrollPos * 2 + 1;
+    this.hooks.call('onScroll');
   }
 }

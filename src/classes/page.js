@@ -49,8 +49,9 @@ export default class Page {
     this.loaded = true;
 
     this.body = document.body;
-    this.header = document.querySelector('.header');
-    this.footer = document.querySelector('.footer');
+    this.page = document.querySelector('#page');
+    this.header = document.querySelector('#header');
+    this.footer = document.querySelector('#footer');
     this.isProduction && this.onProd();
 
     this.players = {};
@@ -79,15 +80,17 @@ export default class Page {
     this.counterDisplay = document.querySelector('#counter');
     this.title = document.querySelector('h1');
     this.letters = document.querySelectorAll('h1 span');
+    this.hidden = false;
+    this.scrollPos = 0;
+    this.lastPointer = 0;
 
-    document.body.addEventListener('dblclick', () => this.toggleElements());
+    this.page.addEventListener('pointercancel', (ev) => this.handlePointer(ev));
+    this.page.addEventListener('pointerdown', (ev) => this.handlePointer(ev));
+    this.page.addEventListener('pointermove', (ev) => this.handlePointer(ev));
+    this.page.addEventListener('pointerout', (ev) => this.handlePointer(ev));
+    this.page.addEventListener('pointerup', (ev) => this.handlePointer(ev));
     window.addEventListener('keydown', (ev) => this.handleKey(ev));
     window.addEventListener('keyup', (ev) => this.handleKey(ev));
-    window.addEventListener('pointercancel', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerdown', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointermove', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerout', (ev) => this.handlePointer(ev));
-    window.addEventListener('pointerup', (ev) => this.handlePointer(ev));
     window.addEventListener('resize', (ev) => this.handleResize(ev));
     window.addEventListener('scroll', (ev) => this.handleScroll(ev));
 
@@ -100,7 +103,7 @@ export default class Page {
     this.setAnchor();
     this.handleScroll();
 
-    this.args.hide && this.toggleElements();
+    this.args.hide && this.toggleHidden();
     this.args.counter && this.toggleControls();
 
     document.body.style.transition = 'opacity 1000ms';
@@ -298,9 +301,10 @@ export default class Page {
     this.controls?.classList.toggle('hidden', state);
   }
   
-  toggleElements(state=undefined) {
+  toggleHidden(state=!this.hidden) {
+    this.hidden = state;
     document.querySelectorAll('.scroll-block, .nav-block').forEach((e) => {
-      e.classList.toggle('hidden', state);
+      e.classList.toggle('hidden', this.hidden);
     });
   }
 
@@ -322,7 +326,7 @@ export default class Page {
         this.toggleControls();
       }
       else if (ev.key == 'Escape') {
-        this.toggleElements();
+        this.toggleHidden();
       }
       else if (ev.key == 'ArrowLeft' || ev.key == 'ArrowRight') {
         if (this.scrollId == 'art') {
@@ -335,11 +339,31 @@ export default class Page {
   }
 
   handlePointer(ev) {
+    if (ev.type == 'pointerdown') {
+      const {abs, min} = Math;
+      const [w, h] = [window.innerWidth, window.innerHeight];
+      const last = this.lastPointer;
+      const cur = ev.timeStamp;
+      this.lastPointer = cur;
+      const distToEdge = min(
+        abs(w / 2 - abs(ev.pageX % w - w / 2)) / window.innerWidth,
+        abs(h / 2 - abs(ev.pageY % h - h / 2)) / window.innerHeight,
+      );
+
+      const cond = distToEdge < 0.1 || ev.pointerType == 'mouse';
+      // I am getting so fucking sick of default double click speeds
+      if (cond && cur - last < 200) {
+        this.toggleHidden();
+      }
+    }
     this.players.main?.hooks.call('onPointer', ev);
+    // this.hidden && ev.stopPropagation();
+    // this.hidden && ev.preventDefault();
   }
 
   handleResize(ev) {
     this.snap == 0 && this.animateTitle();
+    Object.values(this.players).forEach((e) => e.handleResize(ev));
   }
 
   handleScroll(ev) {
@@ -356,10 +380,13 @@ export default class Page {
     else if (this.eq(0, 1)) {
       this.animateTitle();
     }
+
+    this.scrollPos = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
     this.hooks.call('onScroll');
+    Object.values(this.players).forEach((e) => e.handleScroll(ev));
   }
 
-  // This is only seemingly helping on desktop Chrome, and possibly only on Linux? Why does Chrome scroll snapping suck so badly?
+  // Why does Chrome scroll snapping suck so badly?
   onWheel(ev) {
     if (!this.hasScroll) return;
     const pts = this.scrollBlocks.map((e) => e.offsetTop);
