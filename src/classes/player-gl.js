@@ -17,8 +17,6 @@ const BASE_UNIFORMS = {
   parallax: [0, 0],
   dir: [0, 0],
   zoom: 1,
-  aspect: 1,
-  clock: 0,
   resize: false,
   resizeAt: 0,
   cursorDownAt: 0,
@@ -167,9 +165,13 @@ export default class PlayerGL extends Player {
     this.counter++;
   }
 
+  handleResize(ev) {
+    super.handleResize(ev);
+    this.shaderPrograms.forEach((e) => e.handleResize(ev));
+  }
+
   handleScroll(ev) {
     super.handleScroll(ev);
-
     this.uniforms.resize = true;
     this.uniforms.resizeAt = true;
     this.gl.viewport(0, 0, this.w, this.h);

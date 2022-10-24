@@ -5,7 +5,7 @@ import Page from './classes/page.js';
 window.page = new Page();
 
 console.log(`
-================================================================================
+============================================================
 Hexagonal greetings, friend.
 
 This site doesn't do much, but some rudimentary controls for anyone interested:
@@ -36,5 +36,5 @@ This site doesn't do much, but some rudimentary controls for anyone interested:
 
 Various uniforms can be set manually on \`page.players.main.uniforms\`.
 
-================================================================================
+============================================================
 `.trim());

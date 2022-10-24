@@ -124,7 +124,6 @@ export default class ShaderProgram {
     const [w, h] = this.size || this.player.size;
     this.contain = w > h ? [w / h, 1] : [1, h / w];
     this.cover = w > h ? [1, h / w] : [w / h, 1];
-    this.aspect = Math.max(...this.contain);
 
     if (!this.persistent || !ev) { // This is terrible
       for (let i = 0; i < this.numTextureBuffers; i++) {
