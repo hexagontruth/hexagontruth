@@ -1,5 +1,5 @@
 import HookSet from './hook-set.js';
-import Player from './player.js';
+import PlayerFactory from './player-factory.js';
 import config from '../config.js';
 import redirectDefs from '../redirect-defs.js';
 import videoDefs from '../video-defs.js';
@@ -59,7 +59,7 @@ export default class Page {
       const name = el.getAttribute('data-program');
       const controlsSelector = el.getAttribute('data-controls');
       const controls = document.querySelector(controlsSelector);
-      const player = new Player(this, name, el, controls);
+      const player = PlayerFactory(this, name, el);
       this.players[name] = player;
     });
     Object.values(this.players).forEach((e) => e.loadCustomTextures());

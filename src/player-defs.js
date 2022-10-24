@@ -5,6 +5,7 @@ import playerUtils from './player-utils.js';
 
 export default {
   main: {
+    type: 'gl',
     customInput: {
       noiseTexture: (player) => new NoiseInput({size: 64, channels: 2}),
     },
@@ -52,11 +53,12 @@ export default {
       // ],
       // [
       //   'vertex-position',
-      //   'test',
+      //   'flake',
       // ],
     ],
   },
   video: {
+    type: 'gl',
     customInput: {
       videoTexture: (player) => new VideoInput(player, {size: 512}),
       mainTexture: (player) => new CanvasInput(player, {canvas: player.page.players.main.canvas}),
@@ -79,6 +81,7 @@ export default {
     ],
   },
   logo: {
+    type: 'gl',
     minPixelRatio: 2,
     stopAt: 60,
     uniforms: {

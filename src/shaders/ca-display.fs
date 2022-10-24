@@ -209,6 +209,7 @@ void main() {
   c = mix(c, ck, k);
 
   c = clamp(c, 0., 1.) * htWhite;
+
   // c.r += qw(abs(amax(hex) - gridSize /1.), q, 0.1); // Leaving this here because I use it so often
   fragColor = vec4(c, 1);
 }
