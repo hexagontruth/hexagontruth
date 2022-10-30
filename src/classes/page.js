@@ -48,6 +48,7 @@ export default class Page {
     if (this.loaded) return;
     this.loaded = true;
 
+    this.html = document.documentElement;
     this.body = document.body;
     this.page = document.querySelector('#page');
     this.header = document.querySelector('#header');
@@ -303,6 +304,7 @@ export default class Page {
   
   toggleHidden(state=!this.hidden) {
     this.hidden = state;
+    this.html.classList.toggle('fullscreen', this.hidden);
     document.querySelectorAll('.scroll-block, .nav-block').forEach((e) => {
       e.classList.toggle('hidden', this.hidden);
     });
