@@ -5,7 +5,6 @@ uniform sampler2D noiseTexture;
 
 uniform sampler2D[3] textureArray;
 
-
 vec4 sampCell(vec3 hex) {
   vec2 uv = cell2uv(hex);
   return texture(lastTexture, uv);

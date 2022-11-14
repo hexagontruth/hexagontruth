@@ -1,4 +1,4 @@
-#include header.fs;
+#include header.fs
 
 mat3x2 hex2cart = mat3x2(
   vec2(0, 0),

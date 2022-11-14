@@ -1,6 +1,5 @@
 const pth = require('path');
 const process = require('process');
-const {VueLoaderPlugin} = require('vue-loader');
 
 const PORT = process.env.port || undefined;
 
@@ -30,10 +29,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-      },
-      {
         test: /\.(sass|scss|css)$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
@@ -47,7 +42,7 @@ module.exports = {
       },
       {
         test: /\.(fs|vs)$/,
-        loader: 'webgl-loader',
+        loader: 'simple-webgl-loader',
       },
       {
         test: /\.(txt|html|md)$/,
@@ -55,7 +50,4 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new VueLoaderPlugin(),
-  ],
 }
