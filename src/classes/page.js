@@ -146,35 +146,39 @@ export default class Page {
   }
 
   loadVideo(idx) {
-    if (this.curVideo && this.curVideo == this.videos[idx]) return;
+    // if (this.curVideo && this.curVideo == this.videos[idx]) return;
     const videoDef = this.videoDefs[idx];
     let nextVideo = this.videos[idx];
     if (!nextVideo) {
       nextVideo = this.createVideo(videoDef.src);
+      this.videos[idx] = nextVideo;
       nextVideo.oncanplaythrough = () => this.swapVideo(nextVideo, videoDef);
     }
     else {
-      this.swapVideo(nextVideo);
+      this.swapVideo(nextVideo, videoDef);
     }
   }
 
   swapVideo(video, videoDef) {
     this.lastVideo?.remove();
-    this.lastVideo = this.curVideo;
-    this.lastVideo?.pause();
+    const lastVideo = this.curVideo;
+    this.lastVideo = lastVideo;
+    lastVideo?.pause();
 
     this.curVideo = video;
     this.videoContainer.appendChild(this.curVideo);
     this.curVideo.play();
 
-    requestAnimationFrame(() => this.lastVideo?.classList.remove('active'));
-    requestAnimationFrame(() => this.curVideo.classList.add('active'));
-    window.setTimeout(() => this.videoContainer.classList.remove('hidden'), 0);
+    requestAnimationFrame(() => {
+      lastVideo?.classList.remove('active');
+      video.classList.add('active');
+      this.videoContainer.classList.remove('hidden');
+    });
 
-    this.videoLink.forEach((e) => e.href = videoDef.link);
-    this.videoLink.forEach((e) => {
-      if (this.videoContainer != e) {
-        e.innerHTML = videoDef.name;
+    this.videoLink.forEach((link) => {
+      link.href = videoDef.link;
+      if (this.videoContainer != link) {
+        link.innerHTML = videoDef.name;
       }
     });
   }
@@ -240,7 +244,7 @@ export default class Page {
     this.scrollBlocks = Array.from(document.querySelectorAll('.scroll-block'));
 
     if (!this.hasScroll) return;
-    
+
     for (let i = 0; i < this.scrollBlocks.length; i++) {
       const id = this.scrollBlocks[i].id;
       // if (!id) continue;
@@ -301,7 +305,7 @@ export default class Page {
   toggleControls(state=undefined) {
     this.controls?.classList.toggle('hidden', state);
   }
-  
+
   toggleHidden(state=!this.hidden) {
     this.hidden = state;
     this.html.classList.toggle('fullscreen', this.hidden);
@@ -311,7 +315,7 @@ export default class Page {
   }
 
   eq(y, ep=5) {
-    return Math.abs(window.scrollY - y) < ep; 
+    return Math.abs(window.scrollY - y) < ep;
   }
 
   get hasScroll() {
