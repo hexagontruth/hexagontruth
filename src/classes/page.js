@@ -393,20 +393,21 @@ export default class Page {
   }
 
   // Why does Chrome scroll snapping suck so badly?
+  // I don't remember exactly why this was necessary
   onWheel(ev) {
-    if (!this.hasScroll) return;
-    const pts = this.scrollBlocks.map((e) => e.offsetTop);
-    const newY = window.scrollY;
-    let nextPoint;
-    if (ev.deltaY > 0) {
-      nextPoint = pts.find((e) => e != pts[this.snap] && e > newY);
-    }
-    else {
-      nextPoint = pts.slice().reverse().find((e) => e != pts[this.snap] && e < newY);
-    }
-    if (nextPoint != null) {
-      window.scrollTo(0, nextPoint, {behavior: 'smooth'});
-      ev.preventDefault();
-    }
+    // if (!this.hasScroll) return;
+    // const pts = this.scrollBlocks.map((e) => e.offsetTop);
+    // const newY = window.scrollY;
+    // let nextPoint;
+    // if (ev.deltaY > 0) {
+    //   nextPoint = pts.find((e) => e != pts[this.snap] && e > newY);
+    // }
+    // else {
+    //   nextPoint = pts.slice().reverse().find((e) => e != pts[this.snap] && e < newY);
+    // }
+    // if (nextPoint != null) {
+    //   window.scrollTo(0, nextPoint, {behavior: 'smooth'});
+    //   ev.preventDefault();
+    // }
   }
 }
