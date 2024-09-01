@@ -11,5 +11,5 @@ if [[ $NODE_ENV == "production" ]]; then
   node server
 else
   node server &
-  yarn webpack serve --mode development
+  npm run dev
 fi
